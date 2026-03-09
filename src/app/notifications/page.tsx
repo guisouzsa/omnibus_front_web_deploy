@@ -15,7 +15,7 @@ type NotificationType =
   | "expense_added"
   | "route_assigned";
 
-type FilterType = "all" | "routes" | "expenses" | "others";
+type FilterType = "all" | "route_started" | "route_finished" | "route_delayed" | "vehicle_changed" | "route_maintenance";
 
 interface Notification {
   id: number;
@@ -29,25 +29,27 @@ interface Notification {
 }
 
 const MOCK_NOTIFICATIONS: Notification[] = [
-  { id: 1,  type: "route_started",      title: "Ônibus iniciou a rota",          description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "routes",   related_id: 1 },
-  { id: 2,  type: "route_maintenance",  title: "Ônibus em manutenção",           description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "others",   related_id: 2 },
-  { id: 3,  type: "checkpoint_reached", title: "Ônibus chegou na sua parada",    description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "routes",   related_id: 1 },
-  { id: 4,  type: "driver_changed",     title: "Troca de motorista",             description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "others",   related_id: 3 },
-  { id: 5,  type: "vehicle_changed",    title: "Troca de ônibus",                description: "A rota da escola EEEP...", date: "24 nov.", read: true,  filter_category: "others",   related_id: 2 },
-  { id: 6,  type: "no_transport",       title: "Não haverá transporte escolar hoje", description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "routes", related_id: 1 },
-  { id: 7,  type: "checkpoint_reached", title: "Ônibus chegou na sua parada",    description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "routes",   related_id: 1 },
-  { id: 8,  type: "route_delayed",      title: "Ônibus vai sair atrasado",       description: "A rota da escola EEEP...", date: "24 nov.", read: false, filter_category: "routes",   related_id: 1 },
-  { id: 9,  type: "expense_added",      title: "Novo gasto registrado",          description: "Gasto de R$ 320,00 registrado pelo motorista.", date: "23 nov.", read: true,  filter_category: "expenses", related_id: 4 },
-  { id: 10, type: "route_assigned",     title: "Nova rota atribuída",            description: "Motorista atribuído à rota da escola EEEP...", date: "23 nov.", read: true,  filter_category: "routes",   related_id: 5 },
-  { id: 11, type: "expense_added",      title: "Gasto de combustível",           description: "Abastecimento registrado: R$ 180,00.", date: "22 nov.", read: true,  filter_category: "expenses", related_id: 6 },
-  { id: 12, type: "route_finished",     title: "Rota finalizada",                description: "A rota da escola EEEP foi concluída com sucesso.", date: "22 nov.", read: true,  filter_category: "routes",   related_id: 1 },
+  { id: 1,  type: "route_started",      title: "Ônibus iniciou a rota",              description: "A rota da escola EEEP foi iniciada.",           date: "24 nov.", read: false, filter_category: "route_started",     related_id: 1 },
+  { id: 2,  type: "route_maintenance",  title: "Mau funcionamento do veículo",       description: "Problema mecânico identificado no ônibus.",     date: "24 nov.", read: false, filter_category: "route_maintenance", related_id: 2 },
+  { id: 3,  type: "route_started",      title: "Ônibus iniciou a rota",              description: "A rota da escola EEEP foi iniciada.",           date: "24 nov.", read: false, filter_category: "route_started",     related_id: 1 },
+  { id: 4,  type: "vehicle_changed",    title: "Troca de veículo",                   description: "O veículo da rota foi substituído.",            date: "24 nov.", read: false, filter_category: "vehicle_changed",   related_id: 3 },
+  { id: 5,  type: "vehicle_changed",    title: "Troca de veículo",                   description: "Novo ônibus atribuído à rota.",                 date: "24 nov.", read: true,  filter_category: "vehicle_changed",   related_id: 2 },
+  { id: 6,  type: "route_delayed",      title: "Atraso na rota",                     description: "O ônibus vai sair com atraso hoje.",            date: "24 nov.", read: false, filter_category: "route_delayed",     related_id: 1 },
+  { id: 7,  type: "route_finished",     title: "Rota finalizada",                    description: "A rota da escola EEEP foi concluída.",          date: "24 nov.", read: false, filter_category: "route_finished",    related_id: 1 },
+  { id: 8,  type: "route_delayed",      title: "Atraso na rota",                     description: "Trânsito intenso causou atraso na rota.",       date: "24 nov.", read: false, filter_category: "route_delayed",     related_id: 1 },
+  { id: 9,  type: "route_maintenance",  title: "Mau funcionamento do veículo",       description: "Falha no sistema de freios identificada.",      date: "23 nov.", read: true,  filter_category: "route_maintenance", related_id: 4 },
+  { id: 10, type: "route_started",      title: "Ônibus iniciou a rota",              description: "A rota matutina da escola EEEP foi iniciada.",  date: "23 nov.", read: true,  filter_category: "route_started",     related_id: 5 },
+  { id: 11, type: "route_finished",     title: "Rota finalizada",                    description: "Rota vespertina concluída com sucesso.",        date: "22 nov.", read: true,  filter_category: "route_finished",    related_id: 6 },
+  { id: 12, type: "vehicle_changed",    title: "Troca de veículo",                   description: "Veículo reserva acionado para a rota.",         date: "22 nov.", read: true,  filter_category: "vehicle_changed",   related_id: 1 },
 ];
 
 const FILTER_LABELS: Record<FilterType, string> = {
-  all:      "Todas",
-  routes:   "Rotas",
-  expenses: "Gastos",
-  others:   "Outros",
+  all:               "Todas",
+  route_started:     "Rotas iniciadas",
+  route_finished:    "Rotas finalizadas",
+  route_delayed:     "Atraso na rota",
+  vehicle_changed:   "Troca de veículo",
+  route_maintenance: "Mau funcionamento",
 };
 
 const TYPE_ICONS: Record<NotificationType, string> = {
