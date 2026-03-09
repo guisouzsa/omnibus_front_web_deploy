@@ -18,7 +18,6 @@ export default function CadastroOnibusPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // handle submit
   };
 
   return (
@@ -32,24 +31,14 @@ export default function CadastroOnibusPage() {
         </div>
 
         <div className="nav-right">
-          {/* Notificação */}
-          <button
-            className="icon-btn notif-icon-btn"
-            title="Notificações"
-            onClick={() => router.push("/notificacoes")}
-          >
+          <button className="icon-btn notif-icon-btn" title="Notificações" onClick={() => router.push("/notificacoes")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </button>
 
-          {/* Usuário */}
-          <button
-            className="icon-btn user-icon-btn"
-            title="Usuário"
-            onClick={() => router.push("/perfil")}
-          >
+          <button className="icon-btn user-icon-btn" title="Usuário" onClick={() => router.push("/perfil")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -136,9 +125,11 @@ export default function CadastroOnibusPage() {
           min-height: 100vh;
           background: #ffffff;
           font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          display: flex;
+          flex-direction: column;
         }
 
-        /* ── NAVBAR ──────────────────────────────── */
+        /* ── NAVBAR ── */
         .navbar {
           width: 100%;
           background: #ffffff;
@@ -159,8 +150,8 @@ export default function CadastroOnibusPage() {
 
         .nav-link {
           font-size: 13px;
-          font-weight: 500;
-          color: #444;
+          font-weight: 800;
+          color: #01233F;
           text-decoration: none;
           letter-spacing: 0.5px;
           text-transform: uppercase;
@@ -172,7 +163,7 @@ export default function CadastroOnibusPage() {
         }
 
         .nav-link:hover {
-          color: #1a1a1a;
+          color: #01233F;
         }
 
         .nav-right {
@@ -219,55 +210,54 @@ export default function CadastroOnibusPage() {
           background: #013560;
         }
 
-        /* ── MAIN ────────────────────────────────── */
+        /* ── MAIN ── */
         .main {
+          flex: 1;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 48px 20px;
+          justify-content: center;
+          padding: 48px 40px;
         }
 
         .page-title {
           font-size: 18px;
           font-weight: 900;
-          color: #1a1a1a;
+          color: #01233F;
           letter-spacing: 1px;
           text-transform: uppercase;
           margin-bottom: 24px;
           text-align: center;
         }
 
-        /* ── CARD ────────────────────────────────── */
+        /* ── CARD ── */
         .card {
           background: #ffffff;
           border-radius: 5px;
-          padding: 28px 28px 24px;
+          padding: 40px 40px 36px;
           width: 100%;
-          max-width: 440px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+          max-width: 860px;
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
         }
 
-        /* ── LINHA COM 2 CAMPOS ───────────────────── */
+        /* ── LINHA COM 2 CAMPOS ── */
         .row {
-          display: flex;
+          display: grid;
+          grid-template-columns: 1fr 160px;
           gap: 16px;
           margin-bottom: 0;
         }
 
         .row .field {
-          flex: 1;
+          margin-bottom: 16px;
         }
 
-        .row .field-small {
-          flex: 0 0 110px;
-        }
-
-        /* ── CAMPOS ──────────────────────────────── */
+        /* ── CAMPOS ── */
         .field {
           margin-bottom: 16px;
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 6px;
         }
 
         .label {
@@ -280,32 +270,33 @@ export default function CadastroOnibusPage() {
 
         .input {
           width: 100%;
-          height: 38px;
+          height: 52px;
           border: 1.5px solid #e0e0e0;
           border-radius: 4px;
-          padding: 0 12px;
-          font-size: 13px;
-          font-weight: 600;
+          padding: 0 14px;
+          font-size: 15px;
+          font-weight: 400;
           color: #333;
           background: #F3F3F3;
           outline: none;
-          transition: border-color 0.2s;
+          transition: border-color 0.2s, background 0.2s;
         }
 
         .input::placeholder {
           color: #ACACAC;
-          font-size: 13px;
-          font-weight: 600;
+          font-size: 14px;
+          font-weight: 800;
         }
 
         .input:focus {
           border-color: #f1bb13;
+          background: #fff;
         }
 
-        /* ── BOTÃO ───────────────────────────────── */
+        /* ── BOTÃO ── */
         .btn {
           width: 100%;
-          height: 44px;
+          height: 54px;
           background: #f1bb13;
           border: none;
           border-radius: 4px;
@@ -329,8 +320,8 @@ export default function CadastroOnibusPage() {
           background: #c79800;
         }
 
-        /* ── RESPONSIVO ──────────────────────────── */
-        @media (max-width: 600px) {
+        /* ── RESPONSIVO ── */
+        @media (max-width: 768px) {
           .navbar {
             padding: 0 16px;
           }
@@ -339,8 +330,12 @@ export default function CadastroOnibusPage() {
             gap: 16px;
           }
 
+          .main {
+            padding: 32px 16px;
+          }
+
           .card {
-            padding: 20px 16px;
+            padding: 24px 20px;
           }
 
           .page-title {
@@ -348,12 +343,7 @@ export default function CadastroOnibusPage() {
           }
 
           .row {
-            flex-direction: column;
-            gap: 0;
-          }
-
-          .row .field-small {
-            flex: 1;
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
