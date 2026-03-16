@@ -1,29 +1,113 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Montserrat } from "next/font/google";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDrivers } from "@/hooks";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function EditarMotorista() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const driverId = searchParams.get('id');
+  const { getDriver, updateDriver, loading } = useDrivers(false);
 
   const [form, setForm] = useState({
-    phone: "+55 88 94002-8922",   // drivers.phone
-    email: "jose@gmail.com",      // drivers.email
-    password: "",                  // drivers.password
-    cnh: "0123456789",            // drivers.cnh
+    name: "",
+    phone_number: "",
+    email: "",
+    license_number: "",
+    password: "",
+    password_confirmation: "",
   });
+  const [loadingDriver, setLoadingDriver] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+
+  // Carregar dados do motorista
+  useEffect(() => {
+    if (driverId) {
+      loadDriver();
+    } else {
+      setErrorMessage("ID do motorista não encontrado");
+      setLoadingDriver(false);
+    }
+  }, [driverId]);
+
+  const loadDriver = async () => {
+    try {
+      const driver = await getDriver(Number(driverId));
+      setForm({
+        name: driver.name,
+        phone_number: driver.phone_number,
+        email: driver.email,
+        license_number: driver.license_number,
+        password: "",
+        password_confirmation: "",
+      });
+    } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao carregar motorista");
+    } finally {
+      setLoadingDriver(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrorMessage("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    // Se preencher senha, validar
+    if (form.password) {
+      if (form.password !== form.password_confirmation) {
+        setErrorMessage("As senhas não coincidem");
+        return;
+      }
+      if (form.password.length < 8) {
+        setErrorMessage("A senha deve ter pelo menos 8 caracteres");
+        return;
+      }
+    }
+
+    try {
+      // Preparar dados (remover senha se estiver vazia)
+      const updateData: any = {
+        name: form.name,
+        email: form.email,
+        phone_number: form.phone_number,
+        license_number: form.license_number,
+      };
+
+      if (form.password) {
+        updateData.password = form.password;
+        updateData.password_confirmation = form.password_confirmation;
+      }
+
+      await updateDriver(Number(driverId), updateData);
+      
+      setSuccessMessage("Motorista atualizado com sucesso!");
+      
+      setTimeout(() => {
+        router.push("/lista_motoristas");
+      }, 1500);
+    } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao atualizar motorista");
+    }
   };
+
+  if (loadingDriver) {
+    return (
+      <main className={montserrat.className} style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p>Carregando...</p>
+      </main>
+    );
+  }
 
   return (
     <main
@@ -149,10 +233,12 @@ export default function EditarMotorista() {
             style={{ display: "flex", flexDirection: "column", gap: "20px" }}
           >
             {[
+              { label: "NOME",        name: "name",    type: "text" },
               { label: "EMAIL",       name: "email",    type: "email" },
-              { label: "TELEFONE",    name: "phone",    type: "text" },
-              { label: "NÚMERO DA CNH", name: "cnh",   type: "text" },
-              { label: "SENHA",       name: "password", type: "password" },
+              { label: "TELEFONE",    name: "phone_number",    type: "text" },
+              { label: "NÚMERO DA CNH", name: "license_number",   type: "text" },
+              { label: "NOVA SENHA (opcional)", name: "password", type: "password" },
+              { label: "CONFIRMAR SENHA", name: "password_confirmation", type: "password" },
             ].map(({ label, name, type }) => (
               <div key={name} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <label style={{ fontSize: "12px", fontWeight: 700, color: "#1a2b6d", letterSpacing: "0.07em" }}>
@@ -163,6 +249,7 @@ export default function EditarMotorista() {
                   name={name}
                   value={form[name as keyof typeof form]}
                   onChange={handleChange}
+                  placeholder={name.includes('password') ? 'Deixe em branco para manter a senha atual' : ''}
                   style={{
                     background: "#f5f5f5",
                     border: "none",
@@ -179,10 +266,22 @@ export default function EditarMotorista() {
               </div>
             ))}
 
+            {errorMessage && (
+              <div style={{ background: '#fee', border: '1px solid #fcc', borderRadius: '6px', color: '#c33', padding: '12px', fontSize: '13px' }}>
+                {errorMessage}
+              </div>
+            )}
+            {successMessage && (
+              <div style={{ background: '#efe', border: '1px solid #cfc', borderRadius: '6px', color: '#3c3', padding: '12px', fontSize: '13px' }}>
+                {successMessage}
+              </div>
+            )}
+
             <button
               type="submit"
+              disabled={loading}
               style={{
-                background: "#f5a623",
+                background: loading ? "#ccc" : "#f5a623",
                 border: "none",
                 borderRadius: "6px",
                 color: "#fff",
@@ -190,15 +289,15 @@ export default function EditarMotorista() {
                 fontWeight: 700,
                 letterSpacing: "0.1em",
                 padding: "14px",
-                cursor: "pointer",
+                cursor: loading ? "not-allowed" : "pointer",
                 marginTop: "4px",
                 transition: "background 0.2s",
                 fontFamily: "inherit",
               }}
-              onMouseEnter={(e) => ((e.target as HTMLButtonElement).style.background = "#e09510")}
-              onMouseLeave={(e) => ((e.target as HTMLButtonElement).style.background = "#f5a623")}
+              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#e09510")}
+              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#f5a623")}
             >
-              EDITAR
+              {loading ? "SALVANDO..." : "SALVAR ALTERAÇÕES"}
             </button>
           </form>
         </div>

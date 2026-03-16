@@ -1,29 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function OmnibusLogin() {
   const router = useRouter();
+  const { login, loading, error, isAuthenticated } = useAuthContext();
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrorMessage(""); // Limpar erro ao digitar
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
-    router.push("/dashboard");
+    setErrorMessage("");
+    
+    try {
+      await login(form.email, form.password);
+      // O redirecionamento é feito automaticamente pelo AuthContext
+    } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao fazer login");
+    }
   };
 
   return (
@@ -154,7 +171,20 @@ export default function OmnibusLogin() {
         .submit-btn:hover {
           background: #e09510;
         }
+        .submit-btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
 
+        .error-message {
+          background: #fee;
+          border: 1px solid #fcc;
+          border-radius: 6px;
+          color: #c33;
+          padding: 12px 16px;
+          font-size: 14px;
+          text-align: center;
+        }
         .register-link-text {
           margin-top: 20px;
           font-size: 14px;
@@ -254,8 +284,12 @@ export default function OmnibusLogin() {
               </div>
             ))}
 
-            <button type="submit" className="submit-btn">
-              ENTRAR
+            {errorMessage && (
+              <div className="error-message">{errorMessage}</div>
+            )}
+
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "ENTRANDO..." : "ENTRAR"}
             </button>
           </form>
 

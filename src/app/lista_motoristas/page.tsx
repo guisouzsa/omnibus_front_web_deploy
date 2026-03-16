@@ -1,33 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-// ─── Entidade drivers conforme banco de dados ──────────────────────────────────
-type Driver = {
-  id: number;
-  user_id: number;
-  name: string;
-  phone: string;
-  cnh: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
-};
-// ──────────────────────────────────────────────────────────────────────────────
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-
-async function fetchDrivers(): Promise<Driver[]> {
-  const res = await fetch(`${API_BASE_URL}/drivers`);
-  if (!res.ok) throw new Error("Erro ao buscar motoristas");
-  return res.json();
-}
-
-async function deleteDriver(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE_URL}/drivers/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Erro ao excluir motorista");
-}
+import { useDrivers } from "@/hooks";
 
 // ─── Estilos ──────────────────────────────────────────────────────────────────
 const css = `
@@ -97,39 +72,31 @@ const css = `
 
 export default function MotoristasPage() {
   const router = useRouter();
-  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const { drivers, loading, error, deleteDriver } = useDrivers();
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // ─── Busca motoristas da API ao montar o componente ────────────────────────
-  useEffect(() => {
-    setLoading(true);
-    fetchDrivers()
-      .then((data) => setDrivers(data))
-      .catch(() => setError("Não foi possível carregar os motoristas."))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filtered = drivers.filter(
+  const filtered = (drivers || []).filter(
     (d) =>
       d.name.toLowerCase().includes(search.toLowerCase()) ||
       d.email.toLowerCase().includes(search.toLowerCase()) ||
-      d.cnh.includes(search)
+      d.license_number.includes(search)
   );
 
-  // ─── Chama DELETE na API e remove da lista local ───────────────────────────
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number, name: string) => {
+    if (!confirm(`Tem certeza que deseja excluir o motorista ${name}?`)) {
+      return;
+    }
+
     try {
       await deleteDriver(id);
-      setDrivers((prev) => prev.filter((d) => d.id !== id));
-    } catch {
-      alert("Erro ao excluir motorista. Tente novamente.");
+      alert("Motorista excluído com sucesso!");
+    } catch (err: any) {
+      alert(err.message || "Erro ao excluir motorista. Tente novamente.");
     }
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/motoristas/${id}/editar`);
+    router.push(`/editMotorista?id=${id}`);
   };
 
   return (
@@ -204,7 +171,7 @@ export default function MotoristasPage() {
                       <p className="md-card-name">{d.name}</p>
                       <p className="md-card-cnh">
                         <span className="md-card-label">CNH: </span>
-                        <span className="md-card-value">{d.cnh}</span>
+                        <span className="md-card-value">{d.license_number}</span>
                       </p>
                     </div>
 
@@ -218,7 +185,7 @@ export default function MotoristasPage() {
                       </p>
                       <p className="md-card-phone">
                         <span className="md-card-label">Telefone: </span>
-                        <span className="md-card-value">{d.phone}</span>
+                        <span className="md-card-value">{d.phone_number}</span>
                       </p>
                     </div>
 
@@ -226,7 +193,7 @@ export default function MotoristasPage() {
 
                     {/* Ações */}
                     <div className="md-card-actions">
-                      <button className="md-btn-excluir" onClick={() => handleDelete(d.id)}>EXCLUIR</button>
+                      <button className="md-btn-excluir" onClick={() => handleDelete(d.id, d.name)}>EXCLUIR</button>
                       <button className="md-btn-editar" onClick={() => handleEdit(d.id)}>EDITAR</button>
                     </div>
                   </div>

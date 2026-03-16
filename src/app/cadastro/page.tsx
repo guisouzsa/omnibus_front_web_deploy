@@ -1,30 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function OmnibusCadastro() {
   const router = useRouter();
+  const { register, loading, error, isAuthenticated } = useAuthContext();
 
   const [form, setForm] = useState({
-    name: "",       // institutions.name
-    email: "",      // institutions.email
-    password: "",   // institutions.password (hash no backend)
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrorMessage(""); // Limpar erro ao digitar
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
-    router.push("/dashboard");
+    setErrorMessage("");
+
+    // Validar senhas
+    if (form.password !== form.password_confirmation) {
+      setErrorMessage("As senhas não coincidem");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setErrorMessage("A senha deve ter pelo menos 8 caracteres");
+      return;
+    }
+    
+    try {
+      await register(form.name, form.email, form.password, form.password_confirmation);
+      // O redirecionamento é feito automaticamente pelo AuthContext
+    } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao cadastrar");
+    }
   };
 
   return (
@@ -142,7 +171,20 @@ export default function OmnibusCadastro() {
         .submit-btn:hover {
           background: #e09510;
         }
+        .submit-btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
 
+        .error-message {
+          background: #fee;
+          border: 1px solid #fcc;
+          border-radius: 6px;
+          color: #c33;
+          padding: 12px 16px;
+          font-size: 14px;
+          text-align: center;
+        }
         .login-link-text {
           margin-top: 20px;
           font-size: 14px;
@@ -230,6 +272,7 @@ export default function OmnibusCadastro() {
               { label: "INSTITUIÇÃO", name: "name",     type: "text" },
               { label: "E-MAIL",      name: "email",    type: "email" },
               { label: "SENHA",       name: "password", type: "password" },
+              { label: "CONFIRMAR SENHA", name: "password_confirmation", type: "password" },
             ].map(({ label, name, type }) => (
               <div key={name} className="field-wrapper">
                 <label className="field-label">{label}</label>
@@ -239,12 +282,17 @@ export default function OmnibusCadastro() {
                   value={form[name as keyof typeof form]}
                   onChange={handleChange}
                   className="field-input"
+                  required
                 />
               </div>
             ))}
 
-            <button type="submit" className="submit-btn">
-              CADASTRE-SE
+            {errorMessage && (
+              <div className="error-message">{errorMessage}</div>
+            )}
+
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "CADASTRANDO..." : "CADASTRE-SE"}
             </button>
           </form>
 

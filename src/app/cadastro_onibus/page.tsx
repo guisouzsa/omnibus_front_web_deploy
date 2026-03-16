@@ -1,23 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useVehicles } from "@/hooks/useVehicles";
+import { useDrivers } from "@/hooks/useDrivers";
 
 export default function CadastroOnibusPage() {
   const router = useRouter();
+  const { createVehicle, loading: vehicleLoading, error: vehicleError } = useVehicles();
+  const { drivers, loading: driversLoading } = useDrivers();
+  
   const [form, setForm] = useState({
-    placa: "",
-    capacidade: "",
-    rotaPrincipal: "",
-    motoristaPrincipal: "",
+    plate: "",
+    capacity: "",
+    mainRoute: "",
+    driver_id: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setSubmitError(null);
+    setSubmitSuccess(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    // Validação básica
+    if (!form.plate || !form.capacity || !form.mainRoute || !form.driver_id) {
+      setSubmitError("Todos os campos são obrigatórios");
+      return;
+    }
+
+    const success = await createVehicle({
+      plate: form.plate.toUpperCase(),
+      capacity: parseInt(form.capacity),
+      mainRoute: form.mainRoute,
+      driver_id: parseInt(form.driver_id),
+    });
+
+    if (success) {
+      setSubmitSuccess(true);
+      setForm({
+        plate: "",
+        capacity: "",
+        mainRoute: "",
+        driver_id: "",
+      });
+      // Redirecionar após 2 segundos
+      setTimeout(() => {
+        router.push("/lista_onibus");
+      }, 2000);
+    } else {
+      setSubmitError(vehicleError || "Erro ao cadastrar ônibus");
+    }
   };
 
   return (
@@ -52,6 +93,18 @@ export default function CadastroOnibusPage() {
         <h2 className="page-title">CADASTRE UM NOVO ÔNIBUS</h2>
 
         <div className="card">
+          {submitSuccess && (
+            <div className="alert alert-success">
+              ✓ Ônibus cadastrado com sucesso! Redirecionando...
+            </div>
+          )}
+          
+          {submitError && (
+            <div className="alert alert-error">
+              {submitError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
 
             {/* Linha 1: PLACA + CAPACIDADE lado a lado */}
@@ -60,22 +113,26 @@ export default function CadastroOnibusPage() {
                 <label className="label">PLACA DO VEÍCULO</label>
                 <input
                   type="text"
-                  name="placa"
+                  name="plate"
                   className="input"
-                  placeholder="Ex: 240409CP"
-                  value={form.placa}
+                  placeholder="Ex: ABC1D23"
+                  value={form.plate}
                   onChange={handleChange}
+                  maxLength={7}
+                  required
                 />
               </div>
               <div className="field field-small">
                 <label className="label">CAPACIDADE</label>
                 <input
                   type="number"
-                  name="capacidade"
+                  name="capacity"
                   className="input"
-                  placeholder="Ex: 66"
-                  value={form.capacidade}
+                  placeholder="Ex: 45"
+                  value={form.capacity}
                   onChange={handleChange}
+                  min="1"
+                  required
                 />
               </div>
             </div>
@@ -85,29 +142,47 @@ export default function CadastroOnibusPage() {
               <label className="label">ROTA PRINCIPAL</label>
               <input
                 type="text"
-                name="rotaPrincipal"
+                name="mainRoute"
                 className="input"
-                placeholder="Ex: Poço Redondo"
-                value={form.rotaPrincipal}
+                placeholder="Ex: Ingá - Centro"
+                value={form.mainRoute}
                 onChange={handleChange}
+                required
               />
             </div>
 
             {/* Linha 3: MOTORISTA PRINCIPAL */}
             <div className="field">
               <label className="label">MOTORISTA PRINCIPAL</label>
-              <input
-                type="text"
-                name="motoristaPrincipal"
-                className="input"
-                placeholder="Ex: Raimundo Souza"
-                value={form.motoristaPrincipal}
-                onChange={handleChange}
-              />
+              {driversLoading ? (
+                <div className="input" style={{ display: 'flex', alignItems: 'center', color: '#888' }}>
+                  Carregando motoristas...
+                </div>
+              ) : (
+                <select
+                  name="driver_id"
+                  className="input"
+                  value={form.driver_id}
+                  onChange={handleChange}
+                  required
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="">Selecione um motorista</option>
+                  {drivers.map((driver) => (
+                    <option key={driver.id} value={driver.id}>
+                      {driver.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
-            <button type="submit" className="btn">
-              CADASTRAR
+            <button 
+              type="submit" 
+              className="btn"
+              disabled={vehicleLoading || driversLoading}
+            >
+              {vehicleLoading ? "CADASTRANDO..." : "CADASTRAR"}
             </button>
 
           </form>
@@ -320,8 +395,53 @@ export default function CadastroOnibusPage() {
           background: #c79800;
         }
 
+<<<<<<< HEAD
         /* ── RESPONSIVO ── */
         @media (max-width: 768px) {
+=======
+        .btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .btn:disabled:hover {
+          background: #ccc;
+        }
+
+        /* ── ALERTS ─────────────────────────────── */
+        .alert {
+          padding: 12px 16px;
+          border-radius: 4px;
+          margin-bottom: 20px;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .alert-success {
+          background: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+          background: #f8d7da;
+          color: #721c24;
+          border: 1px solid #f5c6cb;
+        }
+
+        /* ── SELECT ─────────────────────────────── */
+        select.input {
+          padding-right: 30px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 12px center;
+          appearance: none;
+        }
+
+        /* ── RESPONSIVO ──────────────────────────── */
+        @media (max-width: 600px) {
+>>>>>>> 1605d03 (feat(api_calls): ligação com apis laravel(onibus,motoristas e financeiro).)
           .navbar {
             padding: 0 16px;
           }

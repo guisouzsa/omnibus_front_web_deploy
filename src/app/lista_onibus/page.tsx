@@ -1,34 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useVehicles } from "@/hooks/useVehicles";
 
-// Campos baseados na entidade vehicles do banco de dados
-type Vehicle = {
-  id: number;
-  plate: string;
-  capacity: number;
-  mainRute: string;
-  drivers_id: number;
-  driverName: string; // vindo do relacionamento com drivers
-};
-
-// ─── Troque pela URL base da sua API ───────────────────────────────────────────
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-// ──────────────────────────────────────────────────────────────────────────────
-
-async function fetchVehicles(): Promise<Vehicle[]> {
-  const res = await fetch(`${API_BASE_URL}/vehicles`);
-  if (!res.ok) throw new Error("Erro ao buscar ônibus");
-  return res.json();
-}
-
-async function deleteVehicle(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE_URL}/vehicles/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Erro ao excluir ônibus");
-}
-
-// ─── Estilos ──────────────────────────────────────────────────────────────────
 const css = `
   .oc-page { min-height: 100vh; background: #fff; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .oc-navbar { width: 100%; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 56px; border-bottom: 1px solid #e0e0e0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
@@ -75,39 +50,29 @@ const css = `
 
 export default function OnibusCadastradosPage() {
   const router = useRouter();
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { vehicles, loading, error, deleteVehicle } = useVehicles();
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // ─── Busca veículos da API ao montar o componente ───────────────────────────
-  useEffect(() => {
-    setLoading(true);
-    fetchVehicles()
-      .then((data) => setVehicles(data))
-      .catch(() => setError("Não foi possível carregar os ônibus."))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filtered = vehicles.filter(
+  const filtered = (vehicles || []).filter(
     (v) =>
       v.plate.toLowerCase().includes(search.toLowerCase()) ||
-      v.mainRute.toLowerCase().includes(search.toLowerCase()) ||
-      v.driverName.toLowerCase().includes(search.toLowerCase())
+      v.mainRoute.toLowerCase().includes(search.toLowerCase()) ||
+      (v.driver?.name || '').toLowerCase().includes(search.toLowerCase())
   );
 
-  // ─── Chama DELETE na API e remove da lista local ────────────────────────────
   const handleDelete = async (id: number) => {
-    try {
-      await deleteVehicle(id);
-      setVehicles((prev) => prev.filter((v) => v.id !== id));
-    } catch {
-      alert("Erro ao excluir ônibus. Tente novamente.");
+    if (!confirm('Tem certeza que deseja excluir este ônibus?')) {
+      return;
+    }
+    
+    const success = await deleteVehicle(id);
+    if (!success) {
+      alert('Erro ao excluir ônibus. Tente novamente.');
     }
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/onibus/editar/${id}`);
+    router.push(`/editOnibus?id=${id}`);
   };
 
   return (
@@ -180,10 +145,10 @@ export default function OnibusCadastradosPage() {
                 ) : (
                   filtered.map((v) => (
                     <tr key={v.id}>
-                      <td className="oc-td-bold">{v.mainRute}</td>
+                      <td className="oc-td-bold">{v.mainRoute}</td>
                       <td className="oc-td-bold">{v.capacity} ALUNOS</td>
                       <td className="oc-td-bold">{v.plate}</td>
-                      <td className="oc-td-driver">{v.driverName}</td>
+                      <td className="oc-td-driver">{v.driver?.name || 'N/A'}</td>
                       <td className="oc-td-ops">
                         <button className="oc-btn-excluir" onClick={() => handleDelete(v.id)}>EXCLUIR</button>
                         <button className="oc-btn-editar" onClick={() => handleEdit(v.id)}>EDITAR</button>

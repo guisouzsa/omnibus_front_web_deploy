@@ -2,22 +2,78 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDrivers } from "@/hooks";
 
 export default function CadastroMotoristaPage() {
   const router = useRouter();
+  const { createDriver, loading } = useDrivers(false);
+  
   const [form, setForm] = useState({
     nome: "",
     email: "",
     telefone: "",
     numeroCnh: "",
+    senha: "",
+    confirmarSenha: "",
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrorMessage("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    // Validações
+    if (!form.nome || !form.email || !form.telefone || !form.numeroCnh || !form.senha) {
+      setErrorMessage("Preencha todos os campos");
+      return;
+    }
+
+    if (form.senha !== form.confirmarSenha) {
+      setErrorMessage("As senhas não coincidem");
+      return;
+    }
+
+    if (form.senha.length < 8) {
+      setErrorMessage("A senha deve ter pelo menos 8 caracteres");
+      return;
+    }
+
+    try {
+      await createDriver({
+        name: form.nome,
+        email: form.email,
+        phone_number: form.telefone,
+        license_number: form.numeroCnh,
+        password: form.senha,
+        password_confirmation: form.confirmarSenha,
+      });
+      
+      setSuccessMessage("Motorista cadastrado com sucesso!");
+      
+      // Limpar formulário
+      setForm({
+        nome: "",
+        email: "",
+        telefone: "",
+        numeroCnh: "",
+        senha: "",
+        confirmarSenha: "",
+      });
+
+      // Redirecionar após 1.5 segundos
+      setTimeout(() => {
+        router.push("/lista_motoristas");
+      }, 1500);
+    } catch (err: any) {
+      setErrorMessage(err.message || "Erro ao cadastrar motorista");
+    }
   };
 
   return (
@@ -69,10 +125,29 @@ export default function CadastroMotoristaPage() {
             {/* CNH — linha inteira */}
             <div className="field full">
               <label className="label">NÚMERO DA CNH</label>
-              <input type="text" name="numeroCnh" className="input" placeholder="Ex: 07234567889" value={form.numeroCnh} onChange={handleChange} />
+              <input type="text" name="numeroCnh" className="input" placeholder="Ex: 07234567889" value={form.numeroCnh} onChange={handleChange} required />
             </div>
-
-            <button type="submit" className="btn">CADASTRAR</button>
+            <div className="field">
+              <label className="label">SENHA (para login no app)</label>
+              <input type="password" name="senha" className="input" placeholder="Mínimo 8 caracteres" value={form.senha} onChange={handleChange} required />
+            </div>
+            <div className="field">
+              <label className="label">CONFIRMAR SENHA</label>
+              <input type="password" name="confirmarSenha" className="input" placeholder="Digite a senha novamente" value={form.confirmarSenha} onChange={handleChange} required />
+            </div>
+            {errorMessage && (
+              <div style={{ background: '#fee', border: '1px solid #fcc', borderRadius: '4px', color: '#c33', padding: '12px', fontSize: '13px', marginTop: '8px' }}>
+                {errorMessage}
+              </div>
+            )}
+            {successMessage && (
+              <div style={{ background: '#efe', border: '1px solid #cfc', borderRadius: '4px', color: '#3c3', padding: '12px', fontSize: '13px', marginTop: '8px' }}>
+                {successMessage}
+              </div>
+            )}
+            <button type="submit" className="btn" disabled={loading}>
+              {loading ? "CADASTRANDO..." : "CADASTRAR"}
+            </button>
           </form>
         </div>
       </main>
@@ -285,8 +360,18 @@ export default function CadastroMotoristaPage() {
           background: #c79800;
         }
 
+<<<<<<< HEAD
         /* Tablet / Mobile */
         @media (max-width: 768px) {
+=======
+        .btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        @media (max-width: 600px) {
+>>>>>>> 1605d03 (feat(api_calls): ligação com apis laravel(onibus,motoristas e financeiro).)
           .navbar {
             padding: 0 16px;
           }
