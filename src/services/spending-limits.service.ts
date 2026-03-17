@@ -10,7 +10,15 @@ import {
 
 function getLimitAmount(limit: Partial<SpendingLimit>): number {
   if (typeof limit.limit_amount === 'number') return limit.limit_amount;
+  if (typeof limit.limit_amount === 'string') {
+    const parsed = Number(limit.limit_amount);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
   if (typeof limit.limit_value === 'number') return limit.limit_value;
+  if (typeof limit.limit_value === 'string') {
+    const parsed = Number(limit.limit_value);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
   return 0;
 }
 
