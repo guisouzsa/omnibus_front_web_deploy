@@ -1,6 +1,8 @@
 "use client";
 
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth, useExpenses, useSpendingLimits } from "@/hooks";
 import {
   AreaChart,
   Area,
@@ -30,12 +32,6 @@ const chartData = [
   { mes: "Out", valor: 255000 },
   { mes: "Nov", valor: 260000 },
   { mes: "Dez", valor: 130000 },
-];
-
-const financialMetrics = [
-  { label: "META DE GASTOS",        value: "340.000", sub: "POR MÊS"      },
-  { label: "GASTOS DO MÊS ATUAL",   value: "130.000", sub: "EM ANDAMENTO" },
-  { label: "MÊS COM MENOS GASTOS",  value: "320.000", sub: "POR MÊS"      },
 ];
 
 // ─── SVG Icons inline ─────────────────────────────────────────────────────────
@@ -72,7 +68,7 @@ function DriverIcon() {
   );
 }
 
-const ICON_COMPONENTS: Record<string, () => JSX.Element> = {
+const ICON_COMPONENTS: Record<string, () => React.ReactNode> = {
   bus:    BusIcon,
   route:  RouteIcon,
   driver: DriverIcon,
@@ -153,9 +149,91 @@ function CustomTooltip({ active, payload, label }: any) {
   return null;
 }
 
+function parseNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+}
+
+function formatMetricValue(value: number): string {
+  return value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
+
+function getCurrentPeriod() {
+  const now = new Date();
+  return {
+    month: String(now.getMonth() + 1).padStart(2, "0"),
+    year: String(now.getFullYear()),
+  };
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const { expenses, fetchExpenses } = useExpenses(false);
+  const { getLimitByPeriod } = useSpendingLimits(false);
+  const [currentMonthLimit, setCurrentMonthLimit] = useState(0);
+
+  useEffect(() => {
+    fetchExpenses({ per_page: 1000 });
+  }, []);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setCurrentMonthLimit(0);
+      return;
+    }
+
+    const { month, year } = getCurrentPeriod();
+    getLimitByPeriod(user.id, year, month)
+      .then((limit) => {
+        if (!limit) {
+          setCurrentMonthLimit(0);
+          return;
+        }
+
+        setCurrentMonthLimit(parseNumber((limit as any).limit_amount ?? (limit as any).limit_value));
+      })
+      .catch(() => setCurrentMonthLimit(0));
+  }, [user?.id]);
+
+  const { currentMonthExpenses, minMonthExpenses } = useMemo(() => {
+    const { month, year } = getCurrentPeriod();
+    const monthlyTotals = new Map<string, number>();
+
+    for (const expense of expenses ?? []) {
+      const expenseDate = expense?.created_at ? new Date(expense.created_at) : null;
+      if (!expenseDate || Number.isNaN(expenseDate.getTime())) continue;
+
+      const expenseMonth = String(expenseDate.getMonth() + 1).padStart(2, "0");
+      const expenseYear = String(expenseDate.getFullYear());
+      const key = `${expenseYear}-${expenseMonth}`;
+
+      monthlyTotals.set(key, (monthlyTotals.get(key) ?? 0) + parseNumber((expense as any).value));
+    }
+
+    const currentKey = `${year}-${month}`;
+    const currentMonthTotal = monthlyTotals.get(currentKey) ?? 0;
+    const totals = Array.from(monthlyTotals.values());
+
+    return {
+      currentMonthExpenses: currentMonthTotal,
+      minMonthExpenses: totals.length > 0 ? Math.min(...totals) : 0,
+    };
+  }, [expenses]);
+
+  const financialMetrics = [
+    { label: "META DE GASTOS", value: formatMetricValue(currentMonthLimit), sub: "POR MÊS" },
+    { label: "GASTOS DO MÊS ATUAL", value: formatMetricValue(currentMonthExpenses), sub: "EM ANDAMENTO" },
+    { label: "MÊS COM MENOS GASTOS", value: formatMetricValue(minMonthExpenses), sub: "POR MÊS" },
+  ];
 
   const handleCardClick = (id: string) => {
     if (id === "buses")   router.push("/lista_onibus");
