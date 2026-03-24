@@ -4,20 +4,165 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDrivers } from "@/hooks";
 
+// ─── Icons ────────────────────────────────────────────────────────────────────
+function BusIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="14" rx="2"/>
+      <path d="M2 9h20"/><path d="M8 4V2"/><path d="M16 4V2"/>
+      <circle cx="7" cy="20" r="2" fill={color} stroke={color}/>
+      <circle cx="17" cy="20" r="2" fill={color} stroke={color}/>
+      <path d="M5 18h14"/>
+    </svg>
+  );
+}
+function RouteIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+      <circle cx="12" cy="9" r="2.5"/>
+    </svg>
+  );
+}
+function DriverIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+    </svg>
+  );
+}
+function StudentIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+      <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+    </svg>
+  );
+}
+function DashIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+    </svg>
+  );
+}
+function FinanceIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  );
+}
+function BellIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  );
+}
+function UserIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  );
+}
+
+const css = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #01233F;
+    --yellow: #f1bb13;
+    --yellow-dark: #d9a700;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --border: #e2e6ea;
+    --text: #01233F;
+    --muted: #6b7a8d;
+    --red: #ef4444;
+    --sidebar-w: 220px;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; font-weight: 400; }
+
+  .layout { display: flex; min-height: 100vh; background: var(--bg); }
+
+  .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+  .sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 34px; height: 34px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
+  .sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 14px 0 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-item.active { background: var(--yellow); color: var(--navy); font-weight: 600; }
+  .sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .user-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.15s; }
+  .user-row:hover { background: rgba(255,255,255,0.07); }
+  .avatar { width: 32px; height: 32px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+  .user-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  .content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 36px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-size: 16px; font-weight: 600; color: var(--navy); }
+  .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; font-weight: 400; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: all 0.15s; position: relative; }
+  .icon-btn:hover { background: var(--bg); }
+  .notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 1.5px solid #fff; }
+
+  .body { padding: 44px 52px; display: flex; flex-direction: column; align-items: center; flex: 1; }
+
+  .page-title { font-size: 20px; font-weight: 600; color: var(--navy); letter-spacing: 0.3px; margin-bottom: 28px; text-align: center; }
+
+  .card { background: #fff; border-radius: 12px; padding: 52px 56px 48px; width: 100%; max-width: 800px; box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04); border: 1px solid var(--border); }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .row .field { margin-bottom: 20px; }
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .field.full { width: 100%; }
+
+  .label { font-size: 11px; font-weight: 600; color: var(--navy); letter-spacing: 0.8px; text-transform: uppercase; }
+
+  .input { width: 100%; height: 52px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 16px; font-size: 14px; font-weight: 400; color: var(--navy); background: #f7f8fa; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
+  .input::placeholder { color: #b0bac6; font-size: 13px; font-weight: 400; }
+  .input:focus { border-color: var(--yellow); background: #fff; box-shadow: 0 0 0 3px rgba(241,187,19,0.12); }
+
+  .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
+  .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .alert-error   { background: #fde8e8; color: #7f1d1d; border: 1px solid #fca5a5; }
+
+  .btn { width: 100%; height: 52px; background: var(--yellow); border: none; border-radius: 8px; font-size: 13px; font-weight: 600; letter-spacing: 1px; color: #ffffff; text-transform: uppercase; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; transition: background 0.15s, transform 0.1s; }
+  .btn:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; transform: none; }
+
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { display: none; }
+    .body { padding: 32px 20px; }
+    .card { padding: 32px 24px; }
+    .row { grid-template-columns: 1fr; }
+  }
+`;
+
 export default function CadastroMotoristaPage() {
   const router = useRouter();
   const { createDriver, loading } = useDrivers(false);
-  
-  const [form, setForm] = useState({
-    nome: "",
-    email: "",
-    telefone: "",
-    numeroCnh: "",
-    senha: "",
-    confirmarSenha: "",
-  });
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
+
+  const [form, setForm] = useState({ nome: "", email: "", telefone: "", numeroCnh: "", senha: "", confirmarSenha: "" });
+  const [errorMessage, setErrorMessage]     = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,377 +171,99 @@ export default function CadastroMotoristaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    // Validações
-    if (!form.nome || !form.email || !form.telefone || !form.numeroCnh || !form.senha) {
-      setErrorMessage("Preencha todos os campos");
-      return;
-    }
-
-    if (form.senha !== form.confirmarSenha) {
-      setErrorMessage("As senhas não coincidem");
-      return;
-    }
-
-    if (form.senha.length < 8) {
-      setErrorMessage("A senha deve ter pelo menos 8 caracteres");
-      return;
-    }
-
+    setErrorMessage(""); setSuccessMessage("");
+    if (!form.nome || !form.email || !form.telefone || !form.numeroCnh || !form.senha) { setErrorMessage("Preencha todos os campos"); return; }
+    if (form.senha !== form.confirmarSenha) { setErrorMessage("As senhas não coincidem"); return; }
+    if (form.senha.length < 8) { setErrorMessage("A senha deve ter pelo menos 8 caracteres"); return; }
     try {
-      await createDriver({
-        name: form.nome,
-        email: form.email,
-        phone_number: form.telefone,
-        license_number: form.numeroCnh,
-        password: form.senha,
-        password_confirmation: form.confirmarSenha,
-      });
-      
+      await createDriver({ name: form.nome, email: form.email, phone_number: form.telefone, license_number: form.numeroCnh, password: form.senha, password_confirmation: form.confirmarSenha });
       setSuccessMessage("Motorista cadastrado com sucesso!");
-      
-      // Limpar formulário
-      setForm({
-        nome: "",
-        email: "",
-        telefone: "",
-        numeroCnh: "",
-        senha: "",
-        confirmarSenha: "",
-      });
-
-      // Redirecionar após 1.5 segundos
-      setTimeout(() => {
-        router.push("/lista_motoristas");
-      }, 1500);
+      setForm({ nome: "", email: "", telefone: "", numeroCnh: "", senha: "", confirmarSenha: "" });
+      setTimeout(() => router.push("/lista_motoristas"), 1500);
     } catch (err: any) {
       setErrorMessage(err.message || "Erro ao cadastrar motorista");
     }
   };
 
   return (
-    <div className="page">
-      <nav className="navbar">
-        <div className="nav-links">
-          <button onClick={() => router.push("/dashboard")} className="nav-link">DASHBOARD</button>
-          <button onClick={() => router.push("/financeiro")} className="nav-link">FINANCEIRO</button>
-        </div>
-        <div className="nav-right">
-          <button className="icon-btn notif-icon-btn" title="Notificações" onClick={() => router.push("/notificacoes")}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-          </button>
-          <button className="icon-btn user-icon-btn" title="Usuário" onClick={() => router.push("/perfil")}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </button>
-        </div>
-      </nav>
-
-      <main className="main">
-        <h2 className="page-title">CADASTRE UM NOVO MOTORISTA</h2>
-        <div className="card">
-          <form onSubmit={handleSubmit}>
-
-            {/* Nome — linha inteira */}
-            <div className="field full">
-              <label className="label">NOME</label>
-              <input type="text" name="nome" className="input" placeholder="Ex: José Bonifácio Sombra" value={form.nome} onChange={handleChange} />
-            </div>
-
-            {/* Email e Telefone — lado a lado */}
-            <div className="row">
-              <div className="field">
-                <label className="label">EMAIL</label>
-                <input type="email" name="email" className="input" placeholder="Ex: jose@gmail.com" value={form.email} onChange={handleChange} />
-              </div>
-              <div className="field">
-                <label className="label">TELEFONE</label>
-                <input type="tel" name="telefone" className="input" placeholder="Ex: (88) 94002-8922" value={form.telefone} onChange={handleChange} />
-              </div>
-            </div>
-
-            {/* CNH — linha inteira */}
-            <div className="field full">
-              <label className="label">NÚMERO DA CNH</label>
-              <input type="text" name="numeroCnh" className="input" placeholder="Ex: 07234567889" value={form.numeroCnh} onChange={handleChange} required />
-            </div>
-            <div className="field">
-              <label className="label">SENHA (para login no app)</label>
-              <input type="password" name="senha" className="input" placeholder="Mínimo 8 caracteres" value={form.senha} onChange={handleChange} required />
-            </div>
-            <div className="field">
-              <label className="label">CONFIRMAR SENHA</label>
-              <input type="password" name="confirmarSenha" className="input" placeholder="Digite a senha novamente" value={form.confirmarSenha} onChange={handleChange} required />
-            </div>
-            {errorMessage && (
-              <div style={{ background: '#fee', border: '1px solid #fcc', borderRadius: '4px', color: '#c33', padding: '12px', fontSize: '13px', marginTop: '8px' }}>
-                {errorMessage}
-              </div>
-            )}
-            {successMessage && (
-              <div style={{ background: '#efe', border: '1px solid #cfc', borderRadius: '4px', color: '#3c3', padding: '12px', fontSize: '13px', marginTop: '8px' }}>
-                {successMessage}
-              </div>
-            )}
-            <button type="submit" className="btn" disabled={loading}>
-              {loading ? "CADASTRANDO..." : "CADASTRAR"}
+    <>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <div className="layout">
+        <aside className="sidebar">
+          <div className="sidebar-logo">
+            <div className="logo-icon"><BusIcon size={18} color="#01233F" /></div>
+            <div><div className="logo-text">Omnibus</div><div className="logo-sub">Gestão Escolar</div></div>
+          </div>
+          <nav className="sidebar-nav">
+            <span className="nav-label">Principal</span>
+            <button className="nav-item" onClick={() => router.push("/dashboard")}><DashIcon /> Dashboard</button>
+            <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}><FinanceIcon /> Financeiro</button>
+            <span className="nav-label">Cadastros</span>
+            <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> Ônibus</button>
+            <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={17} /> Rotas</button>
+            <button className="nav-item active"><DriverIcon size={17} /> Motoristas</button>
+            <button className="nav-item" onClick={() => router.push("/lista_alunos")}><StudentIcon size={17} /> Alunos</button>
+          </nav>
+          <div className="sidebar-footer">
+            <button className="user-row" onClick={() => router.push("/infor_instituicao")}>
+              <div className="avatar">A</div>
+              <div><div className="user-name">Admin</div><div className="user-role">Gestor</div></div>
             </button>
-          </form>
+          </div>
+        </aside>
+
+        <div className="content">
+          <header className="topbar">
+            <div>
+              <div className="topbar-title">Cadastrar Motorista</div>
+              <div className="topbar-sub">Adicione um novo motorista ao sistema</div>
+            </div>
+            <div className="topbar-right">
+              <button className="icon-btn" onClick={() => router.push("/notifications")}><BellIcon /><span className="notif-dot" /></button>
+              <button className="icon-btn" onClick={() => router.push("/infor_instituicao")}><UserIcon /></button>
+            </div>
+          </header>
+
+          <div className="body">
+            <h2 className="page-title">Cadastre um novo motorista</h2>
+            <div className="card">
+              {errorMessage   && <div className="alert alert-error">{errorMessage}</div>}
+              {successMessage && <div className="alert alert-success">{successMessage}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="field full">
+                  <label className="label">Nome</label>
+                  <input type="text" name="nome" className="input" placeholder="Ex: José Bonifácio Sombra" value={form.nome} onChange={handleChange} />
+                </div>
+                <div className="row">
+                  <div className="field">
+                    <label className="label">Email</label>
+                    <input type="email" name="email" className="input" placeholder="Ex: jose@gmail.com" value={form.email} onChange={handleChange} />
+                  </div>
+                  <div className="field">
+                    <label className="label">Telefone</label>
+                    <input type="tel" name="telefone" className="input" placeholder="Ex: (88) 94002-8922" value={form.telefone} onChange={handleChange} />
+                  </div>
+                </div>
+                <div className="field full">
+                  <label className="label">Número da CNH</label>
+                  <input type="text" name="numeroCnh" className="input" placeholder="Ex: 07234567889" value={form.numeroCnh} onChange={handleChange} />
+                </div>
+                <div className="row">
+                  <div className="field">
+                    <label className="label">Senha (para login no app)</label>
+                    <input type="password" name="senha" className="input" placeholder="Mínimo 8 caracteres" value={form.senha} onChange={handleChange} />
+                  </div>
+                  <div className="field">
+                    <label className="label">Confirmar Senha</label>
+                    <input type="password" name="confirmarSenha" className="input" placeholder="Digite a senha novamente" value={form.confirmarSenha} onChange={handleChange} />
+                  </div>
+                </div>
+                <button type="submit" className="btn" disabled={loading}>{loading ? "Cadastrando..." : "Cadastrar"}</button>
+              </form>
+            </div>
+          </div>
         </div>
-      </main>
-
-      <style jsx>{`
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-
-        .page {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          background: #ffffff;
-          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .navbar {
-          width: 100%;
-          background: #ffffff;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 32px;
-          height: 56px;
-          border-bottom: 1px solid #e0e0e0;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-        }
-
-        .nav-links {
-          display: flex;
-          align-items: center;
-          gap: 28px;
-        }
-
-        .nav-link {
-          font-size: 13px;
-          font-weight: 800;
-          color: #01233F;
-          text-decoration: none;
-          letter-spacing: 0.5px;
-          text-transform: uppercase;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0;
-          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .nav-link:hover {
-          color: #01233F;
-        }
-
-        .nav-right {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .icon-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          transition: background 0.15s;
-          padding: 0;
-        }
-
-        .icon-btn:hover {
-          background: #f5f5f5;
-        }
-
-        .notif-icon-btn {
-          background: none;
-          width: 34px;
-          height: 34px;
-        }
-
-        .notif-icon-btn:hover {
-          background: #f5f5f5;
-        }
-
-        .user-icon-btn {
-          background: #01233F;
-          width: 34px;
-          height: 34px;
-        }
-
-        .user-icon-btn:hover {
-          background: #013560;
-        }
-
-        .main {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 48px 40px;
-          flex: 1;
-          justify-content: center;
-        }
-
-        .page-title {
-          font-size: 18px;
-          font-weight: 900;
-          color: #01233F;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-          margin-bottom: 24px;
-          text-align: center;
-        }
-
-        .card {
-          background: #ffffff;
-          border-radius: 5px;
-          padding: 40px 40px 36px;
-          width: 100%;
-          max-width: 860px;
-          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Linha com 2 colunas */
-        .row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-          margin-bottom: 16px;
-        }
-
-        .field {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          margin-bottom: 16px;
-        }
-
-        /* Campo que ocupa linha inteira */
-        .field.full {
-          width: 100%;
-        }
-
-        /* Dentro do .row os fields não têm margin-bottom próprio */
-        .row .field {
-          margin-bottom: 0;
-        }
-
-        .label {
-          font-size: 11px;
-          font-weight: 800;
-          color: #222;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-        }
-
-        .input {
-          width: 100%;
-          height: 52px;
-          border: 1.5px solid #e0e0e0;
-          border-radius: 4px;
-          padding: 0 14px;
-          font-size: 13px;
-          font-weight: 400;
-          color: #333;
-          background: #F3F3F3;
-          font-size: 15px;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-
-        .input::placeholder {
-          color: #ACACAC;
-          font-size: 13px;
-          font-weight: 800;
-        }
-
-        .input:focus {
-          border-color: #f1bb13;
-          background: #fff;
-        }
-
-        .btn {
-          width: 100%;
-          height: 54px;
-          background: #f1bb13;
-          border: none;
-          border-radius: 4px;
-          font-size: 14px;
-          font-weight: 900;
-          letter-spacing: 2px;
-          color: #ffffff;
-          text-transform: uppercase;
-          cursor: pointer;
-          margin-top: 8px;
-          transition: background 0.15s, transform 0.1s;
-        }
-
-        .btn:hover {
-          background: #dba900;
-          transform: translateY(-1px);
-        }
-
-        .btn:active {
-          transform: translateY(0);
-          background: #c79800;
-        }
-
-        .btn:disabled {
-          background: #ccc;
-          cursor: not-allowed;
-          transform: none;
-        }
-
-        @media (max-width: 600px) {
-          .navbar {
-            padding: 0 16px;
-          }
-
-          .nav-links {
-            gap: 16px;
-          }
-
-          .card {
-            padding: 20px 16px;
-          }
-
-          .page-title {
-            font-size: 15px;
-          }
-
-          /* Em telas pequenas, 2 colunas viram 1 */
-          .row {
-            grid-template-columns: 1fr;
-          }
-
-          .row .field {
-            margin-bottom: 16px;
-          }
-
-          .row .field:last-child {
-            margin-bottom: 0;
-          }
-        }
-      `}</style>
-    </div>
+      </div>
+    </>
   );
 }
