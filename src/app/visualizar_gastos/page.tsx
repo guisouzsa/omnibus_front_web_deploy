@@ -4,28 +4,190 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useExpenses, useSpendingLimits } from "@/hooks";
 
+// ─── Icons sidebar ────────────────────────────────────────────────────────────
+function BusIcon({ size = 18, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="14" rx="2"/>
+      <path d="M2 9h20"/><path d="M8 4V2"/><path d="M16 4V2"/>
+      <circle cx="7" cy="20" r="2" fill={color} stroke={color}/>
+      <circle cx="17" cy="20" r="2" fill={color} stroke={color}/>
+      <path d="M5 18h14"/>
+    </svg>
+  );
+}
+function RouteIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+      <circle cx="12" cy="9" r="2.5"/>
+    </svg>
+  );
+}
+function DriverIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+    </svg>
+  );
+}
+function SchoolIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  );
+}
+function DashIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+    </svg>
+  );
+}
+function FinanceIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  );
+}
+function BellIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  );
+}
+function UserCircleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  );
+}
+
+// ─── Icons tabela (originais, sem alteração) ──────────────────────────────────
+function DownloadIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  );
+}
+function ArrowIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+    </svg>
+  );
+}
+
 // ─── CSS ──────────────────────────────────────────────────────────────────────
 const css = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #01233F;
+    --yellow: #f1bb13;
+    --yellow-dark: #d9a700;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --border: #e2e6ea;
+    --text: #1a2535;
+    --muted: #6b7a8d;
+    --green: #22c55e;
+    --red: #ef4444;
+    --sidebar-w: 220px;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; }
+
+  /* ── LAYOUT ── */
+  .gc-layout { display: flex; min-height: 100vh; background: var(--bg); }
+
+  /* ── SIDEBAR ── */
+  .gc-sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .gc-sidebar-logo {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .gc-logo-icon {
+    width: 34px; height: 34px; background: var(--yellow);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .gc-logo-text { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .gc-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; margin-top: 1px; }
+  .gc-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .gc-nav-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 12px 0 6px; }
+  .gc-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.55);
+    cursor: pointer; border: none; background: none;
+    width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .gc-nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .gc-nav-item.active { background: var(--yellow); color: var(--navy); }
+  .gc-nav-item.active svg { stroke: var(--navy); }
+  .gc-sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .gc-user-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    cursor: pointer; transition: background 0.15s;
+    border: none; background: none; width: 100%; text-align: left;
+  }
+  .gc-user-row:hover { background: rgba(255,255,255,0.07); }
+  .gc-avatar { width: 32px; height: 32px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--navy); flex-shrink: 0; }
+  .gc-user-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .gc-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  /* ── CONTENT WRAP ── */
+  .gc-content-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── TOPBAR ── */
+  .gc-topbar {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 32px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .gc-topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .gc-topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .gc-topbar-right { display: flex; align-items: center; gap: 12px; }
+  .gc-icon-btn {
+    width: 38px; height: 38px; border-radius: 8px;
+    border: 1px solid var(--border); background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text); transition: all 0.15s; position: relative;
+  }
+  .gc-icon-btn:hover { background: var(--bg); }
+  .gc-notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 1.5px solid #fff; }
+
+  /* ════════════════════════════════════════════
+     TUDO ABAIXO É ORIGINAL — NÃO MODIFICADO
+     ════════════════════════════════════════════ */
+
   .gc-page { min-height: 100vh; background: #f9f9f9; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-
-  /* NAVBAR */
-  .gc-navbar { width: 100%; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 56px; border-bottom: 1px solid #e0e0e0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .gc-nav-links { display: flex; align-items: center; gap: 28px; }
-  .gc-nav-link { font-size: 13px; font-weight: 700; color: #01233F; letter-spacing: 0.5px; text-transform: uppercase; background: none; border: none; cursor: pointer; padding: 16px 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; border-bottom: 2px solid transparent; transition: color 0.15s; }
-  .gc-nav-link:hover { color: #888; }
-  .gc-nav-link.active { color: #01233F; }
-  .gc-nav-link.active:hover { color: #888; }
-  .gc-nav-right { display: flex; align-items: center; gap: 16px; }
-  .gc-notif-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; color: #01233F; transition: opacity 0.15s; }
-  .gc-notif-btn:hover { opacity: 0.7; }
-  .gc-user-btn { background: #01233F; width: 36px; height: 36px; border: 2px solid #01233F; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: opacity 0.15s; padding: 0; color: #fff; }
-  .gc-user-btn:hover { opacity: 0.8; }
-
-  /* MAIN */
   .gc-main { padding: 32px 40px; }
   .gc-content { width: 100%; }
 
-  /* TOP BAR */
   .gc-top-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; width: 100%; }
   .gc-btn-wrap { position: relative; flex-shrink: 0; }
   .gc-btn-meta { background: #f1bb13; border: none; border-radius: 4px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
@@ -34,7 +196,6 @@ const css = `
   .gc-btn-cadastrar { background: #f1bb13; border: none; border-radius: 4px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .gc-btn-cadastrar:hover { background: #dba900; }
 
-  /* POPOVER */
   .gc-popover { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 16px; min-width: 220px; z-index: 100; }
   .gc-popover-right { left: auto; right: 0; }
   .gc-popover-label { font-size: 11px; font-weight: 800; color: #01233F; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
@@ -51,7 +212,6 @@ const css = `
   .gc-popover-success { color: #27ae60; }
   .gc-meta-loading { font-size: 12px; color: #aaa; }
 
-  /* TABELA */
   .gc-table-wrap { width: 100%; overflow-x: auto; border-radius: 4px; }
   .gc-table { width: 100%; border-collapse: collapse; }
   .gc-table thead tr { background: #01233F; }
@@ -72,6 +232,11 @@ const css = `
   .gc-feedback { text-align: center; font-size: 14px; padding: 32px; color: #aaa; }
   .gc-feedback.error { color: #c0392b; }
 
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    .gc-sidebar { display: none; }
+    .gc-content-wrap { margin-left: 0; }
+  }
   @media (max-width: 700px) {
     .gc-main { padding: 20px 16px; }
     .gc-top-bar { flex-wrap: wrap; }
@@ -79,6 +244,7 @@ const css = `
   }
 `;
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
@@ -94,7 +260,6 @@ function getCurrentPeriod() {
 function getProofUrl(path?: string) {
   if (!path) return null;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
-
   const baseUrl = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}${normalizedPath}`;
@@ -115,24 +280,6 @@ function getLimitAmount(limit: { limit_amount?: number | string; limit_value?: n
   return 0;
 }
 
-function DownloadIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>
-  );
-}
-
-function ArrowIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
-    </svg>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function GastosCadastradosPage() {
   const router = useRouter();
@@ -146,6 +293,7 @@ export default function GastosCadastradosPage() {
   const { getLimitByPeriod, createLimit, updateLimit } = useSpendingLimits(false);
 
   const [limitId, setLimitId] = useState<number | null>(null);
+  const [activeNav, setActiveNav] = useState("financeiro");
 
   // popover VER META
   const [showMeta, setShowMeta]       = useState(false);
@@ -163,7 +311,6 @@ export default function GastosCadastradosPage() {
   const metaRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
-  // fechar ao clicar fora
   useEffect(() => {
     function onMouseDown(e: MouseEvent) {
       if (metaRef.current && !metaRef.current.contains(e.target as Node)) setShowMeta(false);
@@ -263,140 +410,197 @@ export default function GastosCadastradosPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      <div className="gc-page">
+      <div className="gc-layout">
 
-        {/* NAVBAR */}
-        <nav className="gc-navbar">
-          <div className="gc-nav-links">
-            <button onClick={() => router.push("/dashboard")} className="gc-nav-link">DASHBOARD</button>
-            <button onClick={() => router.push("/financeiro")} className="gc-nav-link active">FINANCEIRO</button>
+        {/* ── SIDEBAR ── */}
+        <aside className="gc-sidebar">
+          <div className="gc-sidebar-logo">
+            <div className="gc-logo-icon">
+              <BusIcon size={18} color="#01233F" />
+            </div>
+            <div>
+              <div className="gc-logo-text">Omnibus</div>
+              <div className="gc-logo-sub">Gestão Escolar</div>
+            </div>
           </div>
-          <div className="gc-nav-right">
-            <button className="gc-notif-btn" title="Notificações" onClick={() => router.push("/notificacoes")}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
+
+          <nav className="gc-nav">
+            <span className="gc-nav-label">Principal</span>
+            <button
+              className={`gc-nav-item ${activeNav === "dashboard" ? "active" : ""}`}
+              onClick={() => { setActiveNav("dashboard"); router.push("/dashboard"); }}
+            >
+              <DashIcon /> Dashboard
             </button>
-            <button className="gc-user-btn" title="Usuário" onClick={() => router.push("/perfil")}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
+            <button
+              className={`gc-nav-item ${activeNav === "financeiro" ? "active" : ""}`}
+              onClick={() => { setActiveNav("financeiro"); router.push("/visualizar_gastos"); }}
+            >
+              <FinanceIcon /> Financeiro
             </button>
-          </div>
-        </nav>
 
-        {/* MAIN */}
-        <main className="gc-main">
-          <div className="gc-content">
+            <span className="gc-nav-label">Cadastros</span>
+            <button className="gc-nav-item" onClick={() => router.push("/lista_onibus")}>
+              <BusIcon size={18} /> Ônibus
+            </button>
+            <button className="gc-nav-item" onClick={() => router.push("/lista_rotas")}>
+              <RouteIcon size={18} /> Rotas
+            </button>
+            <button className="gc-nav-item" onClick={() => router.push("/lista_motoristas")}>
+              <DriverIcon size={18} /> Motoristas
+            </button>
+            <button className="gc-nav-item" onClick={() => router.push("/lista_escolas")}>
+              <SchoolIcon size={18} /> Escolas
+            </button>
+          </nav>
 
-            {/* TOP BAR */}
-            <div className="gc-top-bar">
-
-              {/* VER META */}
-              <div className="gc-btn-wrap" ref={metaRef}>
-                <button className="gc-btn-meta" onClick={handleOpenMeta}>
-                  VER META DE GASTOS
-                </button>
-                {showMeta && (
-                  <div className="gc-popover">
-                    <p className="gc-popover-label">Meta de gastos</p>
-                    {metaLoading ? (
-                      <p className="gc-meta-loading">Carregando...</p>
-                    ) : metaError ? (
-                      <p className={`gc-popover-msg gc-popover-error`}>{metaError}</p>
-                    ) : meta !== null ? (
-                      <div className="gc-meta-display">
-                        <p className="gc-meta-display-value">{formatBRL(meta)}</p>
-                        <p className="gc-meta-display-sub">por mês</p>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+          <div className="gc-sidebar-footer">
+            <button className="gc-user-row" onClick={() => router.push("/infor_instituicao")}>
+              <div className="gc-avatar">A</div>
+              <div>
+                <div className="gc-user-name">Admin</div>
+                <div className="gc-user-role">Gestor</div>
               </div>
+            </button>
+          </div>
+        </aside>
 
-              <h2 className="gc-title">GASTOS CADASTRADOS</h2>
+        {/* ── CONTENT ── */}
+        <div className="gc-content-wrap">
 
-              {/* CADASTRAR META */}
-              <div className="gc-btn-wrap" ref={formRef}>
-                <button className="gc-btn-cadastrar" onClick={handleOpenForm}>
-                  CADASTRAR META DE GASTOS
-                </button>
-                {showForm && (
-                  <div className="gc-popover gc-popover-right">
-                    <p className="gc-popover-label">
-                      <ArrowIcon />
-                      VALOR (POR MÊS)
-                    </p>
-                    <input
-                      type="text"
-                      className="gc-popover-input"
-                      placeholder="Ex.: R$ 280.000"
-                      value={metaInput}
-                      onChange={(e) => { setMetaInput(e.target.value); setSaveError(null); setSaveSuccess(false); }}
-                      onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                      autoFocus
-                    />
-                    <button className="gc-popover-save" onClick={handleSave} disabled={saving}>
-                      {saving ? "SALVANDO..." : "SALVAR"}
+          {/* ── TOPBAR ── */}
+          <header className="gc-topbar">
+            <div>
+              <div className="gc-topbar-title">Financeiro</div>
+              <div className="gc-topbar-sub">
+                Gastos cadastrados · {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}
+              </div>
+            </div>
+            <div className="gc-topbar-right">
+              <button className="gc-icon-btn" onClick={() => router.push("/notifications")} title="Notificações">
+                <BellIcon />
+                <span className="gc-notif-dot" />
+              </button>
+              <button className="gc-icon-btn" onClick={() => router.push("/infor_instituicao")} title="Perfil">
+                <UserCircleIcon />
+              </button>
+            </div>
+          </header>
+
+          {/* ── CONTEÚDO ORIGINAL INTACTO ── */}
+          <div className="gc-page">
+            <main className="gc-main">
+              <div className="gc-content">
+
+                {/* TOP BAR */}
+                <div className="gc-top-bar">
+
+                  {/* VER META */}
+                  <div className="gc-btn-wrap" ref={metaRef}>
+                    <button className="gc-btn-meta" onClick={handleOpenMeta}>
+                      VER META DE GASTOS
                     </button>
-                    {saveError   && <p className={`gc-popover-msg gc-popover-error`}>{saveError}</p>}
-                    {saveSuccess && <p className={`gc-popover-msg gc-popover-success`}>Meta salva com sucesso!</p>}
+                    {showMeta && (
+                      <div className="gc-popover">
+                        <p className="gc-popover-label">Meta de gastos</p>
+                        {metaLoading ? (
+                          <p className="gc-meta-loading">Carregando...</p>
+                        ) : metaError ? (
+                          <p className={`gc-popover-msg gc-popover-error`}>{metaError}</p>
+                        ) : meta !== null ? (
+                          <div className="gc-meta-display">
+                            <p className="gc-meta-display-value">{formatBRL(meta)}</p>
+                            <p className="gc-meta-display-sub">por mês</p>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-            </div>
+                  <h2 className="gc-title">GASTOS CADASTRADOS</h2>
 
-            {/* TABELA */}
-            <div className="gc-table-wrap">
-              <table className="gc-table">
-                <thead>
-                  <tr>
-                    <th>PLACA</th>
-                    <th>MOTORISTA</th>
-                    <th>VALOR</th>
-                    <th>COMPROVANTE</th>
-                    <th>AÇÕES</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td colSpan={5} className="gc-feedback">Carregando gastos...</td></tr>
-                  ) : error ? (
-                    <tr><td colSpan={5} className="gc-feedback error">{error}</td></tr>
-                  ) : expenses.length === 0 ? (
-                    <tr><td colSpan={5} className="gc-feedback">Nenhum gasto encontrado.</td></tr>
-                  ) : (
-                    expenses.map((e) => (
-                      <tr key={e.id}>
-                        <td className="gc-td-bold">{e.vehicle_plate}</td>
-                        <td>{e.driver?.name ?? `Motorista #${e.driver_id}`}</td>
-                        <td className="gc-td-value">{formatBRL(e.value)}</td>
-                        <td>
-                          {e.proof_of_payment ? (
-                            <a href={getProofUrl(e.proof_of_payment) ?? "#"} target="_blank" rel="noopener noreferrer" className="gc-btn-download">
-                              <DownloadIcon />
-                              Baixar comprovante
-                            </a>
-                          ) : (
-                            <span className="gc-no-receipt">Sem comprovante</span>
-                          )}
-                        </td>
-                        <td className="gc-td-ops">
-                          <button className="gc-btn-excluir" onClick={() => handleDelete(e.id)}>EXCLUIR</button>
-                          <button className="gc-btn-editar" onClick={() => router.push(`/gastos/editar/${e.id}`)}>EDITAR</button>
-                        </td>
+                  {/* CADASTRAR META */}
+                  <div className="gc-btn-wrap" ref={formRef}>
+                    <button className="gc-btn-cadastrar" onClick={handleOpenForm}>
+                      CADASTRAR META DE GASTOS
+                    </button>
+                    {showForm && (
+                      <div className="gc-popover gc-popover-right">
+                        <p className="gc-popover-label">
+                          <ArrowIcon />
+                          VALOR (POR MÊS)
+                        </p>
+                        <input
+                          type="text"
+                          className="gc-popover-input"
+                          placeholder="Ex.: R$ 280.000"
+                          value={metaInput}
+                          onChange={(e) => { setMetaInput(e.target.value); setSaveError(null); setSaveSuccess(false); }}
+                          onKeyDown={(e) => e.key === "Enter" && handleSave()}
+                          autoFocus
+                        />
+                        <button className="gc-popover-save" onClick={handleSave} disabled={saving}>
+                          {saving ? "SALVANDO..." : "SALVAR"}
+                        </button>
+                        {saveError   && <p className={`gc-popover-msg gc-popover-error`}>{saveError}</p>}
+                        {saveSuccess && <p className={`gc-popover-msg gc-popover-success`}>Meta salva com sucesso!</p>}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+
+                {/* TABELA */}
+                <div className="gc-table-wrap">
+                  <table className="gc-table">
+                    <thead>
+                      <tr>
+                        <th>PLACA</th>
+                        <th>MOTORISTA</th>
+                        <th>VALOR</th>
+                        <th>COMPROVANTE</th>
+                        <th>AÇÕES</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody>
+                      {loading ? (
+                        <tr><td colSpan={5} className="gc-feedback">Carregando gastos...</td></tr>
+                      ) : error ? (
+                        <tr><td colSpan={5} className="gc-feedback error">{error}</td></tr>
+                      ) : expenses.length === 0 ? (
+                        <tr><td colSpan={5} className="gc-feedback">Nenhum gasto encontrado.</td></tr>
+                      ) : (
+                        expenses.map((e) => (
+                          <tr key={e.id}>
+                            <td className="gc-td-bold">{e.vehicle_plate}</td>
+                            <td>{e.driver?.name ?? `Motorista #${e.driver_id}`}</td>
+                            <td className="gc-td-value">{formatBRL(e.value)}</td>
+                            <td>
+                              {e.proof_of_payment ? (
+                                <a href={getProofUrl(e.proof_of_payment) ?? "#"} target="_blank" rel="noopener noreferrer" className="gc-btn-download">
+                                  <DownloadIcon />
+                                  Baixar comprovante
+                                </a>
+                              ) : (
+                                <span className="gc-no-receipt">Sem comprovante</span>
+                              )}
+                            </td>
+                            <td className="gc-td-ops">
+                              <button className="gc-btn-excluir" onClick={() => handleDelete(e.id)}>EXCLUIR</button>
+                              <button className="gc-btn-editar" onClick={() => router.push(`/gastos/editar/${e.id}`)}>EDITAR</button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
 
+              </div>
+            </main>
           </div>
-        </main>
+
+        </div>
       </div>
     </>
   );
