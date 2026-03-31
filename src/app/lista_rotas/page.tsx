@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRoutes } from "@/hooks/useRoutes";
 
 type Route = {
   id: number;
@@ -99,18 +100,8 @@ const css = `
 
 export default function RotasCadastradasPage() {
   const router = useRouter();
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const { routes, loading, error, deleteRoute } = useRoutes();
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchRoutes()
-      .then((data) => setRoutes(data))
-      .catch(() => setError("Não foi possível carregar as rotas."))
-      .finally(() => setLoading(false));
-  }, []);
 
   const filtered = routes.filter(
     (r) =>
@@ -122,14 +113,17 @@ export default function RotasCadastradasPage() {
   const handleDelete = async (id: number) => {
     try {
       await deleteRoute(id);
-      setRoutes((prev) => prev.filter((r) => r.id !== id));
     } catch {
       alert("Erro ao excluir rota. Tente novamente.");
     }
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/rotas/editar/${id}`);
+    router.push(`/editRota?id=${id}`);
+  };
+
+  const handleViewMap = (id: number) => {
+    router.push(`/visualizar_rota?id=${id}`);
   };
 
   return (
@@ -204,6 +198,10 @@ export default function RotasCadastradasPage() {
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
+              </button>
+              <button className="rc-btn-cadastrar" onClick={() => router.push("/lista_escolas")}
+              >
+                GERENCIAR ESCOLAS
               </button>
             </div>
           </header>

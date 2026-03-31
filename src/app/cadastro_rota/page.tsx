@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRoutes } from "@/hooks/useRoutes";
+import { useSchools } from "@/hooks/useSchools";
 
 function BusIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
   return (
@@ -153,21 +155,47 @@ const css = `
 
 export default function CadastroRotaPage() {
   const router = useRouter();
+  const { createRoute, getAddressesByCep, loading } = useRoutes(false);
+  const { schools, fetchSchools } = useSchools(false);
   const [form, setForm] = useState({
-    nomeRota: "",
-    pontoPartida: "",
-    horarioSaida: "",
-    ultimaParada: "",
+    name: "",
+    start_point_cep: "",
+    start_point: "",
+    start_point_reference: "",
+    departure_time: "",
+    school_id: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    fetchSchools({ per_page: 100 });
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrorMessage("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearchCep = async () => {
+    setError(null);
+    setSearchingCep(true);
+    try {
+      const options = await getAddressesByCep(form.start_point_cep);
+      setStartOptions(options);
+      setSelectedStartIndex("");
+      if (!options.length) {
+        setError('Nao encontramos enderecos para esse CEP.');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Erro ao buscar enderecos por CEP');
+      setStartOptions([]);
+    } finally {
+      setSearchingCep(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(""); setSuccessMessage("");
     if (!form.nomeRota || !form.pontoPartida || !form.horarioSaida || !form.ultimaParada) {

@@ -56,6 +56,7 @@ const css = `
   .oc-table tbody td { padding: 14px 18px; font-size: 13px; color: #333; }
   .oc-td-bold { font-weight: 800; color: #1a1a1a; text-transform: uppercase; font-size: 12px; }
   .oc-td-driver { font-weight: 500; color: #444; }
+  .oc-driver-pending { display: inline-block; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
   .oc-td-ops { display: flex; align-items: center; gap: 14px; }
   .oc-btn-excluir { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 800; color: #c0392b; letter-spacing: 0.5px; text-transform: uppercase; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: opacity 0.15s; }
   .oc-btn-excluir:hover { opacity: 0.7; }

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth, useExpenses, useSpendingLimits } from "@/hooks";
+import { useAuth } from "@/hooks";
+import { expensesService } from "@/services/expenses.service";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -272,8 +273,6 @@ function getGreeting(name?: string): string {
 export default function DashboardPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { expenses, fetchExpenses } = useExpenses(false);
-  const { getLimitByPeriod } = useSpendingLimits(false);
   const [currentMonthLimit, setCurrentMonthLimit] = useState(0);
   const [activeNav, setActiveNav] = useState("dashboard");
 
@@ -308,7 +307,11 @@ export default function DashboardPage() {
         if (!limit) { setCurrentMonthLimit(0); return; }
         setCurrentMonthLimit(parseNumber((limit as any).limit_amount ?? (limit as any).limit_value));
       })
-      .catch(() => setCurrentMonthLimit(0));
+      .catch(() => {
+        setCurrentMonthExpenses(0);
+        setMinMonthExpenses(0);
+        setCurrentMonthLimit(0);
+      });
   }, [user?.id]);
 
   const { currentMonthExpenses, minMonthExpenses } = useMemo(() => {

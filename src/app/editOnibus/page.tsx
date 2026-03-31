@@ -177,7 +177,7 @@ export default function EditarOnibus() {
           plate:     vehicle.plate,
           capacity:  vehicle.capacity.toString(),
           mainRoute: vehicle.mainRoute,
-          driver_id: vehicle.driver_id.toString(),
+          driver_id: vehicle.driver_id ? vehicle.driver_id.toString() : "",
         });
 
         // Preenche a placa no campo com máscara após carregar da API
