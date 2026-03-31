@@ -4,84 +4,35 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, useExpenses, useSpendingLimits } from "@/hooks";
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from "recharts";
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
 const chartData = [
-  { mes: "Jan", valor: 210000 },
-  { mes: "Fev", valor: 195000 },
-  { mes: "Mar", valor: 220000 },
-  { mes: "Abr", valor: 205000 },
-  { mes: "Mai", valor: 195000 },
-  { mes: "Jun", valor: 230000 },
-  { mes: "Jul", valor: 215000 },
-  { mes: "Ago", valor: 240000 },
-  { mes: "Set", valor: 225000 },
-  { mes: "Out", valor: 210000 },
-  { mes: "Nov", valor: 220000 },
-  { mes: "Dez", valor: 130000 },
+  { mes: "Jan", valor: 210000 }, { mes: "Fev", valor: 195000 },
+  { mes: "Mar", valor: 220000 }, { mes: "Abr", valor: 205000 },
+  { mes: "Mai", valor: 195000 }, { mes: "Jun", valor: 230000 },
+  { mes: "Jul", valor: 215000 }, { mes: "Ago", valor: 240000 },
+  { mes: "Set", valor: 225000 }, { mes: "Out", valor: 210000 },
+  { mes: "Nov", valor: 220000 }, { mes: "Dez", valor: 130000 },
 ];
 
 const recentActivity = [
-  { type: "bus",    text: "Ônibus #07 adicionado à frota",          time: "há 12 min",  status: "new"     },
-  { type: "route",  text: "Rota Norte-Sul atualizada",              time: "há 45 min",  status: "update"  },
-  { type: "driver", text: "Motorista Carlos Silva cadastrado",      time: "há 2 horas", status: "new"     },
-  { type: "alert",  text: "Manutenção preventiva: Ônibus #03",      time: "há 3 horas", status: "warning" },
-  { type: "route",  text: "Rota Leste desativada temporariamente",  time: "há 5 horas", status: "warning" },
+  { type: "bus",    text: "Ônibus #07 adicionado à frota",         time: "há 12 min",  status: "new"     },
+  { type: "route",  text: "Rota Norte-Sul atualizada",             time: "há 45 min",  status: "update"  },
+  { type: "driver", text: "Motorista Carlos Silva cadastrado",     time: "há 2 horas", status: "new"     },
+  { type: "alert",  text: "Manutenção preventiva: Ônibus #03",     time: "há 3 horas", status: "warning" },
+  { type: "route",  text: "Rota Leste desativada temporariamente", time: "há 5 horas", status: "warning" },
 ];
 
-const occupancyData = [
-  { rota: "Norte",  ocupacao: 87 },
-  { rota: "Sul",    ocupacao: 64 },
-  { rota: "Leste",  ocupacao: 45 },
-  { rota: "Oeste",  ocupacao: 92 },
-  { rota: "Centro", ocupacao: 78 },
-];
-
-// ─── Ações rápidas ────────────────────────────────────────────────────────────
 const quickActions = [
-  {
-    id: "bus",
-    label: "Novo Ônibus",
-    description: "Cadastrar veículo na frota",
-    route: "/cadastro_onibus",
-    icon: "bus",
-    accent: "#01233F",
-  },
-  {
-    id: "route",
-    label: "Nova Rota",
-    description: "Criar rota de transporte",
-    route: "/cadastro_rota",
-    icon: "route",
-    accent: "#3b82f6",
-  },
-  {
-    id: "driver",
-    label: "Novo Motorista",
-    description: "Registrar motorista",
-    route: "/cadastro_motorista",
-    icon: "driver",
-    accent: "#8b5cf6",
-  },
-  {
-    id: "school",
-    label: "Nova Escola",
-    description: "Adicionar instituição",
-    route: "/cadastrar_escola",
-    icon: "school",
-    accent: "#22c55e",
-  },
+  { id: "bus",    label: "Novo Ônibus",    description: "Cadastrar veículo na frota", route: "/cadastro_onibus",    icon: "bus",    accent: "#f1bb13" },
+  { id: "route",  label: "Nova Rota",      description: "Criar rota de transporte",   route: "/cadastro_rota",      icon: "route",  accent: "#f1bb13" },
+  { id: "driver", label: "Novo Motorista", description: "Registrar motorista",        route: "/cadastro_motorista", icon: "driver", accent: "#f1bb13" },
+  { id: "school", label: "Nova Escola",    description: "Adicionar instituição",      route: "/cadastrar_escola",   icon: "school", accent: "#f1bb13" },
 ];
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
-function BusIcon({ size = 22, color = "currentColor" }) {
+function BusIcon({ size = 22, color = "currentColor" }: any) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="4" width="20" height="14" rx="2"/>
@@ -92,8 +43,7 @@ function BusIcon({ size = 22, color = "currentColor" }) {
     </svg>
   );
 }
-
-function RouteIcon({ size = 22, color = "currentColor" }) {
+function RouteIcon({ size = 22, color = "currentColor" }: any) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
@@ -101,8 +51,7 @@ function RouteIcon({ size = 22, color = "currentColor" }) {
     </svg>
   );
 }
-
-function DriverIcon({ size = 22, color = "currentColor" }) {
+function DriverIcon({ size = 22, color = "currentColor" }: any) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="7" r="4"/>
@@ -111,8 +60,7 @@ function DriverIcon({ size = 22, color = "currentColor" }) {
     </svg>
   );
 }
-
-function SchoolIcon({ size = 22, color = "currentColor" }) {
+function SchoolIcon({ size = 22, color = "currentColor" }: any) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -120,16 +68,13 @@ function SchoolIcon({ size = 22, color = "currentColor" }) {
     </svg>
   );
 }
-
-function PlusIcon({ size = 16, color = "currentColor" }) {
+function PlusIcon({ size = 16, color = "currentColor" }: any) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="5" x2="12" y2="19"/>
-      <line x1="5" y1="12" x2="19" y2="12"/>
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
     </svg>
   );
 }
-
 function BellIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -138,16 +83,13 @@ function BellIcon() {
     </svg>
   );
 }
-
 function UserIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-      <circle cx="12" cy="7" r="4"/>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
     </svg>
   );
 }
-
 function DashIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -156,7 +98,6 @@ function DashIcon() {
     </svg>
   );
 }
-
 function FinanceIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -164,11 +105,19 @@ function FinanceIcon() {
     </svg>
   );
 }
+function LogoutIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+  );
+}
 
 const ICON_MAP: Record<string, (p: any) => JSX.Element> = {
   bus: BusIcon, route: RouteIcon, driver: DriverIcon, school: SchoolIcon,
 };
-
 const STATUS_COLORS: Record<string, string> = {
   new: "#22c55e", update: "#3b82f6", warning: "#f59e0b",
 };
@@ -198,172 +147,64 @@ const css = `
   }
 
   body { font-family: 'DM Sans', sans-serif; }
-
   .db-layout { display: flex; min-height: 100vh; background: var(--bg); }
 
-  /* ── SIDEBAR ── */
-  .db-sidebar {
-    width: var(--sidebar-w);
-    background: var(--navy);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    z-index: 100;
-    padding: 0;
-  }
-  .db-sidebar-logo {
-    padding: 24px 24px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .db-logo-icon {
-    width: 34px; height: 34px;
-    background: var(--yellow);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
+  .db-sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+  .db-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .db-logo-icon { width: 34px; height: 34px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .db-logo-text { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
   .db-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; margin-top: 1px; }
   .db-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
   .db-nav-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 12px 0 6px; }
-  .db-nav-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; border-radius: 8px;
-    font-size: 13.5px; font-weight: 600;
-    color: rgba(255,255,255,0.55);
-    cursor: pointer; border: none; background: none;
-    width: 100%; text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
-  }
+  .db-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
   .db-nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
   .db-nav-item.active { background: var(--yellow); color: var(--navy); }
   .db-nav-item.active svg { stroke: var(--navy); }
-  .db-sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
-  .db-user-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; border-radius: 8px;
-    cursor: pointer; transition: background 0.15s;
-    border: none; background: none; width: 100%; text-align: left;
-  }
+
+  /* ── Footer sidebar ── */
+  .db-sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px; }
+  .db-user-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
   .db-user-row:hover { background: rgba(255,255,255,0.07); }
   .db-avatar { width: 32px; height: 32px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--navy); flex-shrink: 0; }
   .db-user-name { font-size: 13px; font-weight: 600; color: #fff; }
   .db-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* ── MAIN ── */
+  /* ── Botão logout ── */
+  .db-logout-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; border-radius: 8px; border: none; background: none; color: rgba(255,255,255,0.35); font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; }
+  .db-logout-btn:hover { background: rgba(239,68,68,0.15); color: #ef4444; }
+
   .db-content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* ── TOPBAR ── */
-  .db-topbar {
-    background: #fff; border-bottom: 1px solid var(--border);
-    padding: 0 32px; height: 60px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 50;
-  }
+  .db-topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .db-topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
   .db-topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .db-topbar-right { display: flex; align-items: center; gap: 12px; }
-  .db-icon-btn {
-    width: 38px; height: 38px; border-radius: 8px;
-    border: 1px solid var(--border); background: #fff;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--text); transition: all 0.15s; position: relative;
-  }
+  .db-icon-btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); transition: all 0.15s; position: relative; }
   .db-icon-btn:hover { background: var(--bg); }
   .db-notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 1.5px solid #fff; }
 
-  /* ── PAGE BODY ── */
   .db-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 28px; }
 
-  /* ── QUICK ACTIONS SECTION ── */
   .db-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .db-section-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
   .db-quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-
-  .db-quick-card {
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    position: relative;
-    overflow: hidden;
-  }
-  .db-quick-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.18s;
-    border-radius: 12px;
-  }
-  .db-quick-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.10);
-    border-color: transparent;
-  }
-  .db-quick-card:hover::after { opacity: 1; }
+  .db-quick-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+  .db-quick-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(241,187,19,0.18); border-color: var(--yellow); }
   .db-quick-card:active { transform: translateY(-1px); }
-
   .db-quick-top { display: flex; align-items: center; justify-content: space-between; }
-  .db-quick-icon {
-    width: 44px; height: 44px;
-    border-radius: 11px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .db-quick-plus {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.18s, transform 0.18s;
-    transform: scale(0.8);
-  }
-  .db-quick-card:hover .db-quick-plus {
-    opacity: 1;
-    transform: scale(1);
-  }
-
+  .db-quick-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(241,187,19,0.12); }
+  .db-quick-plus { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity 0.18s, transform 0.18s; transform: scale(0.8); background: rgba(241,187,19,0.15); }
+  .db-quick-card:hover .db-quick-plus { opacity: 1; transform: scale(1); }
   .db-quick-label { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
   .db-quick-desc { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
 
-  /* ── MID ROW ── */
-  .db-mid-row { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
-
-  /* ── CHART CARD ── */
   .db-chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
   .db-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
   .db-card-title { font-size: 14px; font-weight: 700; color: var(--text); }
   .db-card-badge { font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg); padding: 4px 10px; border-radius: 20px; }
 
-  /* ── OCCUPANCY ── */
-  .db-occup-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
-  .db-occup-list { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
-  .db-occup-row { display: flex; flex-direction: column; gap: 6px; }
-  .db-occup-meta { display: flex; justify-content: space-between; align-items: center; }
-  .db-occup-rota { font-size: 12px; font-weight: 600; color: var(--text); }
-  .db-occup-pct { font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--navy); }
-  .db-occup-bar { height: 6px; background: #eef0f3; border-radius: 99px; overflow: hidden; }
-  .db-occup-fill { height: 100%; border-radius: 99px; background: var(--navy); transition: width 0.6s ease; }
-  .db-occup-fill.high { background: var(--red); }
-  .db-occup-fill.mid  { background: var(--yellow); }
-
-  /* ── BOTTOM ROW ── */
   .db-bottom-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-
-  /* ── METRIC CARDS ── */
   .db-metric-new { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
   .db-metric-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .db-metric-header { display: flex; align-items: center; gap: 8px; }
@@ -371,7 +212,6 @@ const css = `
   .db-metric-val { font-size: 28px; font-weight: 800; color: var(--text); font-family: 'DM Mono', monospace; letter-spacing: -1px; margin-top: 4px; }
   .db-metric-desc { font-size: 11px; color: var(--muted); }
 
-  /* ── ACTIVITY FEED ── */
   .db-activity-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
   .db-activity-list { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
   .db-activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -382,14 +222,7 @@ const css = `
   .db-act-time { font-size: 11px; color: var(--muted); }
   .db-act-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* ── BTN ── */
-  .db-btn-primary {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--yellow); border: none; border-radius: 8px;
-    padding: 10px 18px; font-size: 13px; font-weight: 700;
-    color: var(--navy); cursor: pointer; transition: background 0.15s;
-    font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px;
-  }
+  .db-btn-primary { display: inline-flex; align-items: center; gap: 6px; background: var(--yellow); border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; transition: background 0.15s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; }
   .db-btn-primary:hover { background: var(--yellow-dark); }
 
   @media (max-width: 1200px) {
@@ -397,7 +230,6 @@ const css = `
     .db-bottom-row { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 900px) {
-    .db-mid-row { grid-template-columns: 1fr; }
     .db-bottom-row { grid-template-columns: 1fr; }
     .db-quick-grid { grid-template-columns: repeat(2, 1fr); }
     :root { --sidebar-w: 0px; }
@@ -405,7 +237,6 @@ const css = `
   }
 `;
 
-// ─── Tooltip do gráfico ───────────────────────────────────────────────────────
 function CustomTooltip({ active, payload, label }: any) {
   if (active && payload && payload.length) {
     return (
@@ -420,35 +251,21 @@ function CustomTooltip({ active, payload, label }: any) {
 
 function parseNumber(value: unknown): number {
   if (typeof value === "number") return value;
-  if (typeof value === "string") {
-    const parsed = Number(value);
-    return Number.isNaN(parsed) ? 0 : parsed;
-  }
+  if (typeof value === "string") { const p = Number(value); return Number.isNaN(p) ? 0 : p; }
   return 0;
 }
 
 function formatMetricValue(value: number): string {
-  return value.toLocaleString("pt-BR", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
+  return value.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
 function getCurrentPeriod() {
   const now = new Date();
-  return {
-    month: String(now.getMonth() + 1).padStart(2, "0"),
-    year: String(now.getFullYear()),
-  };
+  return { month: String(now.getMonth() + 1).padStart(2, "0"), year: String(now.getFullYear()) };
 }
 
 function getGreeting(name?: string): string {
-  const hour = new Date().getHours();
-  let greeting = "";
-  if (hour >= 5 && hour < 12) greeting = "Bom dia";
-  else if (hour >= 12 && hour < 18) greeting = "Boa tarde";
-  else greeting = "Boa noite";
-  return name ? `${greeting}, ${name.split(" ")[0]}!` : `${greeting}!`;
+  return name ? `Bem-vindo, ${name.split(" ")[0]}!` : "Bem-vindo!";
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -460,23 +277,35 @@ export default function DashboardPage() {
   const [currentMonthLimit, setCurrentMonthLimit] = useState(0);
   const [activeNav, setActiveNav] = useState("dashboard");
 
-  useEffect(() => {
-    fetchExpenses({ per_page: 1000 });
-  }, []);
-
-  useEffect(() => {
-    if (!user?.id) {
-      setCurrentMonthLimit(0);
-      return;
+  // ── Logout ────────────────────────────────────────────────────────────────
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/logout`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      });
+    } catch (err) {
+      console.error("Erro ao deslogar:", err);
+    } finally {
+      localStorage.removeItem("token");
+      router.push("/login");
     }
+  };
+  // ─────────────────────────────────────────────────────────────────────────
 
+  useEffect(() => { fetchExpenses({ per_page: 1000 }); }, []);
+
+  useEffect(() => {
+    if (!user?.id) { setCurrentMonthLimit(0); return; }
     const { month, year } = getCurrentPeriod();
     getLimitByPeriod(user.id, year, month)
       .then((limit) => {
-        if (!limit) {
-          setCurrentMonthLimit(0);
-          return;
-        }
+        if (!limit) { setCurrentMonthLimit(0); return; }
         setCurrentMonthLimit(parseNumber((limit as any).limit_amount ?? (limit as any).limit_value));
       })
       .catch(() => setCurrentMonthLimit(0));
@@ -485,24 +314,16 @@ export default function DashboardPage() {
   const { currentMonthExpenses, minMonthExpenses } = useMemo(() => {
     const { month, year } = getCurrentPeriod();
     const monthlyTotals = new Map<string, number>();
-
     for (const expense of expenses ?? []) {
       const expenseDate = expense?.created_at ? new Date(expense.created_at) : null;
       if (!expenseDate || Number.isNaN(expenseDate.getTime())) continue;
-
-      const expenseMonth = String(expenseDate.getMonth() + 1).padStart(2, "0");
-      const expenseYear = String(expenseDate.getFullYear());
-      const key = `${expenseYear}-${expenseMonth}`;
-
+      const key = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, "0")}`;
       monthlyTotals.set(key, (monthlyTotals.get(key) ?? 0) + parseNumber((expense as any).value));
     }
-
     const currentKey = `${year}-${month}`;
-    const currentMonthTotal = monthlyTotals.get(currentKey) ?? 0;
     const totals = Array.from(monthlyTotals.values());
-
     return {
-      currentMonthExpenses: currentMonthTotal,
+      currentMonthExpenses: monthlyTotals.get(currentKey) ?? 0,
       minMonthExpenses: totals.length > 0 ? Math.min(...totals) : 0,
     };
   }, [expenses]);
@@ -521,9 +342,7 @@ export default function DashboardPage() {
         {/* ── SIDEBAR ── */}
         <aside className="db-sidebar">
           <div className="db-sidebar-logo">
-            <div className="db-logo-icon">
-              <BusIcon size={18} color="#01233F" />
-            </div>
+            <div className="db-logo-icon"><BusIcon size={18} color="#01233F" /></div>
             <div>
               <div className="db-logo-text">Omnibus</div>
               <div className="db-logo-sub">Gestão Escolar</div>
@@ -532,49 +351,38 @@ export default function DashboardPage() {
 
           <nav className="db-nav">
             <span className="db-nav-label">Principal</span>
-            <button
-              className={`db-nav-item ${activeNav === "dashboard" ? "active" : ""}`}
-              onClick={() => { setActiveNav("dashboard"); router.push("/dashboard"); }}
-            >
+            <button className={`db-nav-item ${activeNav === "dashboard" ? "active" : ""}`} onClick={() => { setActiveNav("dashboard"); router.push("/dashboard"); }}>
               <DashIcon /> Dashboard
             </button>
-            <button
-              className={`db-nav-item ${activeNav === "financeiro" ? "active" : ""}`}
-              onClick={() => { setActiveNav("financeiro"); router.push("/visualizar_gastos"); }}
-            >
+            <button className={`db-nav-item ${activeNav === "financeiro" ? "active" : ""}`} onClick={() => { setActiveNav("financeiro"); router.push("/visualizar_gastos"); }}>
               <FinanceIcon /> Financeiro
             </button>
-
             <span className="db-nav-label">Cadastros</span>
-            <button className="db-nav-item" onClick={() => router.push("/lista_onibus")}>
-              <BusIcon size={18} /> Ônibus
-            </button>
-            <button className="db-nav-item" onClick={() => router.push("/lista_rotas")}>
-              <RouteIcon size={18} /> Rotas
-            </button>
-            <button className="db-nav-item" onClick={() => router.push("/lista_motoristas")}>
-              <DriverIcon size={18} /> Motoristas
-            </button>
-            <button className="db-nav-item" onClick={() => router.push("/lista_escolas")}>
-              <SchoolIcon size={18} /> Escolas
-            </button>
+            <button className="db-nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={18} /> Ônibus</button>
+            <button className="db-nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={18} /> Rotas</button>
+            <button className="db-nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIcon size={18} /> Motoristas</button>
+            <button className="db-nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIcon size={18} /> Escolas</button>
           </nav>
 
+          {/* ── Footer: perfil + botão sair ── */}
           <div className="db-sidebar-footer">
-            <button className="db-user-row" onClick={() => router.push("/infor_instituicao")}>
+            <button className="db-user-row" onClick={() => router.push("/perfil")}>
               <div className="db-avatar">A</div>
               <div>
                 <div className="db-user-name">Admin</div>
                 <div className="db-user-role">Gestor</div>
               </div>
             </button>
+
+            <button className="db-logout-btn" onClick={handleLogout}>
+              <LogoutIcon />
+              Sair
+            </button>
           </div>
         </aside>
 
         {/* ── CONTENT ── */}
         <div className="db-content">
-
-          {/* TOPBAR */}
           <header className="db-topbar">
             <div>
               <div className="db-topbar-title">{getGreeting((user as any)?.name)}</div>
@@ -583,17 +391,15 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="db-topbar-right">
-              <button className="db-icon-btn" onClick={() => router.push("/notifications")} title="Notificações">
-                <BellIcon />
-                <span className="db-notif-dot" />
+              <button className="db-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
+                <BellIcon /><span className="db-notif-dot" />
               </button>
-              <button className="db-icon-btn" onClick={() => router.push("/infor_instituicao")} title="Perfil">
+              <button className="db-icon-btn" onClick={() => router.push("/perfil")} title="Perfil">
                 <UserIcon />
               </button>
             </div>
           </header>
 
-          {/* BODY */}
           <div className="db-body">
 
             {/* AÇÕES RÁPIDAS */}
@@ -605,25 +411,10 @@ export default function DashboardPage() {
                 {quickActions.map((action) => {
                   const Icon = ICON_MAP[action.icon];
                   return (
-                    <div
-                      key={action.id}
-                      className="db-quick-card"
-                      onClick={() => router.push(action.route)}
-                      style={{ ["--accent" as any]: action.accent }}
-                    >
+                    <div key={action.id} className="db-quick-card" onClick={() => router.push(action.route)}>
                       <div className="db-quick-top">
-                        <div
-                          className="db-quick-icon"
-                          style={{ background: action.accent + "15" }}
-                        >
-                          <Icon size={22} color={action.accent} />
-                        </div>
-                        <div
-                          className="db-quick-plus"
-                          style={{ background: action.accent + "18" }}
-                        >
-                          <PlusIcon size={14} color={action.accent} />
-                        </div>
+                        <div className="db-quick-icon"><Icon size={22} color="#f1bb13" /></div>
+                        <div className="db-quick-plus"><PlusIcon size={14} color="#f1bb13" /></div>
                       </div>
                       <div>
                         <div className="db-quick-label">{action.label}</div>
@@ -635,60 +426,33 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* MID ROW: Chart + Occupancy */}
-            <div className="db-mid-row">
-
-              {/* Chart */}
-              <div className="db-chart-card">
-                <div className="db-card-header">
-                  <span className="db-card-title">Gráfico de Gastos</span>
-                  <span className="db-card-badge">2025</span>
-                </div>
-                <ResponsiveContainer width="100%" height={220}>
-                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%"  stopColor="#01233F" stopOpacity={0.15} />
-                        <stop offset="95%" stopColor="#01233F" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="mes" tick={{ fontSize: 11, fill: "#9ca3af", fontFamily: "DM Sans" }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area type="monotone" dataKey="valor" stroke="#01233F" strokeWidth={2.5}
-                      fill="url(#colorValor)"
-                      dot={{ r: 3, fill: "#01233F", strokeWidth: 0 }}
-                      activeDot={{ r: 5, fill: "#f1bb13", strokeWidth: 2, stroke: "#fff" }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+            {/* GRÁFICO — largura total */}
+            <div className="db-chart-card">
+              <div className="db-card-header">
+                <span className="db-card-title">Gráfico de Gastos</span>
+                <span className="db-card-badge">2025</span>
               </div>
-
-              {/* Occupancy */}
-              <div className="db-occup-card">
-                <div className="db-card-header">
-                  <span className="db-card-title">Ocupação por Rota</span>
-                </div>
-                <div className="db-occup-list">
-                  {occupancyData.map((o) => (
-                    <div key={o.rota} className="db-occup-row">
-                      <div className="db-occup-meta">
-                        <span className="db-occup-rota">Rota {o.rota}</span>
-                        <span className="db-occup-pct">{o.ocupacao}%</span>
-                      </div>
-                      <div className="db-occup-bar">
-                        <div
-                          className={`db-occup-fill ${o.ocupacao >= 90 ? "high" : o.ocupacao >= 70 ? "mid" : ""}`}
-                          style={{ width: `${o.ocupacao}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%"  stopColor="#01233F" stopOpacity={0.15} />
+                      <stop offset="95%" stopColor="#01233F" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="mes" tick={{ fontSize: 11, fill: "#9ca3af", fontFamily: "DM Sans" }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="valor" stroke="#01233F" strokeWidth={2.5}
+                    fill="url(#colorValor)"
+                    dot={{ r: 3, fill: "#01233F", strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: "#f1bb13", strokeWidth: 2, stroke: "#fff" }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
 
-            {/* BOTTOM ROW: Métricas financeiras */}
+            {/* MÉTRICAS FINANCEIRAS */}
             <div className="db-bottom-row">
               {dynamicFinancialMetrics.map((m) => (
                 <div key={m.label} className="db-metric-new">
@@ -718,13 +482,7 @@ export default function DashboardPage() {
                       <div className="db-act-text">{a.text}</div>
                       <div className="db-act-meta">
                         <span className="db-act-time">{a.time}</span>
-                        <span
-                          className="db-act-badge"
-                          style={{
-                            background: STATUS_COLORS[a.status] + "20",
-                            color: STATUS_COLORS[a.status],
-                          }}
-                        >
+                        <span className="db-act-badge" style={{ background: STATUS_COLORS[a.status] + "20", color: STATUS_COLORS[a.status] }}>
                           {STATUS_LABELS[a.status]}
                         </span>
                       </div>

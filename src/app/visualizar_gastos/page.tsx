@@ -72,7 +72,7 @@ function UserCircleIcon() {
   );
 }
 
-// ─── Icons tabela (originais, sem alteração) ──────────────────────────────────
+// ─── Icons tabela ─────────────────────────────────────────────────────────────
 function DownloadIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -112,10 +112,8 @@ const css = `
 
   body { font-family: 'DM Sans', sans-serif; }
 
-  /* ── LAYOUT ── */
   .gc-layout { display: flex; min-height: 100vh; background: var(--bg); }
 
-  /* ── SIDEBAR ── */
   .gc-sidebar {
     width: var(--sidebar-w);
     background: var(--navy);
@@ -158,10 +156,8 @@ const css = `
   .gc-user-name { font-size: 13px; font-weight: 600; color: #fff; }
   .gc-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* ── CONTENT WRAP ── */
   .gc-content-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* ── TOPBAR ── */
   .gc-topbar {
     background: #fff; border-bottom: 1px solid var(--border);
     padding: 0 32px; height: 60px;
@@ -179,10 +175,6 @@ const css = `
   }
   .gc-icon-btn:hover { background: var(--bg); }
   .gc-notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 1.5px solid #fff; }
-
-  /* ════════════════════════════════════════════
-     TUDO ABAIXO É ORIGINAL — NÃO MODIFICADO
-     ════════════════════════════════════════════ */
 
   .gc-page { min-height: 100vh; background: #f9f9f9; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .gc-main { padding: 32px 40px; }
@@ -295,13 +287,11 @@ export default function GastosCadastradosPage() {
   const [limitId, setLimitId] = useState<number | null>(null);
   const [activeNav, setActiveNav] = useState("financeiro");
 
-  // popover VER META
   const [showMeta, setShowMeta]       = useState(false);
   const [meta, setMeta]               = useState<number | null>(null);
   const [metaLoading, setMetaLoading] = useState(false);
   const [metaError, setMetaError]     = useState<string | null>(null);
 
-  // popover CADASTRAR META
   const [showForm, setShowForm]         = useState(false);
   const [metaInput, setMetaInput]       = useState("");
   const [saving, setSaving]             = useState(false);
@@ -344,7 +334,6 @@ export default function GastosCadastradosPage() {
             setLimitId(limit.id);
             return;
           }
-
           setMeta(null);
           setLimitId(null);
           setMetaError("Nenhuma meta cadastrada para este mês.");
@@ -377,12 +366,10 @@ export default function GastosCadastradosPage() {
           user_id: user.id,
           limit_amount: parsed,
         });
-
         if (created?.data?.id) {
           setLimitId(created.data.id);
         }
       }
-
       setSaveSuccess(true);
       setMeta(parsed);
       setMetaInput("");
@@ -392,7 +379,6 @@ export default function GastosCadastradosPage() {
       const firstValidationMessage = validationErrors
         ? Object.values(validationErrors)[0]?.[0]
         : null;
-
       setSaveError(firstValidationMessage || apiMessage || "Erro ao salvar. Tente novamente.");
     } finally {
       setSaving(false);
@@ -455,7 +441,7 @@ export default function GastosCadastradosPage() {
           </nav>
 
           <div className="gc-sidebar-footer">
-            <button className="gc-user-row" onClick={() => router.push("/infor_instituicao")}>
+            <button className="gc-user-row" onClick={() => router.push("/perfil")}>
               <div className="gc-avatar">A</div>
               <div>
                 <div className="gc-user-name">Admin</div>
@@ -468,7 +454,7 @@ export default function GastosCadastradosPage() {
         {/* ── CONTENT ── */}
         <div className="gc-content-wrap">
 
-          {/* ── TOPBAR ── */}
+          {/* ── TOPBAR — rotas corrigidas ✅ ── */}
           <header className="gc-topbar">
             <div>
               <div className="gc-topbar-title">Financeiro</div>
@@ -477,22 +463,23 @@ export default function GastosCadastradosPage() {
               </div>
             </div>
             <div className="gc-topbar-right">
-              <button className="gc-icon-btn" onClick={() => router.push("/notifications")} title="Notificações">
+              {/* ✅ era /notifications → corrigido para /notificacoes */}
+              <button className="gc-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
                 <BellIcon />
                 <span className="gc-notif-dot" />
               </button>
-              <button className="gc-icon-btn" onClick={() => router.push("/infor_instituicao")} title="Perfil">
+              {/* ✅ era /infor_instituicao → corrigido para /perfil */}
+              <button className="gc-icon-btn" onClick={() => router.push("/perfil")} title="Perfil">
                 <UserCircleIcon />
               </button>
             </div>
           </header>
 
-          {/* ── CONTEÚDO ORIGINAL INTACTO ── */}
+          {/* ── CONTEÚDO ── */}
           <div className="gc-page">
             <main className="gc-main">
               <div className="gc-content">
 
-                {/* TOP BAR */}
                 <div className="gc-top-bar">
 
                   {/* VER META */}
@@ -506,7 +493,7 @@ export default function GastosCadastradosPage() {
                         {metaLoading ? (
                           <p className="gc-meta-loading">Carregando...</p>
                         ) : metaError ? (
-                          <p className={`gc-popover-msg gc-popover-error`}>{metaError}</p>
+                          <p className="gc-popover-msg gc-popover-error">{metaError}</p>
                         ) : meta !== null ? (
                           <div className="gc-meta-display">
                             <p className="gc-meta-display-value">{formatBRL(meta)}</p>
@@ -542,8 +529,8 @@ export default function GastosCadastradosPage() {
                         <button className="gc-popover-save" onClick={handleSave} disabled={saving}>
                           {saving ? "SALVANDO..." : "SALVAR"}
                         </button>
-                        {saveError   && <p className={`gc-popover-msg gc-popover-error`}>{saveError}</p>}
-                        {saveSuccess && <p className={`gc-popover-msg gc-popover-success`}>Meta salva com sucesso!</p>}
+                        {saveError   && <p className="gc-popover-msg gc-popover-error">{saveError}</p>}
+                        {saveSuccess && <p className="gc-popover-msg gc-popover-success">Meta salva com sucesso!</p>}
                       </div>
                     )}
                   </div>
