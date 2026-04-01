@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -161,7 +161,7 @@ export default function EditarMotoristaPage() {
       if (driver) {
         setForm({ nome: driver.name, email: driver.email, telefone: driver.phone_number, numeroCnh: driver.license_number });
       } else {
-        setErrorMessage('Motorista não encontrado');
+        setErrorMessage('Motorista n├úo encontrado');
       }
       setLoadingData(false);
     };
@@ -198,14 +198,14 @@ export default function EditarMotoristaPage() {
         <aside className="sidebar">
           <div className="sidebar-logo">
             <div className="logo-icon"><BusIcon size={18} color="#01233F" /></div>
-            <div><div className="logo-text">Omnibus</div><div className="logo-sub">Gestão Escolar</div></div>
+            <div><div className="logo-text">Omnibus</div><div className="logo-sub">Gest├úo Escolar</div></div>
           </div>
           <nav className="sidebar-nav">
             <span className="nav-label">Principal</span>
             <button className="nav-item" onClick={() => router.push("/dashboard")}><DashIcon /> Dashboard</button>
             <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}><FinanceIcon /> Financeiro</button>
             <span className="nav-label">Cadastros</span>
-            <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> Ônibus</button>
+            <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> ├önibus</button>
             <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={17} /> Rotas</button>
             <button className="nav-item active"><DriverIcon size={17} /> Motoristas</button>
             <button className="nav-item" onClick={() => router.push("/lista_alunos")}><StudentIcon size={17} /> Alunos</button>
@@ -239,7 +239,7 @@ export default function EditarMotoristaPage() {
               <form onSubmit={handleSubmit}>
                 <div className="field full">
                   <label className="label">Nome</label>
-                  <input type="text" name="nome" className="input" placeholder="Ex: José Bonifácio Sombra" value={form.nome} onChange={handleChange} />
+                  <input type="text" name="nome" className="input" placeholder="Ex: Jos├® Bonif├ício Sombra" value={form.nome} onChange={handleChange} />
                 </div>
                 <div className="row">
                   <div className="field">
@@ -252,10 +252,10 @@ export default function EditarMotoristaPage() {
                   </div>
                 </div>
                 <div className="field full">
-                  <label className="label">Número da CNH</label>
+                  <label className="label">N├║mero da CNH</label>
                   <input type="text" name="numeroCnh" className="input" placeholder="Ex: 07234567889" value={form.numeroCnh} onChange={handleChange} />
                 </div>
-                <button type="submit" className="btn" disabled={loading}>{loading ? "Salvando..." : "Salvar Alterações"}</button>
+                <button type="submit" className="btn" disabled={loading}>{loading ? "Salvando..." : "Salvar Altera├º├Áes"}</button>
               </form>
             </div>
           </div>

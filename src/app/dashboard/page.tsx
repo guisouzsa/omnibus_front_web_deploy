@@ -28,7 +28,7 @@ const quickActions = [
   { id: "bus",    label: "Novo Ônibus",    description: "Cadastrar veículo na frota", route: "/cadastro_onibus",    icon: "bus"    },
   { id: "route",  label: "Nova Rota",      description: "Criar rota de transporte",   route: "/cadastro_rota",      icon: "route"  },
   { id: "driver", label: "Novo Motorista", description: "Registrar motorista",        route: "/cadastro_motorista", icon: "driver" },
-  { id: "school", label: "Nova Escola",    description: "Adicionar instituição",      route: "/cadastrar_escola",   icon: "school" },
+  { id: "school", label: "Nova Escola",    description: "Adicionar instituição",      route: "/cadastro_escolas",   icon: "school" },
 ];
 
 function BusIcon({ size = 22, color = "currentColor" }: any) {

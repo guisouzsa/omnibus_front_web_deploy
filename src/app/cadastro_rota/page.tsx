@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useRoutes } from "@/hooks/useRoutes";
 import { useSchools } from "@/hooks/useSchools";
 
+// ─── Icons ────────────────────────────────────────────────────────────────────
 function BusIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -134,6 +135,12 @@ const css = `
   .input { width: 100%; height: 52px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 16px; font-size: 14px; font-weight: 400; color: var(--navy); background: #f7f8fa; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
   .input::placeholder { color: #b0bac6; font-size: 13px; font-weight: 400; }
   .input:focus { border-color: var(--yellow); background: #fff; box-shadow: 0 0 0 3px rgba(241,187,19,0.12); }
+  select.input { padding-right: 30px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2301233F' d='M6 9L1 4h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; appearance: none; cursor: pointer; }
+
+  .cep-row { display: grid; grid-template-columns: 1fr 120px; gap: 10px; }
+  .btn-cep { height: 52px; border: none; border-radius: 8px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.15s; }
+  .btn-cep:hover { opacity: 0.85; }
+  .btn-cep:disabled { opacity: 0.4; cursor: not-allowed; }
 
   .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
   .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -150,6 +157,7 @@ const css = `
     .body { padding: 32px 20px; }
     .card { padding: 32px 24px; }
     .row { grid-template-columns: 1fr; }
+    .cep-row { grid-template-columns: 1fr 100px; }
   }
 `;
 
@@ -157,6 +165,7 @@ export default function CadastroRotaPage() {
   const router = useRouter();
   const { createRoute, getAddressesByCep, loading } = useRoutes(false);
   const { schools, fetchSchools } = useSchools(false);
+
   const [form, setForm] = useState({
     name: "",
     start_point_cep: "",
@@ -165,8 +174,11 @@ export default function CadastroRotaPage() {
     departure_time: "",
     school_id: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [startOptions, setStartOptions] = useState<Array<{ address: string; lat: number; lng: number }>>([]);
+  const [selectedStartIndex, setSelectedStartIndex] = useState<string>("");
+  const [searchingCep, setSearchingCep] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     fetchSchools({ per_page: 100 });
@@ -174,21 +186,20 @@ export default function CadastroRotaPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setErrorMessage("");
+    setSubmitError(null);
+    setSubmitSuccess(false);
   };
 
   const handleSearchCep = async () => {
-    setError(null);
+    setSubmitError(null);
     setSearchingCep(true);
     try {
       const options = await getAddressesByCep(form.start_point_cep);
       setStartOptions(options);
       setSelectedStartIndex("");
-      if (!options.length) {
-        setError('Nao encontramos enderecos para esse CEP.');
-      }
+      if (!options.length) setSubmitError("Não encontramos endereços para esse CEP.");
     } catch (err: any) {
-      setError(err?.message || 'Erro ao buscar enderecos por CEP');
+      setSubmitError(err?.message || "Erro ao buscar endereços por CEP");
       setStartOptions([]);
     } finally {
       setSearchingCep(false);
@@ -197,13 +208,36 @@ export default function CadastroRotaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(""); setSuccessMessage("");
-    if (!form.nomeRota || !form.pontoPartida || !form.horarioSaida || !form.ultimaParada) {
-      setErrorMessage("Preencha todos os campos");
-      return;
+    setSubmitError(null);
+    setSubmitSuccess(false);
+    try {
+      const selectedStart = selectedStartIndex !== "" ? startOptions[Number(selectedStartIndex)] : null;
+      const selectedSchool = schools.find((school) => school.id === Number(form.school_id));
+      if (!selectedSchool) {
+        setSubmitError("Selecione a escola de parada final.");
+        return;
+      }
+      await createRoute({
+        name: form.name,
+        school_id: selectedSchool.id,
+        start_point_cep: form.start_point_cep,
+        start_point: selectedStart?.address || form.start_point,
+        start_point_reference: form.start_point_reference,
+        start_point_lat: selectedStart?.lat,
+        start_point_lng: selectedStart?.lng,
+        end_point: selectedSchool.address,
+        end_point_lat: selectedSchool.lat || undefined,
+        end_point_lng: selectedSchool.lng || undefined,
+        departure_time: form.departure_time,
+      });
+      setSubmitSuccess(true);
+      setForm({ name: "", start_point_cep: "", start_point: "", start_point_reference: "", departure_time: "", school_id: "" });
+      setStartOptions([]);
+      setSelectedStartIndex("");
+      setTimeout(() => router.push("/lista_rotas"), 2000);
+    } catch (err: any) {
+      setSubmitError(err?.message || "Erro ao cadastrar rota");
     }
-    setSuccessMessage("Rota cadastrada com sucesso!");
-    setForm({ nomeRota: "", pontoPartida: "", horarioSaida: "", ultimaParada: "" });
   };
 
   return (
@@ -223,7 +257,7 @@ export default function CadastroRotaPage() {
             <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> Ônibus</button>
             <button className="nav-item active"><RouteIcon size={17} /> Rotas</button>
             <button className="nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIcon size={17} /> Motoristas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_alunos")}><StudentIcon size={17} /> Alunos</button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><StudentIcon size={17} /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/infor_instituicao")}>
@@ -240,38 +274,78 @@ export default function CadastroRotaPage() {
               <div className="topbar-sub">Adicione uma nova rota ao sistema</div>
             </div>
             <div className="topbar-right">
-              <button className="icon-btn" onClick={() => router.push("/notifications")}><BellIcon /><span className="notif-dot" /></button>
+              <button className="icon-btn" onClick={() => router.push("/notificacoes")}><BellIcon /><span className="notif-dot" /></button>
               <button className="icon-btn" onClick={() => router.push("/infor_instituicao")}><UserIcon /></button>
             </div>
           </header>
 
           <div className="body">
-            <h2 className="page-title">Cadastre uma nova rota</h2>
+            <h2 className="page-title">Cadastrar Nova Rota</h2>
             <div className="card">
-              {errorMessage   && <div className="alert alert-error">{errorMessage}</div>}
-              {successMessage && <div className="alert alert-success">{successMessage}</div>}
+              {submitSuccess && <div className="alert alert-success">✓ Rota cadastrada com sucesso! Redirecionando...</div>}
+              {submitError   && <div className="alert alert-error">{submitError}</div>}
+
               <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="field">
                     <label className="label">Nome da Rota</label>
-                    <input type="text" name="nomeRota" className="input" placeholder="Ex: Ingá" value={form.nomeRota} onChange={handleChange} />
+                    <input type="text" name="name" className="input" placeholder="Ex: Ingá" value={form.name} onChange={handleChange} required />
                   </div>
                   <div className="field">
-                    <label className="label">Ponto de Partida</label>
-                    <input type="text" name="pontoPartida" className="input" placeholder="Ex: Centro" value={form.pontoPartida} onChange={handleChange} />
+                    <label className="label">CEP da Região de Saída</label>
+                    <div className="cep-row">
+                      <input type="text" name="start_point_cep" className="input" placeholder="Ex: 58000000" value={form.start_point_cep} onChange={handleChange} required />
+                      <button type="button" className="btn-cep" onClick={handleSearchCep} disabled={searchingCep || !form.start_point_cep}>
+                        {searchingCep ? "..." : "Buscar"}
+                      </button>
+                    </div>
                   </div>
                 </div>
+
+                <div className="row">
+                  <div className="field">
+                    <label className="label">Endereço de Saída</label>
+                    <select
+                      className="input"
+                      value={selectedStartIndex}
+                      onChange={(e) => {
+                        const idx = e.target.value;
+                        setSelectedStartIndex(idx);
+                        if (idx !== "") setForm((prev) => ({ ...prev, start_point: startOptions[Number(idx)].address }));
+                      }}
+                      required
+                    >
+                      <option value="">Selecione um endereço</option>
+                      {startOptions.map((option, index) => (
+                        <option key={`${option.address}-${index}`} value={index}>{option.address}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label className="label">Ponto de Referência (Saída)</label>
+                    <input type="text" name="start_point_reference" className="input" placeholder="Ex: Próximo ao mercado X" value={form.start_point_reference} onChange={handleChange} />
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="field">
                     <label className="label">Horário de Saída</label>
-                    <input type="text" name="horarioSaida" className="input" placeholder="Ex: 07:00" value={form.horarioSaida} onChange={handleChange} />
+                    <input type="time" name="departure_time" className="input" value={form.departure_time} onChange={handleChange} required />
                   </div>
                   <div className="field">
-                    <label className="label">Última Parada</label>
-                    <input type="text" name="ultimaParada" className="input" placeholder="Ex: SEEP SEDVA" value={form.ultimaParada} onChange={handleChange} />
+                    <label className="label">Parada Final (Escola)</label>
+                    <select className="input" name="school_id" value={form.school_id} onChange={handleChange} required>
+                      <option value="">Selecione uma escola</option>
+                      {schools.map((school) => (
+                        <option key={school.id} value={school.id}>{school.name} - {school.address}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                <button type="submit" className="btn">Cadastrar</button>
+
+                <button type="submit" className="btn" disabled={loading}>
+                  {loading ? "Cadastrando..." : "Cadastrar Rota"}
+                </button>
               </form>
             </div>
           </div>
