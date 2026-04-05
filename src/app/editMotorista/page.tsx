@@ -180,7 +180,7 @@ export default function EditarMotoristaPage() {
     if (!form.nome || !form.email || !form.telefone || !form.numeroCnh) { setErrorMessage("Preencha todos os campos"); return; }
     try {
       await updateDriver(parseInt(driverId), { name: form.nome, email: form.email, phone_number: form.telefone, license_number: form.numeroCnh });
-      setSuccessMessage("Motorista atualizado com sucesso!");
+      setSuccessMessage("✓ Motorista atualizado com sucesso!");
       setTimeout(() => router.push("/lista_motoristas"), 1500);
     } catch (err: any) {
       setErrorMessage(err.message || "Erro ao atualizar motorista");

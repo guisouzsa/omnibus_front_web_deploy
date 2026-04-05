@@ -93,8 +93,9 @@ export default function ListaRotasPage() {
     if (!confirm("Tem certeza que deseja excluir esta rota?")) return;
     try {
       await deleteRoute(id);
+      alert("✓ Rota excluída com sucesso!");
     } catch {
-      alert("Erro ao excluir rota. Tente novamente.");
+      alert("✗ Erro ao excluir rota. Tente novamente.");
     }
   };
 

@@ -206,7 +206,7 @@ export default function CadastroMotoristaPage() {
         password:              form.senha,
         password_confirmation: form.confirmarSenha,
       });
-      setSuccessMessage("Motorista cadastrado com sucesso!");
+      setSuccessMessage("✓ Motorista cadastrado com sucesso!");
       setForm({ nome: "", email: "", telefone: "", numeroCnh: "", senha: "", confirmarSenha: "" });
       setTimeout(() => router.push("/lista_motoristas"), 1500);
     } catch (err: any) {

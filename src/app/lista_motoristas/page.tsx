@@ -105,9 +105,9 @@ export default function MotoristasPage() {
     if (!confirm(`Tem certeza que deseja excluir o motorista ${name}?`)) return;
     try {
       await deleteDriver(id);
-      alert("Motorista excluído com sucesso!");
+      alert("✓ Motorista excluído com sucesso!");
     } catch (err: any) {
-      alert(err.message || "Erro ao excluir motorista. Tente novamente.");
+      alert("✗ " + (err.message || "Erro ao excluir motorista. Tente novamente."));
     }
   };
 

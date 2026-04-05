@@ -47,6 +47,8 @@ const css = `
   .oc-search-input::placeholder { color: #aaa; }
   .oc-btn-cadastrar { background: #f1bb13; border: none; border-radius: 4px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .oc-btn-cadastrar:hover { background: #dba900; }
+  .oc-btn-editar { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 800; color: #333; letter-spacing: 0.5px; text-transform: uppercase; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: opacity 0.15s; }
+  .oc-btn-editar:hover { opacity: 0.6; }
 
   /* TABLE */
   .oc-table-wrap { width: 100%; overflow-x: auto; border-radius: 4px; }
@@ -89,8 +91,9 @@ export default function ListaEscolasPage() {
     if (!confirm("Deseja realmente excluir esta escola?")) return;
     try {
       await deleteSchool(id);
+      alert("✓ Escola excluída com sucesso!");
     } catch {
-      alert("Erro ao excluir escola. Tente novamente.");
+      alert("✗ Erro ao excluir escola. Tente novamente.");
     }
   };
 

@@ -89,7 +89,11 @@ export default function OnibusCadastradosPage() {
   const handleDelete = async (id: number) => {
     if (!confirm('Tem certeza que deseja excluir este ônibus?')) return;
     const success = await deleteVehicle(id);
-    if (!success) alert('Erro ao excluir ônibus. Tente novamente.');
+    if (success) {
+      alert('✓ Ônibus excluído com sucesso!');
+    } else {
+      alert('✗ Erro ao excluir ônibus. Tente novamente.');
+    }
   };
 
   const handleEdit = (id: number) => {
