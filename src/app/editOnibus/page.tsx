@@ -197,6 +197,9 @@ export default function EditarOnibus() {
     e.preventDefault();
     setSubmitError(null); setSubmitSuccess(false);
     if (!vehicleId) return;
+    if (form.plate.length < 7) {
+      setSubmitError("A placa deve ter exatamente 7 caracteres (ex: ABC1D23)"); return;
+    }
     const success = await updateVehicle(parseInt(vehicleId), {
       plate:     form.plate.toUpperCase(),
       capacity:  parseInt(form.capacity),

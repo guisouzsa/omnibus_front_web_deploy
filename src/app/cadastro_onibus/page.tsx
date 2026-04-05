@@ -181,6 +181,9 @@ export default function CadastroOnibusPage() {
     if (!form.plate || !form.capacity || !form.mainRoute || !form.driver_id) {
       setSubmitError("Todos os campos são obrigatórios"); return;
     }
+    if (form.plate.length < 7) {
+      setSubmitError("A placa deve ter exatamente 7 caracteres (ex: ABC1D23)"); return;
+    }
     const success = await createVehicle({
       plate:     form.plate.toUpperCase(),
       capacity:  parseInt(form.capacity),
