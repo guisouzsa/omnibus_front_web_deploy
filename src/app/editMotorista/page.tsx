@@ -26,10 +26,10 @@ function DriverIcon({ size = 22, color = "currentColor" }: { size?: number; colo
     </svg>
   );
 }
-function StudentIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+function SchoolIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
   );
 }
@@ -208,7 +208,7 @@ export default function EditarMotoristaPage() {
             <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> Ônibus</button>
             <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={17} /> Rotas</button>
             <button className="nav-item active"><DriverIcon size={17} /> Motoristas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_alunos")}><StudentIcon size={17} /> Alunos</button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIcon size={17} /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/infor_instituicao")}>

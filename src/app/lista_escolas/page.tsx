@@ -94,6 +94,10 @@ export default function ListaEscolasPage() {
     }
   };
 
+  const handleEdit = (id: number) => {
+    router.push(`/editEscola?id=${id}`);
+  };
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -211,12 +215,13 @@ export default function ListaEscolasPage() {
                     ) : filtered.length === 0 ? (
                       <tr><td colSpan={4} className="oc-feedback">Nenhuma escola cadastrada.</td></tr>
                     ) : (
-                      filtered.map((school) => (
+                      filtered.reverse().map((school) => (
                         <tr key={school.id}>
                           <td className="oc-td-bold">{school.name}</td>
                           <td className="oc-td-normal">{school.cep}</td>
                           <td className="oc-td-normal">{school.address}</td>
                           <td className="oc-td-ops">
+                            <button className="oc-btn-editar" onClick={() => handleEdit(school.id)}>EDITAR</button>
                             <button className="oc-btn-excluir" onClick={() => handleDelete(school.id)}>EXCLUIR</button>
                           </td>
                         </tr>

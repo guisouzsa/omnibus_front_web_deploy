@@ -113,7 +113,7 @@ export default function OmnibusLanding() {
               (e.target as HTMLButtonElement).style.background = "#f5a623";
             }}
           >
-            ENTRAR
+            COMEÇAR
           </button>
         </div>
 

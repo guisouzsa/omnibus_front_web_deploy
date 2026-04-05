@@ -222,7 +222,7 @@ export default function MotoristasPage() {
                 <p className="md-feedback">Nenhum motorista encontrado.</p>
               ) : (
                 <div className="md-list">
-                  {filtered.map((d) => (
+                  {filtered.reverse().map((d) => (
                     <div key={d.id} className="md-card">
                       <div className="md-card-bar" />
                       <div className="md-card-info">

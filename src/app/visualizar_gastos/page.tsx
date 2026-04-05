@@ -345,10 +345,42 @@ export default function GastosCadastradosPage() {
 
   const handleOpenForm = () => {
     setShowMeta(false);
-    setShowForm((v) => !v);
-    setMetaInput("");
-    setSaveError(null);
-    setSaveSuccess(false);
+    const opening = !showForm;
+    setShowForm(opening);
+    
+    if (opening) {
+      // Se abre o formulário, carrega a meta existente para edição
+      if (!user) {
+        setSaveError("Usuário não autenticado.");
+        return;
+      }
+
+      setMetaLoading(true);
+      setSaveError(null);
+      setSaveSuccess(false);
+
+      const { month, year } = getCurrentPeriod();
+      getLimitByPeriod(user.id, year, month)
+        .then((limit) => {
+          if (limit) {
+            const amount = getLimitAmount(limit);
+            setMeta(amount);
+            setLimitId(limit.id);
+            setMetaInput(amount.toString());
+            return;
+          }
+          // Se não houver meta, deixa o formulário vazio para criar nova
+          setMeta(null);
+          setLimitId(null);
+          setMetaInput("");
+        })
+        .catch(() => setSaveError("Erro ao carregar meta de gastos."))
+        .finally(() => setMetaLoading(false));
+    } else {
+      setMetaInput("");
+      setSaveError(null);
+      setSaveSuccess(false);
+    }
   };
 
   const handleSave = async () => {
@@ -506,10 +538,10 @@ export default function GastosCadastradosPage() {
 
                   <h2 className="gc-title">GASTOS CADASTRADOS</h2>
 
-                  {/* CADASTRAR META */}
+                  {/* CADASTRAR/EDITAR META */}
                   <div className="gc-btn-wrap" ref={formRef}>
                     <button className="gc-btn-cadastrar" onClick={handleOpenForm}>
-                      CADASTRAR META DE GASTOS
+                      {meta ? "EDITAR META DE GASTOS" : "CADASTRAR META DE GASTOS"}
                     </button>
                     {showForm && (
                       <div className="gc-popover gc-popover-right">
@@ -517,18 +549,24 @@ export default function GastosCadastradosPage() {
                           <ArrowIcon />
                           VALOR (POR MÊS)
                         </p>
-                        <input
-                          type="text"
-                          className="gc-popover-input"
-                          placeholder="Ex.: R$ 280.000"
-                          value={metaInput}
-                          onChange={(e) => { setMetaInput(e.target.value); setSaveError(null); setSaveSuccess(false); }}
-                          onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                          autoFocus
-                        />
-                        <button className="gc-popover-save" onClick={handleSave} disabled={saving}>
-                          {saving ? "SALVANDO..." : "SALVAR"}
-                        </button>
+                        {metaLoading ? (
+                          <p className="gc-meta-loading">Carregando...</p>
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              className="gc-popover-input"
+                              placeholder="Ex.: R$ 280.000"
+                              value={metaInput}
+                              onChange={(e) => { setMetaInput(e.target.value); setSaveError(null); setSaveSuccess(false); }}
+                              onKeyDown={(e) => e.key === "Enter" && handleSave()}
+                              autoFocus
+                            />
+                            <button className="gc-popover-save" onClick={handleSave} disabled={saving}>
+                              {saving ? "SALVANDO..." : "SALVAR"}
+                            </button>
+                          </>
+                        )}
                         {saveError   && <p className="gc-popover-msg gc-popover-error">{saveError}</p>}
                         {saveSuccess && <p className="gc-popover-msg gc-popover-success">Meta salva com sucesso!</p>}
                       </div>

@@ -16,6 +16,8 @@ const chartData = [
   { mes: "Nov", valor: 220000 }, { mes: "Dez", valor: 130000 },
 ];
 
+const defaultChartData = chartData;
+
 const recentActivity = [
   { type: "bus",    text: "Ônibus #07 adicionado à frota",         time: "há 12 min",  status: "new"     },
   { type: "route",  text: "Rota Norte-Sul atualizada",             time: "há 45 min",  status: "update"  },
@@ -304,20 +306,36 @@ export default function DashboardPage() {
       .catch(() => setCurrentMonthLimit(0));
   }, [user?.id]);
 
-  const { currentMonthExpenses, minMonthExpenses } = useMemo(() => {
+  const { currentMonthExpenses, minMonthExpenses, chartData: dynamicChartData } = useMemo(() => {
     const { month, year } = getCurrentPeriod();
     const monthlyTotals = new Map<string, number>();
+    
+    // Calcular totais mensais
     for (const expense of expenses ?? []) {
       const expenseDate = expense?.created_at ? new Date(expense.created_at) : null;
       if (!expenseDate || Number.isNaN(expenseDate.getTime())) continue;
-      const key = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, "0")}`;
+      const expYear = expenseDate.getFullYear();
+      const expMonth = String(expenseDate.getMonth() + 1).padStart(2, "0");
+      const key = `${expYear}-${expMonth}`;
       monthlyTotals.set(key, (monthlyTotals.get(key) ?? 0) + parseNumber((expense as any).value));
     }
+    
+    // Gerar dados do gráfico para todos os meses do ano atual
+    const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const chartDataGenerated = monthNames.map((mes, index) => {
+      const monthKey = `${year}-${String(index + 1).padStart(2, "0")}`;
+      return {
+        mes,
+        valor: monthlyTotals.get(monthKey) ?? 0
+      };
+    });
+    
     const currentKey = `${year}-${month}`;
     const totals = Array.from(monthlyTotals.values());
     return {
       currentMonthExpenses: monthlyTotals.get(currentKey) ?? 0,
       minMonthExpenses: totals.length > 0 ? Math.min(...totals) : 0,
+      chartData: chartDataGenerated.length > 0 ? chartDataGenerated : defaultChartData,
     };
   }, [expenses]);
 
@@ -417,10 +435,10 @@ export default function DashboardPage() {
             <div className="db-chart-card">
               <div className="db-card-header">
                 <span className="db-card-title">Gráfico de Gastos</span>
-                <span className="db-card-badge">2025</span>
+                <span className="db-card-badge">{new Date().getFullYear()}</span>
               </div>
               <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart data={dynamicChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorValor" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%"  stopColor="#01233F" stopOpacity={0.15} />

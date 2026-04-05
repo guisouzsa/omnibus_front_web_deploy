@@ -219,7 +219,7 @@ export default function ListaRotasPage() {
                     ) : filtered.length === 0 ? (
                       <tr><td colSpan={5} className="oc-feedback">Nenhuma rota encontrada.</td></tr>
                     ) : (
-                      filtered.map((r) => (
+                      filtered.reverse().map((r) => (
                         <tr key={r.id}>
                           <td className="oc-td-bold">{r.name}</td>
                           <td className="oc-td-bold">{r.start_point}</td>

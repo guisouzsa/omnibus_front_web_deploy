@@ -199,9 +199,9 @@ export default function OnibusCadastradosPage() {
                 <table className="oc-table">
                   <thead>
                     <tr>
+                      <th>PLACA</th>
                       <th>ROTA PRINCIPAL</th>
                       <th>CAPACIDADE</th>
-                      <th>PLACA</th>
                       <th>MOTORISTA PRINCIPAL</th>
                       <th>OPERAÇÕES</th>
                     </tr>
@@ -214,11 +214,11 @@ export default function OnibusCadastradosPage() {
                     ) : filtered.length === 0 ? (
                       <tr><td colSpan={5} className="oc-feedback">Nenhum ônibus encontrado.</td></tr>
                     ) : (
-                      filtered.map((v) => (
+                      filtered.reverse().map((v) => (
                         <tr key={v.id}>
+                          <td className="oc-td-bold">{v.plate}</td>
                           <td className="oc-td-bold">{v.mainRoute}</td>
                           <td className="oc-td-bold">{v.capacity} ALUNOS</td>
-                          <td className="oc-td-bold">{v.plate}</td>
                           <td className="oc-td-driver">{v.driver?.name || 'N/A'}</td>
                           <td className="oc-td-ops">
                             <button className="oc-btn-excluir" onClick={() => handleDelete(v.id)}>EXCLUIR</button>
