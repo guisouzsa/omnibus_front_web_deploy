@@ -318,7 +318,6 @@ export default function GastosCadastradosPage() {
     expenses,
     loading,
     error,
-    deleteExpense: deleteExpenseItem,
   } = useExpenses();
   const { getLimitByPeriod, createLimit, updateLimit } = useSpendingLimits(false);
 
@@ -478,14 +477,6 @@ export default function GastosCadastradosPage() {
       setSaveError(firstValidationMessage || apiMessage || "Erro ao salvar. Tente novamente.");
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteExpenseItem(id);
-    } catch {
-      alert("Erro ao excluir gasto. Tente novamente.");
     }
   };
 
@@ -678,16 +669,15 @@ export default function GastosCadastradosPage() {
                         <th>MOTORISTA</th>
                         <th>VALOR</th>
                         <th>COMPROVANTE</th>
-                        <th>AÇÕES</th>
                       </tr>
                     </thead>
                     <tbody>
                       {loading ? (
-                        <tr><td colSpan={5} className="gc-feedback">Carregando gastos...</td></tr>
+                        <tr><td colSpan={4} className="gc-feedback">Carregando gastos...</td></tr>
                       ) : error ? (
-                        <tr><td colSpan={5} className="gc-feedback error">{error}</td></tr>
+                        <tr><td colSpan={4} className="gc-feedback error">{error}</td></tr>
                       ) : expenses.length === 0 ? (
-                        <tr><td colSpan={5} className="gc-feedback">Nenhum gasto encontrado.</td></tr>
+                        <tr><td colSpan={4} className="gc-feedback">Nenhum gasto encontrado.</td></tr>
                       ) : (
                         expenses.map((e) => (
                           <tr key={e.id}>
@@ -703,10 +693,6 @@ export default function GastosCadastradosPage() {
                               ) : (
                                 <span className="gc-no-receipt">Sem comprovante</span>
                               )}
-                            </td>
-                            <td className="gc-td-ops">
-                              <button className="gc-btn-excluir" onClick={() => handleDelete(e.id)}>EXCLUIR</button>
-                              <button className="gc-btn-editar" onClick={() => router.push(`/gastos/editar/${e.id}`)}>EDITAR</button>
                             </td>
                           </tr>
                         ))
