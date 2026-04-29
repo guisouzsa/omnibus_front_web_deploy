@@ -232,7 +232,7 @@ export default function CadastroMotoristaPage() {
             <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={17} /> Ônibus</button>
             <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={17} /> Rotas</button>
             <button className="nav-item active"><DriverIcon size={17} /> Motoristas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_alunos")}><StudentIcon size={17} /> Alunos</button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><StudentIcon size={17} /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/infor_instituicao")}>

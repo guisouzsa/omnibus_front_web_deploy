@@ -28,25 +28,35 @@ body {
 .sidebar-logout-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 12px;
   width: 100%;
-  margin-top: 4px;
-  padding: 9px 12px;
+  margin-top: 8px;
+  padding: 10px 12px;
   border-radius: 8px;
-  border: none;
-  background: none;
-  color: rgba(255, 255, 255, 0.35);
+  border: 1px solid transparent;
+  background: rgba(239, 68, 68, 0.05);
+  color: rgba(255, 255, 255, 0.6);
   font: inherit;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s ease;
 }
 
 .sidebar-logout-btn:hover {
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+  transform: translateX(2px);
+}
+
+.sidebar-logout-btn:active {
+  transform: translateX(0);
 }
 
 .sidebar-logout-btn:disabled {
-  opacity: 0.55;
-  cursor: wait;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
