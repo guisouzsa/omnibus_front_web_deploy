@@ -17,14 +17,15 @@ class AuthService {
     return apiClient.post('/api/register', data);
   }
 
-  async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const resp = await apiClient.login('/api/login', credentials);
-    // Garante que user está normalizado na resposta
-    return {
-      ...resp,
-      user: normalizeUser(resp),
-    };
-  }
+
+    async login(credentials: LoginRequest): Promise<LoginResponse> {
+      const resp = await apiClient.login('/api/login', credentials);
+      return {
+        ...resp,
+        message: resp.message ?? '',
+        user: normalizeUser(resp),
+      };
+    }
 
   async getUser(): Promise<User> {
     const resp = await apiClient.get('/api/user');
