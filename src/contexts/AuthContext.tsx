@@ -1,5 +1,4 @@
 'use client';
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services';
@@ -23,7 +22,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Verificar autenticação ao montar
   useEffect(() => {
     checkAuth();
   }, []);
@@ -33,10 +31,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (authService.isAuthenticated()) {
         const userData = await authService.getUser();
         setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
       }
     } catch (err: any) {
       console.error('Erro ao verificar autenticação:', err);
       setUser(null);
+      localStorage.removeItem('user');
       authService.logout();
     } finally {
       setLoading(false);
@@ -50,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await authService.login({ email, password });
       if (response.user) {
         setUser(response.user);
+        localStorage.setItem('user', JSON.stringify(response.user));
         router.push('/dashboard');
       }
     } catch (err: any) {
@@ -76,8 +77,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
         password_confirmation: passwordConfirmation,
       });
-      
-      // Após registrar, fazer login automaticamente
       await login(email, password);
     } catch (err: any) {
       const errorMessage = err.response?.message || err.message || 'Erro ao cadastrar';
@@ -93,11 +92,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.logout();
       setUser(null);
+      localStorage.removeItem('user');
       router.push('/login');
     } catch (err: any) {
       console.error('Erro ao fazer logout:', err);
-      // Mesmo com erro, limpar o usuário e redirecionar
       setUser(null);
+      localStorage.removeItem('user');
       router.push('/login');
     } finally {
       setLoading(false);
@@ -107,17 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = !!user && authService.isAuthenticated();
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        error,
-        login,
-        register,
-        logout,
-        isAuthenticated,
-      }}
-    >
+    <AuthContext.Provider value={{ user, loading, error, login, register, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
