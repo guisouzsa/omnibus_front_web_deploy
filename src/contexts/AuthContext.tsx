@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const checkAuth = async () => {
     try {
       if (authService.isAuthenticated()) {
+        // getUser() já normaliza a resposta agora
         const userData = await authService.getUser();
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -48,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
     try {
       const response = await authService.login({ email, password });
+      // user já vem normalizado do authService.login
       if (response.user) {
         setUser(response.user);
         localStorage.setItem('user', JSON.stringify(response.user));
