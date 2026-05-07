@@ -6,90 +6,64 @@ import { useVehicles } from "@/hooks/useVehicles";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
 
 const css = `
-  /* FUNDO COM DETALHES DE ROTAS */
-  .oc-page { 
-    min-height: 100vh; 
-    background-color: #ffffff; 
-    /* Pattern sutil de linhas de mapa/rotas no fundo */
-    background-image: radial-gradient(#01233f 0.5px, transparent 0.5px), stroke-dasharray: 4;
-    background-size: 30px 30px;
-    background-position: center;
-    background-attachment: fixed;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
-    display: flex; 
-  }
-  
-  /* Overlay leve para o padrão não atrapalhar a leitura */
-  .oc-page::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.92);
-    z-index: 0;
-  }
+  .oc-page { min-height: 100vh; background: #fff; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; display: flex; }
 
-  /* SIDEBAR (Mantida a estrutura original com leve ajuste de arredondamento nos itens) */
+  /* SIDEBAR */
   .oc-sidebar { width: 220px; background: #01233F; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .oc-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-  .oc-logo-icon { width: 34px; height: 34px; background: #f1bb13; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .oc-logo-icon { width: 34px; height: 34px; background: #f1bb13; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .oc-logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
-  .oc-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: all 0.15s; margin-bottom: 2px; }
+  .oc-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
+  .oc-sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .oc-nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 14px 0 6px; }
+  .oc-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: all 0.15s; }
   .oc-nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
   .oc-nav-item.active { background: #f1bb13; color: #01233F; font-weight: 600; }
+  .oc-sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
 
-  /* CONTENT WRAP */
-  .oc-content-wrap { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; position: relative; z-index: 1; }
+  /* CONTENT */
+  .oc-content-wrap { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
   /* NAVBAR */
-  .oc-navbar { background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e6ea; padding: 0 36px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .oc-topbar-title { font-size: 16px; font-weight: 700; color: #01233F; }
+  .oc-navbar { background: #fff; border-bottom: 1px solid #e2e6ea; padding: 0 36px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .oc-topbar-title { font-size: 16px; font-weight: 600; color: #01233F; }
+  .oc-topbar-sub { font-size: 12px; color: #6b7a8d; margin-top: 1px; font-weight: 400; }
 
   /* MAIN */
   .oc-main { padding: 32px 40px; }
-  .oc-top-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .oc-title { font-size: 14px; font-weight: 900; color: #01233F; letter-spacing: 1px; text-transform: uppercase; }
+  .oc-content { width: 100%; }
+  .oc-top-bar { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; }
+  .oc-title { font-size: 16px; font-weight: 900; color: #1a1a1a; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; margin: 0; }
+  .oc-search-wrap { display: flex; align-items: center; background: #fff; border: 1.5px solid #e0e0e0; border-radius: 4px; padding: 0 12px; height: 38px; flex: 1; min-width: 180px; gap: 8px; }
+  .oc-search-input { border: none; outline: none; font-size: 13px; color: #333; width: 100%; background: transparent; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+  .oc-search-input::placeholder { color: #aaa; }
+  .oc-btn-cadastrar { background: #f1bb13; border: none; border-radius: 4px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+  .oc-btn-cadastrar:hover { background: #dba900; }
+  .oc-btn-editar { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 800; color: #333; letter-spacing: 0.5px; text-transform: uppercase; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: opacity 0.15s; }
+  .oc-btn-editar:hover { opacity: 0.6; }
 
-  /* SEARCH & BUTTONS (Arredondados e mais visíveis) */
-  .oc-search-wrap { display: flex; align-items: center; background: #fff; border: 1.5px solid #e0e6ed; border-radius: 12px; padding: 0 14px; height: 42px; flex: 1; transition: border-color 0.2s; }
-  .oc-search-wrap:focus-within { border-color: #f1bb13; }
-  .oc-search-input { border: none; outline: none; font-size: 13px; width: 100%; background: transparent; }
-
-  .oc-btn-cadastrar { background: #01233F; border: none; border-radius: 12px; padding: 0 20px; height: 42px; font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; cursor: pointer; transition: transform 0.1s, background 0.2s; }
-  .oc-btn-cadastrar:hover { background: #02345e; transform: translateY(-1px); }
-
-  /* TABELA (Clean com bordas arredondadas no container) */
-  .oc-table-wrap { background: #fff; border: 1px solid #eef0f2; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+  /* TABLE */
+  .oc-table-wrap { width: 100%; overflow-x: auto; border-radius: 4px; }
   .oc-table { width: 100%; border-collapse: collapse; }
-  .oc-table thead tr { background: #f8fafc; border-bottom: 1px solid #eef0f2; }
-  .oc-table thead th { color: #64748b; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 16px 20px; text-align: left; }
-  .oc-table tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.2s; }
-  .oc-table tbody tr:hover { background: #fdfdfd; }
-  .oc-table tbody td { padding: 16px 20px; font-size: 13px; color: #334155; }
-
-  /* BOTÕES DE OPERAÇÃO (Agora mais visíveis como botões mesmo) */
-  .oc-td-ops { display: flex; align-items: center; gap: 8px; }
-  .oc-btn-editar { 
-    background: #f1f5f9; color: #01233F; border: none; border-radius: 8px; 
-    padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; 
-    transition: all 0.2s;
-  }
-  .oc-btn-editar:hover { background: #01233F; color: #fff; }
-  
-  .oc-btn-excluir { 
-    background: #fff1f2; color: #e11d48; border: none; border-radius: 8px; 
-    padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; 
-    transition: all 0.2s;
-  }
-  .oc-btn-excluir:hover { background: #e11d48; color: #fff; }
-
-  /* BADGES */
-  .oc-status-badge { display: inline-block; border-radius: 6px; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-  .oc-status-pending { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
-  .oc-status-route { background: #f0f9ff; color: #0369a1; border: 1px solid #e0f2fe; }
+  .oc-table thead tr { background: #01233F; }
+  .oc-table thead th { color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 14px 18px; text-align: left; }
+  .oc-table tbody tr { border-bottom: 1px solid #e8e8e8; background: #fff; }
+  .oc-table tbody tr:hover { background: #fafafa; }
+  .oc-table tbody td { padding: 14px 18px; font-size: 13px; color: #333; }
+  .oc-td-bold { font-weight: 800; color: #1a1a1a; text-transform: uppercase; font-size: 12px; }
+  .oc-td-normal { font-weight: 500; color: #444; }
+  .oc-td-ops { display: flex; align-items: center; gap: 14px; }
+  .oc-btn-excluir { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 800; color: #c0392b; letter-spacing: 0.5px; text-transform: uppercase; padding: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; transition: opacity 0.15s; }
+  .oc-btn-excluir:hover { opacity: 0.7; }
+  .oc-feedback { text-align: center; font-size: 14px; padding: 32px; color: #aaa; }
+  .oc-feedback.error { color: #c0392b; }
 
   @media (max-width: 900px) {
     .oc-sidebar { display: none; }
     .oc-content-wrap { margin-left: 0; }
+    .oc-main { padding: 20px 16px; }
+    .oc-top-bar { flex-direction: column; align-items: flex-start; }
+    .oc-search-wrap { max-width: 100%; width: 100%; }
   }
 `;
 
@@ -115,27 +89,41 @@ export default function OnibusCadastradosPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="oc-page">
-        {/* SIDEBAR */}
         <aside className="oc-sidebar">
           <div className="oc-sidebar-logo">
             <div className="oc-logo-icon">
-              {/* Ícone inspirado no seu logo */}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="2.5">
-                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h2" />
-                <circle cx="7" cy="17" r="2" fill="#01233F"/>
-                <circle cx="17" cy="17" r="2" fill="#01233F"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/>
+                <circle cx="7" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+                <circle cx="17" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+                <path d="M5 18h14"/>
               </svg>
             </div>
-            <div>
-              <div className="oc-logo-text">Omnibus</div>
-              <div style={{fontSize: '9px', color: 'rgba(255,255,255,0.4)', letterSpacing: '1px'}}>GESTÃO</div>
-            </div>
+            <div><div className="oc-logo-text">Omnibus</div><div className="oc-logo-sub">Gestão Escolar</div></div>
           </div>
           <nav className="oc-sidebar-nav">
-            <button className="oc-nav-item" onClick={() => router.push("/dashboard")}>Dashboard</button>
-            <button className="oc-nav-item active">Ônibus</button>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_rotas")}>Rotas</button>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_motoristas")}>Motoristas</button>
+            <span className="oc-nav-label">Principal</span>
+            <button className="oc-nav-item" onClick={() => router.push("/dashboard")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </button>
+            <button className="oc-nav-item" onClick={() => router.push("/visualizar_gastos")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Financeiro
+            </button>
+            <span className="oc-nav-label">Cadastros</span>
+            <button className="oc-nav-item active">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/><circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/><path d="M5 18h14"/></svg>
+              Ônibus
+            </button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_rotas")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              Rotas
+            </button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_motoristas")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
+              Motoristas
+            </button>
           </nav>
           <div className="oc-sidebar-footer">
             <SidebarLogoutButton />
@@ -144,60 +132,69 @@ export default function OnibusCadastradosPage() {
 
         <div className="oc-content-wrap">
           <header className="oc-navbar">
-            <div className="oc-topbar-title">Frota de Ônibus</div>
+            <div>
+              <div className="oc-topbar-title">Frota de Ônibus</div>
+              <div className="oc-topbar-sub">Ônibus cadastrados no sistema</div>
+            </div>
           </header>
 
           <main className="oc-main">
-            <div className="oc-top-bar">
-              <h2 className="oc-title">Listagem</h2>
-              <div className="oc-search-wrap">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                <input
-                  type="text"
-                  className="oc-search-input"
-                  placeholder="Pesquisar por placa, rota ou motorista..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+            <div className="oc-content">
+              <div className="oc-top-bar">
+                <h2 className="oc-title">ÔNIBUS CADASTRADOS</h2>
+                <div className="oc-search-wrap">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input
+                    type="text"
+                    className="oc-search-input"
+                    placeholder="Pesquisar por placa, rota ou motorista..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <button className="oc-btn-cadastrar" onClick={() => router.push("/cadastro_onibus")}>
+                  + ADICIONAR ÔNIBUS
+                </button>
               </div>
-              <button className="oc-btn-cadastrar" onClick={() => router.push("/cadastro_onibus")}>
-                + Adicionar Ônibus
-              </button>
-            </div>
 
-            <div className="oc-table-wrap">
-              <table className="oc-table">
-                <thead>
-                  <tr>
-                    <th>Placa</th>
-                    <th>Capacidade</th>
-                    <th>Rota</th>
-                    <th>Motorista</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td colSpan={5} style={{textAlign: 'center', padding: '40px'}}>Carregando...</td></tr>
-                  ) : filtered.map((v) => (
-                    <tr key={v.id}>
-                      <td style={{fontWeight: 700, color: '#01233F'}}>{v.plate}</td>
-                      <td>{v.capacity} Alunos</td>
-                      <td>
-                        {!v.route_id ? 
-                          <span className="oc-status-badge oc-status-pending">Pendente</span> : 
-                          <span className="oc-status-badge oc-status-route">{v.route?.name || v.mainRoute}</span>
-                        }
-                      </td>
-                      <td style={{color: '#64748b'}}>{v.driver?.name || 'N/A'}</td>
-                      <td className="oc-td-ops">
-                        <button className="oc-btn-editar" onClick={() => router.push(`/editOnibus?id=${v.id}`)}>EDITAR</button>
-                        <button className="oc-btn-excluir" onClick={() => handleDelete(v.id)}>EXCLUIR</button>
-                      </td>
+              <div className="oc-table-wrap">
+                <table className="oc-table">
+                  <thead>
+                    <tr>
+                      <th>PLACA</th>
+                      <th>CAPACIDADE</th>
+                      <th>ROTA</th>
+                      <th>MOTORISTA</th>
+                      <th>OPERAÇÕES</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan={5} className="oc-feedback">Carregando ônibus...</td></tr>
+                    ) : error ? (
+                      <tr><td colSpan={5} className="oc-feedback error">{error}</td></tr>
+                    ) : filtered.length === 0 ? (
+                      <tr><td colSpan={5} className="oc-feedback">Nenhum ônibus cadastrado.</td></tr>
+                    ) : (
+                      filtered.map((v) => (
+                        <tr key={v.id}>
+                          <td className="oc-td-bold">{v.plate}</td>
+                          <td className="oc-td-normal">{v.capacity} Alunos</td>
+                          <td className="oc-td-normal">{v.route?.name || v.mainRoute || 'Pendente'}</td>
+                          <td className="oc-td-normal">{v.driver?.name || 'N/A'}</td>
+                          <td className="oc-td-ops">
+                            <button className="oc-btn-editar" onClick={() => router.push(`/editOnibus?id=${v.id}`)}>EDITAR</button>
+                            <button className="oc-btn-excluir" onClick={() => handleDelete(v.id)}>EXCLUIR</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </main>
         </div>
