@@ -7,7 +7,6 @@ import { maskCurrency, unmaskCurrency } from "@/utils/mask";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
 import SchoolIcon from "@/components/SchoolIcon";
 
-// ─── Icons sidebar ────────────────────────────────────────────────────────────
 function BusIcon({ size = 18, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -66,8 +65,6 @@ function UserCircleIcon() {
     </svg>
   );
 }
-
-// ─── Icons tabela ─────────────────────────────────────────────────────────────
 function DownloadIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -102,29 +99,15 @@ function DownloadPdfIcon() {
   );
 }
 
-// ─── CSS ──────────────────────────────────────────────────────────────────────
 const css = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy: #01233F;
-    --yellow: #f1bb13;
-    --yellow-dark: #d9a700;
-    --bg: #f0f2f5;
-    --card: #ffffff;
-    --border: #e2e6ea;
-    --text: #1a2535;
-    --muted: #6b7a8d;
-    --green: #22c55e;
-    --red: #ef4444;
-    --sidebar-w: 220px;
+    --navy: #01233F; --yellow: #f1bb13; --yellow-dark: #d9a700; --bg: #f0f2f5;
+    --card: #ffffff; --border: #e2e6ea; --text: #1a2535; --muted: #6b7a8d;
+    --green: #22c55e; --red: #ef4444; --sidebar-w: 220px;
   }
-
   body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
-
   .oc-page { min-height: 100vh; background: #fff; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; display: flex; }
-
-  /* SIDEBAR */
   .oc-sidebar { width: 220px; background: #01233F; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .oc-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
   .oc-logo-icon { width: 34px; height: 34px; background: #f1bb13; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -141,11 +124,7 @@ const css = `
   .oc-avatar { width: 32px; height: 32px; background: #f1bb13; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #01233F; flex-shrink: 0; }
   .oc-user-name { font-size: 13px; font-weight: 600; color: #fff; }
   .oc-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
-
-  /* CONTENT */
   .oc-content-wrap { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-
-  /* NAVBAR */
   .oc-navbar { background: #fff; border-bottom: 1px solid #e2e6ea; padding: 0 36px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .oc-topbar-title { font-size: 16px; font-weight: 600; color: #01233F; }
   .oc-topbar-sub { font-size: 12px; color: #6b7a8d; margin-top: 1px; font-weight: 400; }
@@ -153,8 +132,6 @@ const css = `
   .oc-icon-btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid #e2e6ea; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #01233F; transition: all 0.15s; position: relative; }
   .oc-icon-btn:hover { background: #f0f2f5; }
   .oc-notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid #fff; }
-
-  /* MAIN */
   .oc-main { padding: 32px 40px; }
   .oc-content { width: 100%; }
   .oc-top-bar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; margin-bottom: 20px; width: 100%; }
@@ -164,7 +141,6 @@ const css = `
   .oc-btn-meta:hover { background: #dba900; }
   .oc-btn-cadastrar { background: #f1bb13; border: none; border-radius: 4px; padding: 0 22px; height: 38px; font-size: 13px; font-weight: 900; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
   .oc-btn-cadastrar:hover { background: #dba900; }
-
   .oc-popover { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 16px; min-width: 220px; z-index: 100; }
   .oc-popover-right { left: auto; right: 0; }
   .oc-popover-label { font-size: 11px; font-weight: 800; color: #01233F; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
@@ -180,7 +156,6 @@ const css = `
   .oc-popover-error { color: #c0392b; }
   .oc-popover-success { color: #27ae60; }
   .oc-meta-loading { font-size: 12px; color: #aaa; }
-
   .oc-table-wrap { width: 100%; overflow-x: auto; border-radius: 4px; }
   .oc-table { width: 100%; border-collapse: collapse; }
   .oc-table thead tr { background: #01233F; }
@@ -200,45 +175,13 @@ const css = `
   .oc-no-receipt { font-size: 12px; color: #bbb; font-style: italic; }
   .oc-feedback { text-align: center; font-size: 14px; padding: 32px; color: #aaa; }
   .oc-feedback.error { color: #c0392b; }
-
-  .oc-alert { 
-    margin-bottom: 20px; 
-    padding: 16px 20px; 
-    border-radius: 8px;
-    display: flex; 
-    align-items: center; 
-    gap: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    border-left: 5px solid;
-  }
-  .oc-alert-warning { 
-    background: #fff8e1; 
-    border-color: #f1bb13;
-    color: #856404;
-  }
-  .oc-alert-danger { 
-    background: #ffe5e5; 
-    border-color: #c0392b;
-    color: #721c24;
-  }
-  .oc-alert-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .oc-alert-content {
-    flex: 1;
-  }
-  .oc-alert-title {
-    font-weight: 800;
-    margin-bottom: 2px;
-  }
-  .oc-alert-message {
-    font-weight: 500;
-    font-size: 13px;
-  }
-
-  /* MODAL */
+  .oc-alert { margin-bottom: 20px; padding: 16px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; border-left: 5px solid; }
+  .oc-alert-warning { background: #fff8e1; border-color: #f1bb13; color: #856404; }
+  .oc-alert-danger { background: #ffe5e5; border-color: #c0392b; color: #721c24; }
+  .oc-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .oc-alert-content { flex: 1; }
+  .oc-alert-title { font-weight: 800; margin-bottom: 2px; }
+  .oc-alert-message { font-weight: 500; font-size: 13px; }
   .oc-modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
   .oc-modal { background: #fff; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 900px; width: 90%; max-height: 85vh; display: flex; flex-direction: column; }
   .oc-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e8e8e8; }
@@ -252,7 +195,6 @@ const css = `
   .oc-modal-iframe { width: 100%; height: 600px; border: none; border-radius: 4px; }
   .oc-modal-image { max-width: 100%; max-height: 100%; border-radius: 4px; object-fit: contain; }
   .oc-modal-empty { text-align: center; color: #999; font-size: 14px; }
-
   @media (max-width: 900px) {
     .oc-sidebar { display: none; }
     .oc-content-wrap { margin-left: 0; }
@@ -263,7 +205,6 @@ const css = `
   }
 `;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatBRL(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
@@ -308,64 +249,48 @@ function downloadFile(url: string, filename?: string) {
   document.body.removeChild(link);
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+function getUser() {
+  if (typeof window === "undefined") return {};
+  return JSON.parse(localStorage.getItem("user") || "{}");
+}
+
 export default function VisualizarGastosPage() {
   const router = useRouter();
-  const {
-    expenses,
-    loading,
-    error,
-  } = useExpenses();
+  const { expenses, loading, error } = useExpenses();
   const { getLimitByPeriod, createLimit, updateLimit } = useSpendingLimits(false);
 
   const [limitId, setLimitId] = useState<number | null>(null);
   const [activeNav, setActiveNav] = useState("financeiro");
-
-  const [showMeta, setShowMeta]       = useState(false);
-  const [meta, setMeta]               = useState<number | null>(null);
+  const [showMeta, setShowMeta] = useState(false);
+  const [meta, setMeta] = useState<number | null>(null);
   const [metaLoading, setMetaLoading] = useState(false);
-  const [metaError, setMetaError]     = useState<string | null>(null);
-
-  const [showForm, setShowForm]         = useState(false);
-  const [metaInput, setMetaInput]       = useState("");
-  const [saving, setSaving]             = useState(false);
-  const [saveError, setSaveError]       = useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess]   = useState(false);
-
-  const [proofModal, setProofModal]     = useState<{ url: string; filename?: string } | null>(null);
+  const [metaError, setMetaError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [metaInput, setMetaInput] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [proofModal, setProofModal] = useState<{ url: string; filename?: string } | null>(null);
 
   const metaRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const hasLoadedMetaRef = useRef(false);
 
-  // Carregar meta automaticamente ao abrir a página
   useEffect(() => {
     if (hasLoadedMetaRef.current) return;
-    
     hasLoadedMetaRef.current = true;
     setMetaLoading(true);
-    
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (!user.id) {
-      setMetaLoading(false);
-      return;
-    }
+
+    const user = getUser();
+    if (!user.id) { setMetaLoading(false); return; }
 
     const { month, year } = getCurrentPeriod();
     getLimitByPeriod(user.id, year, month)
       .then((limit) => {
-        if (limit) {
-          setMeta(getLimitAmount(limit));
-          setLimitId(limit.id);
-        } else {
-          setMeta(null);
-          setLimitId(null);
-        }
+        if (limit) { setMeta(getLimitAmount(limit)); setLimitId(limit.id); }
+        else { setMeta(null); setLimitId(null); }
       })
-      .catch(() => {
-        setMeta(null);
-        setLimitId(null);
-      })
+      .catch(() => { setMeta(null); setLimitId(null); })
       .finally(() => setMetaLoading(false));
   }, []);
 
@@ -387,10 +312,9 @@ export default function VisualizarGastosPage() {
       setMetaLoading(true);
       setMetaError(null);
 
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = getUser();
       if (!user.id) {
-        setMeta(null);
-        setLimitId(null);
+        setMeta(null); setLimitId(null);
         setMetaError("Usuário não autenticado.");
         setMetaLoading(false);
         return;
@@ -399,13 +323,8 @@ export default function VisualizarGastosPage() {
       const { month, year } = getCurrentPeriod();
       getLimitByPeriod(user.id, year, month)
         .then((limit) => {
-          if (limit) {
-            setMeta(getLimitAmount(limit));
-            setLimitId(limit.id);
-            return;
-          }
-          setMeta(null);
-          setLimitId(null);
+          if (limit) { setMeta(getLimitAmount(limit)); setLimitId(limit.id); return; }
+          setMeta(null); setLimitId(null);
           setMetaError("Nenhuma meta cadastrada para este mês.");
         })
         .catch(() => setMetaError("Erro ao carregar meta de gastos."))
@@ -417,13 +336,13 @@ export default function VisualizarGastosPage() {
     setShowMeta(false);
     const opening = !showForm;
     setShowForm(opening);
-    
+
     if (opening) {
       setMetaLoading(true);
       setSaveError(null);
       setSaveSuccess(false);
 
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = getUser();
       if (!user.id) {
         setSaveError("Usuário não autenticado.");
         setMetaLoading(false);
@@ -435,21 +354,15 @@ export default function VisualizarGastosPage() {
         .then((limit) => {
           if (limit) {
             const amount = getLimitAmount(limit);
-            setMeta(amount);
-            setLimitId(limit.id);
-            setMetaInput(amount.toString());
+            setMeta(amount); setLimitId(limit.id); setMetaInput(amount.toString());
             return;
           }
-          setMeta(null);
-          setLimitId(null);
-          setMetaInput("");
+          setMeta(null); setLimitId(null); setMetaInput("");
         })
         .catch(() => setSaveError("Erro ao carregar meta de gastos."))
         .finally(() => setMetaLoading(false));
     } else {
-      setMetaInput("");
-      setSaveError(null);
-      setSaveSuccess(false);
+      setMetaInput(""); setSaveError(null); setSaveSuccess(false);
     }
   };
 
@@ -457,7 +370,7 @@ export default function VisualizarGastosPage() {
     const parsed = unmaskCurrency(metaInput);
     if (isNaN(parsed) || parsed <= 0) { setSaveError("Informe um valor válido."); return; }
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = getUser();
     if (!user.id) { setSaveError("Usuário não autenticado."); return; }
 
     setSaving(true); setSaveError(null); setSaveSuccess(false);
@@ -466,13 +379,8 @@ export default function VisualizarGastosPage() {
       if (limitId) {
         await updateLimit(limitId, { limit_amount: parsed });
       } else {
-        const created = await createLimit({
-          user_id: user.id,
-          limit_amount: parsed,
-        });
-        if (created?.data?.id) {
-          setLimitId(created.data.id);
-        }
+        const created = await createLimit({ user_id: user.id, limit_amount: parsed });
+        if (created?.data?.id) setLimitId(created.data.id);
       }
       setSaveSuccess(true);
       setMeta(parsed);
@@ -480,9 +388,7 @@ export default function VisualizarGastosPage() {
     } catch (err: any) {
       const apiMessage = err?.response?.message;
       const validationErrors = err?.response?.errors as Record<string, string[]> | undefined;
-      const firstValidationMessage = validationErrors
-        ? Object.values(validationErrors)[0]?.[0]
-        : null;
+      const firstValidationMessage = validationErrors ? Object.values(validationErrors)[0]?.[0] : null;
       setSaveError(firstValidationMessage || apiMessage || "Erro ao salvar. Tente novamente.");
     } finally {
       setSaving(false);
@@ -493,65 +399,35 @@ export default function VisualizarGastosPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="oc-page">
-
-        {/* ── SIDEBAR ── */}
         <aside className="oc-sidebar">
           <div className="oc-sidebar-logo">
-            <div className="oc-logo-icon">
-              <BusIcon size={18} color="#01233F" />
-            </div>
-            <div>
-              <div className="oc-logo-text">Omnibus</div>
-              <div className="oc-logo-sub">Gestão Escolar</div>
-            </div>
+            <div className="oc-logo-icon"><BusIcon size={18} color="#01233F" /></div>
+            <div><div className="oc-logo-text">Omnibus</div><div className="oc-logo-sub">Gestão Escolar</div></div>
           </div>
-
           <nav className="oc-sidebar-nav">
             <span className="oc-nav-label">Principal</span>
-            <button
-              className={`oc-nav-item ${activeNav === "dashboard" ? "active" : ""}`}
-              onClick={() => { setActiveNav("dashboard"); router.push("/dashboard"); }}
-            >
+            <button className={`oc-nav-item ${activeNav === "dashboard" ? "active" : ""}`} onClick={() => { setActiveNav("dashboard"); router.push("/dashboard"); }}>
               <DashIcon /> Dashboard
             </button>
-            <button
-              className={`oc-nav-item ${activeNav === "financeiro" ? "active" : ""}`}
-              onClick={() => { setActiveNav("financeiro"); router.push("/visualizar_gastos"); }}
-            >
+            <button className={`oc-nav-item ${activeNav === "financeiro" ? "active" : ""}`} onClick={() => { setActiveNav("financeiro"); router.push("/visualizar_gastos"); }}>
               <FinanceIcon /> Financeiro
             </button>
-
             <span className="oc-nav-label">Cadastros</span>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_onibus")}>
-              <BusIcon size={18} /> Ônibus
-            </button>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_rotas")}>
-              <RouteIcon size={18} /> Rotas
-            </button>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_motoristas")}>
-              <DriverIcon size={18} /> Motoristas
-            </button>
-            <button className="oc-nav-item" onClick={() => router.push("/lista_escolas")}>
-              <SchoolIcon size={18} /> Escolas
-            </button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_onibus")}><BusIcon size={18} /> Ônibus</button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_rotas")}><RouteIcon size={18} /> Rotas</button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIcon size={18} /> Motoristas</button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIcon size={18} /> Escolas</button>
           </nav>
-
           <div className="oc-sidebar-footer">
             <button className="oc-user-row" onClick={() => router.push("/perfil")}>
               <div className="oc-avatar">A</div>
-              <div>
-                <div className="oc-user-name">Admin</div>
-                <div className="oc-user-role">Gestor</div>
-              </div>
+              <div><div className="oc-user-name">Admin</div><div className="oc-user-role">Gestor</div></div>
             </button>
             <SidebarLogoutButton />
           </div>
         </aside>
 
-        {/* ── CONTENT ── */}
         <div className="oc-content-wrap">
-
-          {/* ── NAVBAR ── */}
           <header className="oc-navbar">
             <div>
               <div className="oc-topbar-title">Financeiro</div>
@@ -561,8 +437,7 @@ export default function VisualizarGastosPage() {
             </div>
             <div className="oc-nav-right">
               <button className="oc-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <BellIcon />
-                <span className="oc-notif-dot" />
+                <BellIcon /><span className="oc-notif-dot" />
               </button>
               <button className="oc-icon-btn" onClick={() => router.push("/perfil")} title="Perfil">
                 <UserCircleIcon />
@@ -570,23 +445,16 @@ export default function VisualizarGastosPage() {
             </div>
           </header>
 
-          {/* ── CONTEÚDO ── */}
           <main className="oc-main" style={{ background: '#f9f9f9' }}>
             <div className="oc-content">
-
               <div className="oc-top-bar">
-
-                {/* CADASTRAR/EDITAR META - À ESQUERDA */}
                 <div className="oc-btn-wrap" ref={formRef}>
                   <button className="oc-btn-cadastrar" onClick={handleOpenForm}>
                     {meta ? "EDITAR META" : "CADASTRAR META"}
                   </button>
                   {showForm && (
                     <div className="oc-popover">
-                      <p className="oc-popover-label">
-                        <ArrowIcon />
-                        VALOR (POR MÊS)
-                      </p>
+                      <p className="oc-popover-label"><ArrowIcon />VALOR (POR MÊS)</p>
                       {metaLoading ? (
                         <p className="oc-meta-loading">Carregando...</p>
                       ) : (
@@ -596,12 +464,7 @@ export default function VisualizarGastosPage() {
                             className="oc-popover-input"
                             placeholder="Ex.: R$ 280.000"
                             value={metaInput}
-                            onChange={(e) => { 
-                              const masked = maskCurrency(e.target.value);
-                              setMetaInput(masked); 
-                              setSaveError(null); 
-                              setSaveSuccess(false); 
-                            }}
+                            onChange={(e) => { const masked = maskCurrency(e.target.value); setMetaInput(masked); setSaveError(null); setSaveSuccess(false); }}
                             onKeyDown={(e) => e.key === "Enter" && handleSave()}
                             autoFocus
                           />
@@ -610,20 +473,16 @@ export default function VisualizarGastosPage() {
                           </button>
                         </>
                       )}
-                      {saveError   && <p className="oc-popover-msg oc-popover-error">{saveError}</p>}
+                      {saveError && <p className="oc-popover-msg oc-popover-error">{saveError}</p>}
                       {saveSuccess && <p className="oc-popover-msg oc-popover-success">Meta salva com sucesso!</p>}
                     </div>
                   )}
                 </div>
 
-                {/* TÍTULO NO CENTRO */}
                 <h2 className="oc-title">GASTOS CADASTRADOS</h2>
 
-                {/* VER META - À DIREITA */}
                 <div className="oc-btn-wrap" ref={metaRef}>
-                  <button className="oc-btn-meta" onClick={handleOpenMeta}>
-                    VER META
-                  </button>
+                  <button className="oc-btn-meta" onClick={handleOpenMeta}>VER META</button>
                   {showMeta && (
                     <div className="oc-popover oc-popover-right">
                       <p className="oc-popover-label">Meta de gastos</p>
@@ -640,29 +499,22 @@ export default function VisualizarGastosPage() {
                     </div>
                   )}
                 </div>
-
               </div>
 
               {meta && expenses.length > 0 && (() => {
                 const totalExpenses = expenses.reduce((sum, e) => sum + (typeof e.value === 'string' ? parseFloat(e.value) : e.value || 0), 0);
                 const percentage = (totalExpenses / meta) * 100;
                 const metaExceeded = totalExpenses >= meta;
-                
                 if (metaExceeded || percentage >= 80) {
                   return (
                     <div className={`oc-alert ${metaExceeded ? 'oc-alert-danger' : 'oc-alert-warning'}`}>
-                      <div className="oc-alert-icon">
-                        {metaExceeded ? '⚠️' : '⚡'}
-                      </div>
+                      <div className="oc-alert-icon">{metaExceeded ? '⚠️' : '⚡'}</div>
                       <div className="oc-alert-content">
-                        <div className="oc-alert-title">
-                          {metaExceeded ? 'META DE GASTOS ATINGIDA!' : 'ATENÇÃO: Limite próximo'}
-                        </div>
+                        <div className="oc-alert-title">{metaExceeded ? 'META DE GASTOS ATINGIDA!' : 'ATENÇÃO: Limite próximo'}</div>
                         <div className="oc-alert-message">
-                          {metaExceeded 
+                          {metaExceeded
                             ? `Gastos totais (${formatBRL(totalExpenses)}) atingiram a meta de ${formatBRL(meta)}`
-                            : `Você utilizou ${Math.round(percentage)}% da meta mensal. Total: ${formatBRL(totalExpenses)} de ${formatBRL(meta)}`
-                          }
+                            : `Você utilizou ${Math.round(percentage)}% da meta mensal. Total: ${formatBRL(totalExpenses)} de ${formatBRL(meta)}`}
                         </div>
                       </div>
                     </div>
@@ -671,16 +523,11 @@ export default function VisualizarGastosPage() {
                 return null;
               })()}
 
-
-              {/* TABELA */}
               <div className="oc-table-wrap">
                 <table className="oc-table">
                   <thead>
                     <tr>
-                      <th>PLACA</th>
-                      <th>MOTORISTA</th>
-                      <th>VALOR</th>
-                      <th>COMPROVANTE</th>
+                      <th>PLACA</th><th>MOTORISTA</th><th>VALOR</th><th>COMPROVANTE</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -702,8 +549,7 @@ export default function VisualizarGastosPage() {
                                 const url = getProofUrl(e.proof_of_payment);
                                 if (url) setProofModal({ url, filename: `comprovante-${e.vehicle_plate}` });
                               }}>
-                                <DownloadIcon />
-                                Visualizar comprovante
+                                <DownloadIcon />Visualizar comprovante
                               </button>
                             ) : (
                               <span className="oc-no-receipt">Sem comprovante</span>
@@ -715,35 +561,21 @@ export default function VisualizarGastosPage() {
                   </tbody>
                 </table>
               </div>
-
             </div>
           </main>
-
         </div>
       </div>
 
-      {/* ── MODAL COMPROVANTE ── */}
       {proofModal && (
         <div className="oc-modal-backdrop" onClick={() => setProofModal(null)}>
           <div className="oc-modal" onClick={(e) => e.stopPropagation()}>
             <div className="oc-modal-header">
               <h3 className="oc-modal-title">Comprovante de Pagamento</h3>
               <div className="oc-modal-header-actions">
-                <button 
-                  className="oc-modal-download" 
-                  onClick={() => {
-                    if (proofModal.url) {
-                      downloadFile(proofModal.url, proofModal.filename);
-                    }
-                  }}
-                  title="Baixar comprovante"
-                >
-                  <DownloadPdfIcon />
-                  BAIXAR
+                <button className="oc-modal-download" onClick={() => { if (proofModal.url) downloadFile(proofModal.url, proofModal.filename); }} title="Baixar comprovante">
+                  <DownloadPdfIcon />BAIXAR
                 </button>
-                <button className="oc-modal-close" onClick={() => setProofModal(null)}>
-                  <CloseIcon />
-                </button>
+                <button className="oc-modal-close" onClick={() => setProofModal(null)}><CloseIcon /></button>
               </div>
             </div>
             <div className="oc-modal-body">
