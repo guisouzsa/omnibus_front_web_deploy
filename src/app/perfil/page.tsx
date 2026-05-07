@@ -137,7 +137,7 @@ export default function PerfilPage() {
     try {
       const fd = new FormData();
       fd.append("institution", form.institution);
-      fd.append("email", form.email);
+      fd.append("email", form.email);  
       if (file) fd.append("profile_photo", file);
 
       const resp = await apiClient.patch("/api/user/profile", fd, { isFormData: true });
