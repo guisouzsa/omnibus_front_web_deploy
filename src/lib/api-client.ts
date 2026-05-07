@@ -36,8 +36,6 @@ class ApiClient {
     }
 
     if (!response.ok) {
-      // FIX: Só redireciona pro login se NÃO estiver já na página de login
-      // Isso evita o loop infinito de redirecionamento
       if (response.status === 401) {
         this.removeToken();
         if (typeof window !== 'undefined') {
@@ -221,17 +219,6 @@ class ApiClient {
   }
 
   // Método específico para login que salva o token
-  public async login<T extends { token: string }>(
-    endpoint: string,
-    credentials: any
-  ): Promise<T> {
-    const response = await this.post<T>(endpoint, credentials);
-    if (response.token) {
-      this.setToken(response.token);
-    }
-    return response;
-  }
-
   public async login<T extends { token: string; message?: string; user?: any; [key: string]: any }>(
     endpoint: string,
     credentials: any
@@ -243,13 +230,10 @@ class ApiClient {
     return response;
   }
 
-  // Método para verificar se está autenticado localmente (só checa localStorage)
   public isAuthenticated(): boolean {
     return !!this.getToken();
   }
 
-  // FIX: Novo método que valida o token com o backend de verdade
-  // Use este na página de login para evitar redirect com token expirado
   public async validateToken(): Promise<boolean> {
     if (!this.getToken()) return false;
     try {
@@ -262,5 +246,4 @@ class ApiClient {
   }
 }
 
-// Exportar instância singleton
 export const apiClient = new ApiClient();
