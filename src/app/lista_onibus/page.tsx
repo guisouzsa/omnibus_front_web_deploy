@@ -20,6 +20,11 @@ const css = `
   .oc-nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
   .oc-nav-item.active { background: #f1bb13; color: #01233F; font-weight: 600; }
   .oc-sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .oc-user-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.15s; }
+  .oc-user-row:hover { background: rgba(255,255,255,0.07); }
+  .oc-avatar { width: 32px; height: 32px; background: #f1bb13; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #01233F; flex-shrink: 0; }
+  .oc-user-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .oc-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
 
   /* CONTENT */
   .oc-content-wrap { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
@@ -28,6 +33,10 @@ const css = `
   .oc-navbar { background: #fff; border-bottom: 1px solid #e2e6ea; padding: 0 36px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .oc-topbar-title { font-size: 16px; font-weight: 600; color: #01233F; }
   .oc-topbar-sub { font-size: 12px; color: #6b7a8d; margin-top: 1px; font-weight: 400; }
+  .oc-nav-right { display: flex; align-items: center; gap: 10px; }
+  .oc-icon-btn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid #e2e6ea; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #01233F; transition: all 0.15s; position: relative; }
+  .oc-icon-btn:hover { background: #f0f2f5; }
+  .oc-notif-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid #fff; }
 
   /* MAIN */
   .oc-main { padding: 32px 40px; }
@@ -124,8 +133,16 @@ export default function OnibusCadastradosPage() {
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
               Motoristas
             </button>
+            <button className="oc-nav-item" onClick={() => router.push("/lista_escolas")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Escolas
+            </button>
           </nav>
           <div className="oc-sidebar-footer">
+            <button className="oc-user-row" onClick={() => router.push("/perfil")}>
+              <div className="oc-avatar">A</div>
+              <div><div className="oc-user-name">Admin</div><div className="oc-user-role">Gestor</div></div>
+            </button>
             <SidebarLogoutButton />
           </div>
         </aside>
@@ -135,6 +152,21 @@ export default function OnibusCadastradosPage() {
             <div>
               <div className="oc-topbar-title">Frota de Ônibus</div>
               <div className="oc-topbar-sub">Ônibus cadastrados no sistema</div>
+            </div>
+            <div className="oc-nav-right">
+              <button className="oc-icon-btn" onClick={() => router.push("/notificacoes")}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span className="oc-notif-dot" />
+              </button>
+              <button className="oc-icon-btn" onClick={() => router.push("/perfil")}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </button>
             </div>
           </header>
 
