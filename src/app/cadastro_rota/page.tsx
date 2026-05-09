@@ -401,6 +401,3 @@ export default function CadastroRotaPage() {
     </>
   );
 }
-
-....
-
