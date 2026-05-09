@@ -32,24 +32,24 @@ const css = `
     background: #01233F;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 20px; z-index: 9999;
+    gap: 16px; z-index: 9999;
   }
 
   .p-loading-spinner {
-    width: 48px; height: 48px;
-    border: 4px solid rgba(241,187,19,0.2);
-    border-top-color: #f1bb13;
+    width: 40px; height: 40px;
     border-radius: 50%;
-    animation: spin 0.9s linear infinite;
+    border: 2.5px solid rgba(241,187,19,0.15);
+    border-top-color: #f1bb13;
+    animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
   }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .p-loading-title {
-    font-size: 18px; font-weight: 700;
-    color: #ffffff; letter-spacing: 0.5px;
+  .p-loading-label {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
   }
 
   /* ── LAYOUT ── */
@@ -57,11 +57,10 @@ const css = `
 
   /* ── SIDEBAR ── */
   .p-sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .p-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; }
+  .p-sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
   .p-logo-texts { display: flex; flex-direction: column; }
   .p-logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .p-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
-  .p-logo-icon { width: 34px; height: 34px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .p-sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px; }
   .p-nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 14px 0 6px; }
   .p-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
@@ -150,7 +149,6 @@ const getPhotoUrl = (photoPath: string | null): string | null => {
   return `${apiBaseUrl}${pathWithSlash}?t=${Date.now()}`;
 };
 
-// Ícone de ônibus filled — mesmo usado nos nav-items
 function BusIcon({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
@@ -163,7 +161,7 @@ function LoadingScreen() {
   return (
     <div className="p-loading-screen">
       <div className="p-loading-spinner" />
-      <div className="p-loading-title">Carregando</div>
+      <span className="p-loading-label">Carregando</span>
     </div>
   );
 }
@@ -257,13 +255,11 @@ export default function PerfilPage() {
 
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
+            {/* Ícone à esquerda, sem fundo, igual sidebar mas um pouco maior */}
+            <BusIcon size={22} color="rgba(255,255,255,0.9)" />
             <div className="p-logo-texts">
               <div className="p-logo-text">Omnibus</div>
               <div className="p-logo-sub">Gestão Escolar</div>
-            </div>
-            {/* Logo icon — mesmo ônibus filled, amarelo */}
-            <div className="p-logo-icon">
-              <BusIcon size={18} color="#01233F" />
             </div>
           </div>
           <nav className="p-sidebar-nav">
