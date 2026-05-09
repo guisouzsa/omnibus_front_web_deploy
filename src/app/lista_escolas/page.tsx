@@ -6,25 +6,28 @@ import { useSchools } from "@/hooks/useSchools";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
-function BusSideIcon({ size = 26, color = "rgba(255,255,255,0.92)" }: { size?: number; color?: string }) {
+
+// Ônibus lateral — exagerado, simples, alto contraste
+function BusSideIcon({ size = 28 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill={color} xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="9" width="26" height="13" rx="2.5"/>
-      <path d="M28 11.5V19a1.5 1.5 0 0 0 1.5-1.5v-4A1.5 1.5 0 0 0 28 11.5z"/>
-      <rect x="5" y="11.5" width="5" height="4" rx="1" fill="white" opacity="0.85"/>
-      <rect x="12" y="11.5" width="5" height="4" rx="1" fill="white" opacity="0.85"/>
-      <rect x="19" y="11.5" width="4" height="4" rx="1" fill="white" opacity="0.85"/>
-      <rect x="5" y="16.5" width="4" height="3.5" rx="0.75" fill="white" opacity="0.4"/>
-      <circle cx="8" cy="23.5" r="3" fill="white" opacity="0.15"/>
-      <circle cx="8" cy="23.5" r="3" stroke={color} strokeWidth="1.5" fill="none" opacity="0.9"/>
-      <circle cx="8" cy="23.5" r="1.2" fill={color}/>
-      <circle cx="23" cy="23.5" r="3" fill="white" opacity="0.15"/>
-      <circle cx="23" cy="23.5" r="3" stroke={color} strokeWidth="1.5" fill="none" opacity="0.9"/>
-      <circle cx="23" cy="23.5" r="1.2" fill={color}/>
-      <rect x="2" y="21" width="26" height="1" rx="0.5" opacity="0.3"/>
+    <svg width={size} height={size} viewBox="0 0 40 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="2" width="34" height="17" rx="3.5" fill="rgba(255,255,255,0.95)" />
+      <rect x="1" y="2" width="34" height="5.5" rx="3.5" fill="#f1bb13" />
+      <rect x="1" y="5.5" width="34" height="2" fill="#f1bb13" />
+      <rect x="35" y="6" width="4" height="9" rx="2" fill="rgba(255,255,255,0.75)" />
+      <rect x="5"  y="9" width="7" height="6" rx="1.5" fill="#01233F" />
+      <rect x="14" y="9" width="7" height="6" rx="1.5" fill="#01233F" />
+      <rect x="23" y="9" width="6" height="6" rx="1.5" fill="#01233F" />
+      <circle cx="9"  cy="23" r="5.5" fill="#01233F" />
+      <circle cx="9"  cy="23" r="3"   fill="rgba(255,255,255,0.9)" />
+      <circle cx="9"  cy="23" r="1.3" fill="#01233F" />
+      <circle cx="28" cy="23" r="5.5" fill="#01233F" />
+      <circle cx="28" cy="23" r="3"   fill="rgba(255,255,255,0.9)" />
+      <circle cx="28" cy="23" r="1.3" fill="#01233F" />
     </svg>
   );
 }
+
 function BusFrontIcon({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
@@ -114,6 +117,30 @@ const css = `
   body { font-family: 'DM Sans', sans-serif; }
   .layout { display: flex; min-height: 100vh; background: var(--bg); }
 
+  /* LOADING FULLSCREEN */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: #01233F;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 9999;
+  }
+  .loading-spinner {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(241,187,19,0.15);
+    border-top-color: #f1bb13;
+    animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+  }
+
   /* SIDEBAR */
   .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
@@ -149,22 +176,18 @@ const css = `
   /* MAIN */
   .main { padding: 32px; flex: 1; }
 
-  /* TOP BAR */
   .top-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
   .page-title { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: 0.3px; white-space: nowrap; margin: 0; flex-shrink: 0; }
 
-  /* SEARCH */
   .search-wrap { display: flex; align-items: center; background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 14px; height: 40px; flex: 1; min-width: 180px; gap: 8px; transition: border-color 0.15s, box-shadow 0.15s; }
   .search-wrap:focus-within { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(241,187,19,0.1); }
   .search-wrap svg { color: var(--muted); flex-shrink: 0; }
   .search-input { border: none; outline: none; font-size: 13px; color: var(--text); width: 100%; background: transparent; font-family: 'DM Sans', sans-serif; }
   .search-input::placeholder { color: #b0bac6; }
 
-  /* BTN CADASTRAR */
   .btn-primary { background: var(--yellow); border: none; border-radius: 8px; padding: 0 20px; height: 40px; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; white-space: nowrap; transition: background 0.15s; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
   .btn-primary:hover { background: var(--yellow-dark); }
 
-  /* TABLE CARD */
   .table-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
   .table { width: 100%; border-collapse: collapse; }
   .table thead tr { background: var(--navy); }
@@ -177,7 +200,6 @@ const css = `
   .td-muted { color: var(--muted); font-size: 13px; }
   .td-ops { display: flex; align-items: center; gap: 6px; }
 
-  /* ACTION BUTTONS */
   .btn-edit { display: inline-flex; align-items: center; gap: 5px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 700; color: var(--text); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
   .btn-edit:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
   .btn-delete { display: inline-flex; align-items: center; gap: 5px; background: #fff5f5; border: 1px solid #fecaca; border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 700; color: #dc2626; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
@@ -216,13 +238,26 @@ export default function ListaEscolasPage() {
     }
   };
 
+  // ── Loading fullscreen — igual ao que era no perfil ──
+  if (loading) {
+    return (
+      <>
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+        <div className="loading-screen">
+          <div className="loading-spinner" />
+          <span className="loading-label">Carregando</span>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="layout">
         <aside className="sidebar">
           <div className="sidebar-logo">
-            <BusSideIcon size={26} />
+            <BusSideIcon size={28} />
             <div className="logo-texts">
               <div className="logo-text">Omnibus</div>
               <div className="logo-sub">Gestão Escolar</div>
@@ -266,10 +301,16 @@ export default function ListaEscolasPage() {
               <h2 className="page-title">Escolas cadastradas</h2>
               <div className="search-wrap">
                 <SearchIcon />
-                <input type="text" className="search-input" placeholder="Buscar escola..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Buscar escola..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
               </div>
               <button className="btn-primary" onClick={() => router.push("/cadastro_escola")}>
-                <SchoolIconFilled size={15} color="#01233F" /> Cadastrar escola
+                Cadastrar escola
               </button>
             </div>
 
@@ -281,9 +322,7 @@ export default function ListaEscolasPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
-                    <tr><td colSpan={4} className="feedback">Carregando escolas...</td></tr>
-                  ) : error ? (
+                  {error ? (
                     <tr><td colSpan={4} className="feedback error">{error}</td></tr>
                   ) : filtered.length === 0 ? (
                     <tr><td colSpan={4} className="feedback">Nenhuma escola cadastrada.</td></tr>
