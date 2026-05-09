@@ -452,15 +452,15 @@ export default function PerfilPage() {
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div className="p-logo-text">Omnibus</div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="5" width="20" height="13" rx="2"/>
                   <path d="M2 10h20"/>
-                  <circle cx="7" cy="20" r="1.5" fill="rgba(255,255,255,0.35)" stroke="none"/>
-                  <circle cx="17" cy="20" r="1.5" fill="rgba(255,255,255,0.35)" stroke="none"/>
+                  <circle cx="7" cy="20" r="1.5" fill="rgba(255,255,255,0.4)" stroke="none"/>
+                  <circle cx="17" cy="20" r="1.5" fill="rgba(255,255,255,0.4)" stroke="none"/>
                   <path d="M5 18h14"/>
                 </svg>
+                <div className="p-logo-text">Omnibus</div>
               </div>
               <div className="p-logo-sub">Gestão Escolar</div>
             </div>
