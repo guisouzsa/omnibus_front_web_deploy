@@ -184,6 +184,7 @@ export default function CadastroRotaPage() {
     start_point_cep: "",
     start_point: "",
     start_point_reference: "",
+    end_point: "",
     departure_time: "",
     school_id: "",
   });
