@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRoutes } from "@/hooks/useRoutes";
@@ -223,7 +222,7 @@ export default function CadastroRotaPage() {
       return;
     }
 
-    await createRoute(form);
+    await createRoute({ ...form, school_id: Number(form.school_id) });
     router.push("/lista_rotas");
   };
 
