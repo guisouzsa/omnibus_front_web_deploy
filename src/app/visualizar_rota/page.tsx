@@ -302,6 +302,15 @@ export default function VisualizarRotaPage() {
       });
     };
 
+    const getPointLabel = (point: any, defaultLabel: string): string => {
+      if (!point) return defaultLabel;
+      if (typeof point === 'string') return point;
+      if (typeof point === 'object') {
+        return (point.name || point.label || defaultLabel) as string;
+      }
+      return defaultLabel;
+    };
+
     const renderRoute = async () => {
       if (!routeId) { setError("Rota não informada."); setLoading(false); return; }
 
@@ -317,8 +326,8 @@ export default function VisualizarRotaPage() {
         const endPoint   = response.map?.end_point || response.map_points?.end;
 
         setRouteName(route.name);
-        setStartLabel(startPoint?.name || startPoint?.label || "—");
-        setEndLabel(endPoint?.name || endPoint?.label || "—");
+        setStartLabel(getPointLabel(startPoint, "—"));
+        setEndLabel(getPointLabel(endPoint, "—"));
         setDuration(response.suggested_duration_minutes);
         setDistance(response.map?.distance_km || response.distance);
 
@@ -351,7 +360,7 @@ export default function VisualizarRotaPage() {
           iconSize: [36, 36], className: "",
         });
         L.marker([startPoint.lat, startPoint.lng], { icon: startIcon }).addTo(map)
-          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">SAÍDA</strong><br/><span style="color:#666;">${startPoint.name || startPoint.label}</span></div>`);
+          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">SAÍDA</strong><br/><span style="color:#666;">${getPointLabel(startPoint, 'Ponto de Saída')}</span></div>`);
 
         // Marcador B (yellow)
         const endIcon = L.divIcon({
@@ -359,7 +368,7 @@ export default function VisualizarRotaPage() {
           iconSize: [36, 36], className: "",
         });
         L.marker([endPoint.lat, endPoint.lng], { icon: endIcon }).addTo(map)
-          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">CHEGADA</strong><br/><span style="color:#666;">${endPoint.name || endPoint.label}</span></div>`);
+          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">CHEGADA</strong><br/><span style="color:#666;">${getPointLabel(endPoint, 'Ponto de Chegada')}</span></div>`);
 
         let pathCoordinates: [number, number][] = [[startPoint.lat, startPoint.lng], [endPoint.lat, endPoint.lng]];
 
