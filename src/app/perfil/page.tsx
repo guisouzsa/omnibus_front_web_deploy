@@ -29,70 +29,163 @@ const css = `
   /* ── LOADING ── */
   .p-loading-screen {
     position: fixed; inset: 0;
-    background: var(--navy);
+    background: #f8f9fb;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 28px; z-index: 9999;
+    gap: 0; z-index: 9999;
   }
+  @media (prefers-color-scheme: dark) {
+    .p-loading-screen { background: #0c1c2e; }
+  }
+
+  .p-loading-card {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+  }
+
+  /* Marca no topo */
+  .p-loading-brand {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 40px;
+  }
+  .p-loading-brand-name {
+    font-size: 22px; font-weight: 800;
+    color: #01233F; letter-spacing: -0.5px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .p-loading-brand-name { color: #ffffff; }
+  }
+  .p-loading-brand-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #f1bb13; margin-left: 3px;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+
+  /* Ônibus maior */
   .p-bus-loader {
     position: relative;
-    width: 80px; height: 48px;
+    width: 140px; height: 84px;
+    animation: bus-bounce 1.4s ease-in-out infinite;
+    margin-bottom: 0;
   }
+  @keyframes bus-bounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+  }
+
   .p-bus-body {
-    position: absolute; bottom: 8px; left: 0; right: 0;
-    height: 30px; background: var(--yellow); border-radius: 6px 10px 4px 4px;
+    position: absolute; bottom: 14px; left: 0; right: 0;
+    height: 50px; background: #f1bb13;
+    border-radius: 8px 16px 6px 6px;
+  }
+  .p-bus-stripe {
+    position: absolute;
+    left: 0; right: 0;
+    height: 7px; background: #01233F;
+    bottom: 44px;
   }
   .p-bus-roof {
-    position: absolute; bottom: 30px; left: 8px; right: 4px;
-    height: 16px; background: var(--yellow); border-radius: 5px 8px 0 0;
+    position: absolute; bottom: 60px; left: 14px; right: 8px;
+    height: 26px; background: #f1bb13;
+    border-radius: 7px 14px 0 0;
   }
   .p-bus-windows {
-    position: absolute; bottom: 36px; left: 14px;
-    display: flex; gap: 7px;
+    position: absolute; bottom: 65px; left: 24px;
+    display: flex; gap: 12px;
   }
   .p-bus-window {
-    width: 10px; height: 8px;
-    background: var(--navy); border-radius: 2px;
+    width: 18px; height: 14px;
+    background: #01233F; border-radius: 3px;
     opacity: 0.7;
+    animation: window-blink 3s ease-in-out infinite;
+  }
+  .p-bus-window:nth-child(2) { animation-delay: 0.5s; }
+  .p-bus-window:nth-child(3) { animation-delay: 1s; }
+  @keyframes window-blink {
+    0%, 88%, 100% { opacity: 0.7; }
+    93% { opacity: 0.15; }
   }
   .p-bus-door {
-    position: absolute; bottom: 8px; right: 10px;
-    width: 10px; height: 16px;
-    background: var(--navy); border-radius: 2px 2px 0 0;
-    opacity: 0.5;
+    position: absolute; bottom: 14px; right: 18px;
+    width: 16px; height: 28px;
+    background: #01233F; border-radius: 3px 3px 0 0;
+    opacity: 0.35;
+  }
+  .p-bus-front {
+    position: absolute; bottom: 14px; left: 0;
+    width: 20px; height: 50px;
+    background: #daa000;
+    border-radius: 8px 0 0 6px;
+  }
+  .p-bus-headlight {
+    position: absolute; bottom: 30px; left: 3px;
+    width: 10px; height: 7px;
+    background: #fffde7; border-radius: 2px;
+    box-shadow: 0 0 10px 3px rgba(255,248,100,0.55);
+    animation: headlight 1.8s ease-in-out infinite;
+  }
+  @keyframes headlight {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px 3px rgba(255,248,100,0.55); }
+    50% { opacity: 0.65; box-shadow: 0 0 18px 5px rgba(255,248,100,0.3); }
   }
   .p-bus-wheel-l, .p-bus-wheel-r {
     position: absolute; bottom: 0;
-    width: 14px; height: 14px;
-    background: var(--navy); border-radius: 50%;
-    border: 3px solid #334;
-    animation: spin 0.6s linear infinite;
+    width: 26px; height: 26px;
+    background: #1a2535; border-radius: 50%;
+    border: 4px solid #3d4f63;
+    animation: spin 0.45s linear infinite;
   }
-  .p-bus-wheel-l { left: 10px; }
-  .p-bus-wheel-r { right: 10px; }
+  .p-bus-wheel-l { left: 18px; }
+  .p-bus-wheel-r { right: 18px; }
+  .p-bus-wheel-l::after, .p-bus-wheel-r::after {
+    content: '';
+    position: absolute; inset: 3px;
+    border-radius: 50%;
+    border-top: 2px solid rgba(255,255,255,0.18);
+  }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+  /* Estrada */
+  .p-road-wrap { width: 180px; margin-top: 2px; margin-bottom: 36px; }
   .p-road {
-    width: 120px; height: 3px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
+    width: 100%; height: 3px;
+    background: #dde1e7;
+    border-radius: 4px;
+    position: relative; overflow: hidden;
+  }
+  @media (prefers-color-scheme: dark) {
+    .p-road { background: rgba(255,255,255,0.08); }
   }
   .p-road::after {
     content: '';
-    position: absolute; left: -40%;
-    width: 40%; height: 100%;
-    background: var(--yellow);
-    border-radius: 2px;
-    animation: road 0.8s linear infinite;
+    position: absolute; left: -55%;
+    width: 55%; height: 100%;
+    background: linear-gradient(90deg, transparent, #f1bb13 50%, transparent);
+    animation: road 1s ease-in-out infinite;
   }
-  @keyframes road { from { left: -40%; } to { left: 110%; } }
+  @keyframes road { from { left: -55%; } to { left: 110%; } }
 
-  .p-loading-text {
-    font-size: 13px; font-weight: 600;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 2px; text-transform: uppercase;
+  /* Texto + dots */
+  .p-loading-label {
+    font-size: 11px; font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .p-loading-label { color: rgba(255,255,255,0.35); }
+  }
+  .p-loading-dots { display: flex; gap: 6px; align-items: center; }
+  .p-loading-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #f1bb13;
+    animation: dot-pulse 1.2s ease-in-out infinite;
+  }
+  .p-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .p-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-pulse {
+    0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
+    40% { transform: scale(1); opacity: 1; }
   }
 
   /* ── LAYOUT ── */
@@ -132,11 +225,11 @@ const css = `
     border: none;
     background: transparent;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--muted);
+    cursor: pointer; color: var(--navy);
     transition: background 0.15s, color 0.15s;
     position: relative;
   }
-  .p-icon-btn:hover { background: var(--bg); color: var(--text); }
+  .p-icon-btn:hover { background: var(--bg); color: var(--navy); }
   .p-notif-dot {
     position: absolute; top: 8px; right: 8px;
     width: 7px; height: 7px;
@@ -334,7 +427,15 @@ function BusIcon({ size = 18, color = "#01233F" }: { size?: number; color?: stri
 function LoadingScreen() {
   return (
     <div className="p-loading-screen">
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+      <div className="p-loading-card">
+
+        {/* Marca */}
+        <div className="p-loading-brand">
+          <span className="p-loading-brand-name">Omnibus</span>
+          <span className="p-loading-brand-dot" />
+        </div>
+
+        {/* Ônibus */}
         <div className="p-bus-loader">
           <div className="p-bus-roof" />
           <div className="p-bus-windows">
@@ -342,14 +443,29 @@ function LoadingScreen() {
             <div className="p-bus-window" />
             <div className="p-bus-window" />
           </div>
+          <div className="p-bus-stripe" />
           <div className="p-bus-body" />
+          <div className="p-bus-front" />
+          <div className="p-bus-headlight" />
           <div className="p-bus-door" />
           <div className="p-bus-wheel-l" />
           <div className="p-bus-wheel-r" />
         </div>
-        <div className="p-road" />
+
+        {/* Estrada */}
+        <div className="p-road-wrap">
+          <div className="p-road" />
+        </div>
+
+        {/* Texto */}
+        <span className="p-loading-label">Carregando</span>
+        <div className="p-loading-dots">
+          <div className="p-loading-dot" />
+          <div className="p-loading-dot" />
+          <div className="p-loading-dot" />
+        </div>
+
       </div>
-      <div className="p-loading-text">Carregando</div>
     </div>
   );
 }
@@ -444,7 +560,6 @@ export default function PerfilPage() {
         {/* ── SIDEBAR idêntica ao dashboard ── */}
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
-            <div className="p-logo-icon"><BusIcon size={18} color="#01233F" /></div>
             <div>
               <div className="p-logo-text">Omnibus</div>
               <div className="p-logo-sub">Gestão Escolar</div>
@@ -517,9 +632,10 @@ export default function PerfilPage() {
             <div className="p-nav-right">
               {/* Notificação — sino limpo, sem quadrado */}
               <button className="p-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M12 2a6 6 0 0 0-6 6c0 4.5-2.5 6.5-2.5 6.5S4 15 4 15.5c0 .8.7 1.5 1.5 1.5h13c.8 0 1.5-.7 1.5-1.5 0-.5-.5-1-.5-1S17 12.5 17 8a6 6 0 0 0-5-5.92V2z" opacity="0.15"/>
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor" opacity="0.9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
                 <span className="p-notif-dot" />
               </button>
