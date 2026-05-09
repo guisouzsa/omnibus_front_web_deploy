@@ -29,60 +29,101 @@ const css = `
   /* ── LOADING ── */
   .p-loading-screen {
     position: fixed; inset: 0;
-    background: #f8f9fb;
+    background: #01233F;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 24px; z-index: 9999;
+    gap: 32px; z-index: 9999;
   }
-  @media (prefers-color-scheme: dark) {
-    .p-loading-screen { background: #0c1c2e; }
-  }
+
   .p-loading-card {
     display: flex; flex-direction: column;
-    align-items: center; gap: 20px;
+    align-items: center; gap: 28px;
   }
-  .p-loading-brand {
-    font-size: 15px; font-weight: 700;
-    color: #01233F; letter-spacing: -0.2px;
-    opacity: 0.5;
+
+  .p-loading-orbit {
+    position: relative;
+    width: 88px; height: 88px;
   }
-  @media (prefers-color-scheme: dark) {
-    .p-loading-brand { color: #ffffff; }
+
+  .p-loading-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid rgba(241,187,19,0.25);
+    animation: orbit-spin 3s linear infinite;
   }
-  .p-loading-bus-svg {
-    animation: bus-rock 2s ease-in-out infinite;
+
+  .p-loading-ring-dot {
+    position: absolute;
+    top: -4px; left: 50%;
+    transform: translateX(-50%);
+    width: 8px; height: 8px;
+    background: #f1bb13;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #f1bb13;
   }
-  @keyframes bus-rock {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-3px) rotate(-0.4deg); }
-    75% { transform: translateY(-1px) rotate(0.3deg); }
+
+  @keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+  .p-loading-center {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  .p-loading-bar {
-    width: 80px; height: 2px;
-    background: #e2e6ea; border-radius: 2px;
-    overflow: hidden; position: relative;
+
+  .p-loading-icon {
+    width: 52px; height: 52px;
+    background: #f1bb13;
+    border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+    animation: icon-glow 2s ease-in-out infinite;
   }
-  @media (prefers-color-scheme: dark) {
-    .p-loading-bar { background: rgba(255,255,255,0.1); }
+
+  @keyframes icon-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(241,187,19,0.5); }
+    50% { box-shadow: 0 0 0 16px rgba(241,187,19,0); }
   }
-  .p-loading-bar::after {
-    content: '';
-    position: absolute; left: -60%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, #f1bb13, transparent);
-    animation: bar-slide 1.4s ease-in-out infinite;
+
+  .p-loading-texts { text-align: center; }
+
+  .p-loading-title {
+    font-size: 30px; font-weight: 800;
+    color: #ffffff; letter-spacing: -0.5px;
+    margin-bottom: 4px;
   }
-  @keyframes bar-slide { from { left: -60%; } to { left: 110%; } }
+
+  .p-loading-subtitle {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 4px; text-transform: uppercase;
+  }
+
+  .p-loading-dots {
+    display: flex; gap: 5px;
+    justify-content: center; margin-top: 10px;
+  }
+
+  .p-loading-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #f1bb13;
+    animation: dot-anim 1.4s ease-in-out infinite;
+  }
+  .p-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .p-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot-anim {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.7); }
+    40% { opacity: 1; transform: scale(1); }
+  }
 
   /* ── LAYOUT ── */
   .p-page { min-height: 100vh; background: var(--bg); font-family: 'DM Sans', sans-serif; display: flex; }
 
-  /* ── SIDEBAR (idêntica ao dashboard) ── */
+  /* ── SIDEBAR ── */
   .p-sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .p-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
-  .p-logo-icon { width: 34px; height: 34px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .p-sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; }
+  .p-logo-texts { display: flex; flex-direction: column; }
   .p-logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .p-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
+  .p-logo-icon { width: 34px; height: 34px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .p-sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 2px; }
   .p-nav-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 0 12px; margin: 14px 0 6px; }
   .p-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
@@ -103,181 +144,48 @@ const css = `
   .p-topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
   .p-topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .p-nav-right { display: flex; align-items: center; gap: 8px; }
-
-  /* Ícones da topbar — sem borda/quadrado */
-  .p-icon-btn {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--navy);
-    transition: background 0.15s, color 0.15s;
-    position: relative;
-  }
-  .p-icon-btn:hover { background: var(--bg); color: var(--navy); }
-  .p-notif-dot {
-    position: absolute; top: 8px; right: 8px;
-    width: 7px; height: 7px;
-    background: var(--red); border-radius: 50%;
-    border: 2px solid #fff;
-  }
-
-  /* Foto de perfil na topbar — redonda, sem quadrado */
-  .p-topbar-avatar {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: var(--yellow);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: var(--navy);
-    cursor: pointer;
-    border: 2px solid transparent;
-    overflow: hidden;
-    transition: border-color 0.15s;
-    flex-shrink: 0;
-  }
+  .p-icon-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: background 0.15s; position: relative; }
+  .p-icon-btn:hover { background: var(--bg); }
+  .p-notif-dot { position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 2px solid #fff; }
+  .p-topbar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; border: 2px solid transparent; overflow: hidden; transition: border-color 0.15s; flex-shrink: 0; }
   .p-topbar-avatar:hover { border-color: var(--yellow); }
   .p-topbar-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ── MAIN ── */
-  .p-main {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .p-main { flex: 1; padding: 40px; display: flex; align-items: center; justify-content: center; }
 
   /* ── CARD ── */
-  .p-card {
-    background: var(--card);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 24px rgba(1,35,63,0.07);
-    max-width: 900px;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  /* Banner */
-  .p-card-banner {
-    background: var(--navy);
-    height: 120px;
-    position: relative;
-  }
-  .p-banner-pattern {
-    position: absolute; inset: 0;
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(241,187,19,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(241,187,19,0.05) 0%, transparent 40%);
-  }
-  .p-banner-bar {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 3px; background: var(--yellow);
-  }
-
-  /* Avatar flutuante */
-  .p-avatar-wrap {
-    position: absolute;
-    bottom: -52px; left: 40px;
-    z-index: 2;
-  }
-  .p-avatar-ring {
-    width: 104px; height: 104px;
-    border-radius: 50%;
-    padding: 3px;
-    background: var(--yellow);
-    box-shadow: 0 8px 24px rgba(1,35,63,0.2);
-  }
-  .p-avatar-inner {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    background: #f5f5f5;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
-    border: 3px solid #fff;
-  }
+  .p-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(1,35,63,0.07); max-width: 900px; width: 100%; overflow: hidden; }
+  .p-card-banner { background: var(--navy); height: 120px; position: relative; }
+  .p-banner-pattern { position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 50%, rgba(241,187,19,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(241,187,19,0.05) 0%, transparent 40%); }
+  .p-banner-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--yellow); }
+  .p-avatar-wrap { position: absolute; bottom: -52px; left: 40px; z-index: 2; }
+  .p-avatar-ring { width: 104px; height: 104px; border-radius: 50%; padding: 3px; background: var(--yellow); box-shadow: 0 8px 24px rgba(1,35,63,0.2); }
+  .p-avatar-inner { width: 100%; height: 100%; border-radius: 50%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid #fff; }
   .p-avatar-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .p-avatar-placeholder-lg {
-    font-size: 34px; font-weight: 800;
-    color: var(--navy); user-select: none;
-  }
-
-  /* Badge de status sobre avatar */
-  .p-online-badge {
-    position: absolute; bottom: 6px; right: 6px;
-    width: 16px; height: 16px;
-    background: var(--green); border-radius: 50%;
-    border: 3px solid #fff;
-  }
-
-  /* Corpo do card */
+  .p-avatar-placeholder-lg { font-size: 34px; font-weight: 800; color: var(--navy); user-select: none; }
+  .p-online-badge { position: absolute; bottom: 6px; right: 6px; width: 16px; height: 16px; background: var(--green); border-radius: 50%; border: 3px solid #fff; }
   .p-card-body { padding: 68px 40px 40px; }
-
-  .p-profile-top {
-    display: flex; align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 32px; gap: 16px;
-  }
+  .p-profile-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; gap: 16px; }
   .p-profile-name { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
   .p-profile-role { font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 500; }
-  .p-status-tag {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
-    border-radius: 20px; font-size: 11px; font-weight: 600;
-    color: #16a34a; padding: 3px 10px; margin-top: 8px;
-  }
+  .p-status-tag { display: inline-flex; align-items: center; gap: 5px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 20px; font-size: 11px; font-weight: 600; color: #16a34a; padding: 3px 10px; margin-top: 8px; }
   .p-status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
-
   .p-btn-group { display: flex; gap: 8px; flex-shrink: 0; padding-top: 4px; }
-  .p-btn-edit {
-    background: var(--yellow); color: var(--navy);
-    border: none; border-radius: 8px;
-    padding: 10px 20px; font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: background 0.15s;
-    font-family: 'DM Sans', sans-serif;
-  }
+  .p-btn-edit { background: var(--yellow); color: var(--navy); border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s; font-family: 'DM Sans', sans-serif; }
   .p-btn-edit:hover { background: var(--yellow-dark); }
-  .p-btn-cancel {
-    background: #fff; color: var(--muted);
-    border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 10px 18px; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
-  }
+  .p-btn-cancel { background: #fff; color: var(--muted); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
   .p-btn-cancel:hover { border-color: #adb5bd; color: var(--text); }
-  .p-btn-photo {
-    background: var(--bg); color: var(--text);
-    border: 1.5px solid var(--border); border-radius: 8px;
-    padding: 10px 18px; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif;
-  }
+  .p-btn-photo { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
   .p-btn-photo:hover { border-color: var(--yellow); color: var(--navy); }
-
   .p-divider { height: 1px; background: var(--border); margin: 0 0 28px; }
-
-  /* Form */
   .p-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .p-form-group { display: flex; flex-direction: column; gap: 7px; }
   .p-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; }
-  .p-input {
-    border: 1.5px solid var(--border); background: var(--bg);
-    padding: 11px 14px; border-radius: 8px;
-    font-size: 14px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-weight: 500;
-    transition: all 0.15s; outline: none;
-  }
+  .p-input { border: 1.5px solid var(--border); background: var(--bg); padding: 11px 14px; border-radius: 8px; font-size: 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.15s; outline: none; }
   .p-input:focus { background: #fff; border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(241,187,19,0.1); }
   .p-input:disabled { background: var(--bg); color: var(--muted); cursor: not-allowed; border-color: var(--border); }
-
-  .p-btn-save {
-    background: var(--navy); color: #fff;
-    border: none; border-radius: 8px;
-    padding: 12px 28px; font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: background 0.15s;
-    font-family: 'DM Sans', sans-serif; margin-top: 24px;
-  }
+  .p-btn-save { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 12px 28px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s; font-family: 'DM Sans', sans-serif; margin-top: 24px; }
   .p-btn-save:hover { background: #001829; }
   .p-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -304,58 +212,43 @@ const getPhotoUrl = (photoPath: string | null): string | null => {
   return `${apiBaseUrl}${pathWithSlash}?t=${Date.now()}`;
 };
 
-function BusIcon({ size = 18, color = "#01233F" }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="4" width="20" height="14" rx="2"/>
-      <path d="M2 9h20"/><path d="M8 4V2"/><path d="M16 4V2"/>
-      <circle cx="7" cy="20" r="2" fill={color} stroke={color}/>
-      <circle cx="17" cy="20" r="2" fill={color} stroke={color}/>
-      <path d="M5 18h14"/>
-    </svg>
-  );
-}
-
 function LoadingScreen() {
   return (
     <div className="p-loading-screen">
       <div className="p-loading-card">
+        {/* Anel orbital com ponto girando */}
+        <div className="p-loading-orbit">
+          <div className="p-loading-ring">
+            <div className="p-loading-ring-dot" />
+          </div>
+          <div className="p-loading-center">
+            <div className="p-loading-icon">
+              {/* Ônibus estilizado e tecnológico */}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="6" width="24" height="14" rx="3" fill="#01233F"/>
+                <rect x="2" y="11" width="24" height="2" fill="#f1bb13"/>
+                <rect x="5" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
+                <rect x="11" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
+                <rect x="17" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
+                <circle cx="8" cy="23" r="2.5" fill="#01233F"/>
+                <circle cx="8" cy="23" r="1.2" fill="#f1bb13"/>
+                <circle cx="20" cy="23" r="2.5" fill="#01233F"/>
+                <circle cx="20" cy="23" r="1.2" fill="#f1bb13"/>
+                <path d="M5 20h18" stroke="#f1bb13" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
 
-        <svg
-          className="p-loading-bus-svg"
-          width="120" height="80"
-          viewBox="0 0 120 80"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Corpo */}
-          <rect x="8" y="20" width="104" height="44" rx="6" fill="#f1bb13"/>
-          {/* Faixa navy */}
-          <rect x="8" y="38" width="104" height="8" fill="#01233F"/>
-          {/* Teto */}
-          <rect x="16" y="10" width="88" height="14" rx="5" fill="#f1bb13"/>
-          {/* Frente */}
-          <rect x="8" y="20" width="14" height="44" rx="4" fill="#e0a800"/>
-          {/* Para-brisa */}
-          <rect x="10" y="22" width="10" height="14" rx="2" fill="#bde0ff" opacity="0.7"/>
-          {/* Farol */}
-          <rect x="10" y="38" width="8" height="5" rx="2" fill="#fffde7"/>
-          {/* Janelas */}
-          <rect x="28" y="22" width="18" height="13" rx="3" fill="#01233F" opacity="0.6"/>
-          <rect x="52" y="22" width="18" height="13" rx="3" fill="#01233F" opacity="0.6"/>
-          <rect x="76" y="22" width="18" height="13" rx="3" fill="#01233F" opacity="0.6"/>
-          {/* Porta */}
-          <rect x="96" y="36" width="12" height="28" rx="2" fill="#01233F" opacity="0.25"/>
-          {/* Rodas */}
-          <circle cx="30" cy="68" r="10" fill="#1a2535"/>
-          <circle cx="30" cy="68" r="5" fill="#3d4f63"/>
-          <circle cx="90" cy="68" r="10" fill="#1a2535"/>
-          <circle cx="90" cy="68" r="5" fill="#3d4f63"/>
-        </svg>
-
-        <div className="p-loading-bar" />
-        <span className="p-loading-brand">Omnibus</span>
-
+        <div className="p-loading-texts">
+          <div className="p-loading-title">Carregando</div>
+          <div className="p-loading-subtitle">Omnibus</div>
+          <div className="p-loading-dots">
+            <div className="p-loading-dot" />
+            <div className="p-loading-dot" />
+            <div className="p-loading-dot" />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -448,63 +341,83 @@ export default function PerfilPage() {
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="p-page">
 
-        {/* ── SIDEBAR idêntica ao dashboard ── */}
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="5" width="20" height="13" rx="2"/>
-                  <path d="M2 10h20"/>
-                  <circle cx="7" cy="20" r="1.5" fill="rgba(255,255,255,0.4)" stroke="none"/>
-                  <circle cx="17" cy="20" r="1.5" fill="rgba(255,255,255,0.4)" stroke="none"/>
-                  <path d="M5 18h14"/>
-                </svg>
-                <div className="p-logo-text">Omnibus</div>
-              </div>
+            <div className="p-logo-texts">
+              <div className="p-logo-text">Omnibus</div>
               <div className="p-logo-sub">Gestão Escolar</div>
+            </div>
+            <div className="p-logo-icon">
+              {/* Ícone do ônibus preenchido */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="4" width="20" height="14" rx="2" fill="#01233F"/>
+                <path d="M2 9h20" stroke="#f1bb13" strokeWidth="1.5"/>
+                <circle cx="7" cy="20" r="2" fill="#01233F"/>
+                <circle cx="17" cy="20" r="2" fill="#01233F"/>
+                <path d="M5 18h14" stroke="#01233F" strokeWidth="1.5"/>
+                <rect x="4" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
+                <rect x="10" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
+                <rect x="16" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
+              </svg>
             </div>
           </div>
           <nav className="p-sidebar-nav">
             <span className="p-nav-label">Principal</span>
+
+            {/* Dashboard — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/dashboard")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
               </svg>
               Dashboard
             </button>
+
+            {/* Financeiro — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/visualizar_gastos")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.2" strokeLinecap="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
               Financeiro
             </button>
+
             <span className="p-nav-label">Cadastros</span>
+
+            {/* Ônibus — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_onibus")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/>
-                <circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/><path d="M5 18h14"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="4" width="20" height="14" rx="2" fill="rgba(255,255,255,0.55)"/>
+                <path d="M2 9h20" stroke="#01233F" strokeWidth="1.2" opacity="0.6"/>
+                <circle cx="7" cy="20" r="2" fill="rgba(255,255,255,0.55)"/>
+                <circle cx="17" cy="20" r="2" fill="rgba(255,255,255,0.55)"/>
+                <path d="M5 18h14" stroke="rgba(255,255,255,0.55)" strokeWidth="1.2"/>
               </svg>
               Ônibus
             </button>
+
+            {/* Rotas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_rotas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                <circle cx="12" cy="9" r="2.5"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
               </svg>
               Rotas
             </button>
+
+            {/* Motoristas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_motoristas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
               </svg>
               Motoristas
             </button>
+
+            {/* Escolas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_escolas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
+                <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
               </svg>
               Escolas
             </button>
@@ -522,30 +435,19 @@ export default function PerfilPage() {
         </aside>
 
         <div className="p-content-wrap">
-
-          {/* ── TOPBAR ── */}
           <header className="p-navbar">
             <div>
               <div className="p-topbar-title">Perfil</div>
               <div className="p-topbar-sub">Informações da instituição</div>
             </div>
             <div className="p-nav-right">
-              {/* Notificação — sino limpo, sem quadrado */}
               <button className="p-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                  <path d="M12 2a6 6 0 0 0-6 6c0 4.5-2.5 6.5-2.5 6.5S4 15 4 15.5c0 .8.7 1.5 1.5 1.5h13c.8 0 1.5-.7 1.5-1.5 0-.5-.5-1-.5-1S17 12.5 17 8a6 6 0 0 0-5-5.92V2z" opacity="0.15"/>
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor" opacity="0.9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="#01233F" stroke="none">
+                  <path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6zm0 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/>
                 </svg>
                 <span className="p-notif-dot" />
               </button>
-
-              {/* Avatar redondo, sem quadrado */}
-              <div
-                className="p-topbar-avatar"
-                onClick={() => router.push("/perfil")}
-                title="Perfil"
-              >
+              <div className="p-topbar-avatar" onClick={() => router.push("/perfil")} title="Perfil">
                 {photoUrl && !imageError ? (
                   <img src={photoUrl} alt="Perfil" onError={() => setImageError(true)} />
                 ) : (
@@ -555,26 +457,16 @@ export default function PerfilPage() {
             </div>
           </header>
 
-          {/* ── MAIN ── */}
           <main className="p-main">
             <div className="p-card">
-
-              {/* Banner */}
               <div className="p-card-banner">
                 <div className="p-banner-pattern" />
                 <div className="p-banner-bar" />
-
-                {/* Avatar flutuante */}
                 <div className="p-avatar-wrap">
                   <div className="p-avatar-ring">
                     <div className="p-avatar-inner">
                       {photoUrl && !imageError ? (
-                        <img
-                          src={photoUrl}
-                          alt="Foto de perfil"
-                          onError={() => setImageError(true)}
-                          onLoad={() => setImageError(false)}
-                        />
+                        <img src={photoUrl} alt="Foto de perfil" onError={() => setImageError(true)} onLoad={() => setImageError(false)} />
                       ) : (
                         <span className="p-avatar-placeholder-lg">{avatarLetter}</span>
                       )}
@@ -584,7 +476,6 @@ export default function PerfilPage() {
                 </div>
               </div>
 
-              {/* Corpo */}
               <div className="p-card-body">
                 <div className="p-profile-top">
                   <div>
@@ -600,9 +491,7 @@ export default function PerfilPage() {
                       <button className="p-btn-edit" onClick={() => setEditing(true)}>Editar perfil</button>
                     ) : (
                       <>
-                        <button className="p-btn-photo" onClick={() => document.getElementById("file-input")?.click()}>
-                          Trocar foto
-                        </button>
+                        <button className="p-btn-photo" onClick={() => document.getElementById("file-input")?.click()}>Trocar foto</button>
                         <button className="p-btn-cancel" onClick={handleCancelEdit}>Cancelar</button>
                       </>
                     )}
@@ -614,23 +503,11 @@ export default function PerfilPage() {
                 <div className="p-form-grid">
                   <div className="p-form-group">
                     <label className="p-label">Instituição</label>
-                    <input
-                      type="text"
-                      className="p-input"
-                      value={form.institution}
-                      onChange={(e) => setForm({ ...form, institution: e.target.value })}
-                      disabled={!editing}
-                    />
+                    <input type="text" className="p-input" value={form.institution} onChange={(e) => setForm({ ...form, institution: e.target.value })} disabled={!editing} />
                   </div>
                   <div className="p-form-group">
                     <label className="p-label">Email</label>
-                    <input
-                      type="email"
-                      className="p-input"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      disabled={!editing}
-                    />
+                    <input type="email" className="p-input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} disabled={!editing} />
                   </div>
                 </div>
 
@@ -640,13 +517,7 @@ export default function PerfilPage() {
                   </button>
                 )}
 
-                <input
-                  id="file-input"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
+                <input id="file-input" type="file" accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
               </div>
             </div>
           </main>
