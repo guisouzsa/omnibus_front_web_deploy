@@ -313,15 +313,16 @@ export default function VisualizarRotaPage() {
 
         const response  = await getRoute(Number(routeId));
         const route     = response.data;
-        const start     = response.map_points.start;
-        const end       = response.map_points.end;
+        const startPoint = response.map?.start_point || response.map_points?.start;
+        const endPoint   = response.map?.end_point || response.map_points?.end;
 
         setRouteName(route.name);
-        setStartLabel(start.label);
-        setEndLabel(end.label);
+        setStartLabel(startPoint?.name || startPoint?.label || "—");
+        setEndLabel(endPoint?.name || endPoint?.label || "—");
         setDuration(response.suggested_duration_minutes);
+        setDistance(response.map?.distance_km || response.distance);
 
-        if (!start.lat || !start.lng || !end.lat || !end.lng) {
+        if (!startPoint?.lat || !startPoint?.lng || !endPoint?.lat || !endPoint?.lng) {
           setError("Esta rota ainda não possui coordenadas suficientes para o mapa.");
           setLoading(false);
           return;
@@ -334,7 +335,7 @@ export default function VisualizarRotaPage() {
           try { leafletMapRef.current.remove(); } catch (e) { /* ignore */ }
         }
 
-        const map = L.map(mapRef.current).setView([start.lat, start.lng], 13);
+        const map = L.map(mapRef.current).setView([startPoint.lat, startPoint.lng], 13);
         leafletMapRef.current = map;
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -349,21 +350,21 @@ export default function VisualizarRotaPage() {
           html: `<div style="background:#01233F;color:#fff;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 3px 10px rgba(1,35,63,0.35);border:3px solid #fff;font-family:'DM Sans',sans-serif;">A</div>`,
           iconSize: [36, 36], className: "",
         });
-        L.marker([start.lat, start.lng], { icon: startIcon }).addTo(map)
-          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">SAÍDA</strong><br/><span style="color:#666;">${start.label}</span></div>`);
+        L.marker([startPoint.lat, startPoint.lng], { icon: startIcon }).addTo(map)
+          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">SAÍDA</strong><br/><span style="color:#666;">${startPoint.name || startPoint.label}</span></div>`);
 
         // Marcador B (yellow)
         const endIcon = L.divIcon({
           html: `<div style="background:#f1bb13;color:#01233F;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 3px 10px rgba(241,187,19,0.35);border:3px solid #fff;font-family:'DM Sans',sans-serif;">B</div>`,
           iconSize: [36, 36], className: "",
         });
-        L.marker([end.lat, end.lng], { icon: endIcon }).addTo(map)
-          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">CHEGADA</strong><br/><span style="color:#666;">${end.label}</span></div>`);
+        L.marker([endPoint.lat, endPoint.lng], { icon: endIcon }).addTo(map)
+          .bindPopup(`<div style="font-family:'DM Sans',sans-serif;font-size:13px;"><strong style="color:#01233F;">CHEGADA</strong><br/><span style="color:#666;">${endPoint.name || endPoint.label}</span></div>`);
 
-        let pathCoordinates: [number, number][] = [[start.lat, start.lng], [end.lat, end.lng]];
+        let pathCoordinates: [number, number][] = [[startPoint.lat, startPoint.lng], [endPoint.lat, endPoint.lng]];
 
         try {
-          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson`;
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${startPoint.lng},${startPoint.lat};${endPoint.lng},${endPoint.lat}?overview=full&geometries=geojson`;
           const routeResp = await fetch(osrmUrl);
           if (routeResp.ok) {
             const data = await routeResp.json();

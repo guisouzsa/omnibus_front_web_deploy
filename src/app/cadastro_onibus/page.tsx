@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDrivers } from "@/hooks";
-import { useMask } from "@/hooks/useMask";
-import { MASKS } from "@/utils/masks";
+import { useDrivers } from "@/hooks/useDrivers";
+import { useRoutes } from "@/hooks/useRoutes";
+import { useVehicles } from "@/hooks/useVehicles";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -192,63 +192,92 @@ const css = `
   }
 `;
 
-export default function CadastroMotoristaPage() {
+export default function CadastroOnibusPage() {
   const router = useRouter();
-  const { createDriver, loading } = useDrivers(false);
+  const { createVehicle, loading: vehicleLoading } = useVehicles();
+  const { drivers, fetchDrivers, loading: driversLoading } = useDrivers(false);
+  const { routes, fetchRoutes, loading: routesLoading } = useRoutes(false);
 
   const [form, setForm] = useState({
-    nome: "",
-    email: "",
-    telefone: "",
-    numeroCnh: "",
-    senha: "",
-    confirmarSenha: "",
+    plate: "",
+    capacity: "",
+    driver_id: "",
+    route_id: "",
   });
-  const [errorMessage,   setErrorMessage]   = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: string } }) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  useEffect(() => {
+    void fetchDrivers({ per_page: 100 });
+    void fetchRoutes({ per_page: 100 });
+  }, [fetchDrivers, fetchRoutes]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setErrorMessage("");
   };
 
-  // ── Máscaras ──────────────────────────────────────────────────────────────
-  const { ref: telefoneRef } = useMask(MASKS.telefone, handleChange);
-  const { ref: cnhRef      } = useMask(MASKS.cnh,      handleChange);
-  // ─────────────────────────────────────────────────────────────────────────
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(""); setSuccessMessage("");
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    if (!form.nome || !form.email || !form.telefone || !form.numeroCnh || !form.senha) {
-      setErrorMessage("Preencha todos os campos"); return;
-    }
-    if (form.senha !== form.confirmarSenha) {
-      setErrorMessage("As senhas não coincidem"); return;
-    }
-    if (form.senha.length < 8) {
-      setErrorMessage("A senha deve ter pelo menos 8 caracteres"); return;
+    if (!form.plate || !form.capacity || !form.driver_id) {
+      setErrorMessage("Preencha os campos obrigatórios");
+      return;
     }
 
     try {
-      await createDriver({
-        name:                  form.nome,
-        email:                 form.email,
-        phone_number:          form.telefone,
-        license_number:        form.numeroCnh,
-        password:              form.senha,
-        password_confirmation: form.confirmarSenha,
+      setSubmitting(true);
+      console.log('[cadastro_onibus] Submetendo vehicle payload', {
+        plate: form.plate,
+        capacity: Number(form.capacity),
+        driver_id: Number(form.driver_id),
+        route_id: form.route_id ? Number(form.route_id) : null,
       });
-      setSuccessMessage("✓ Motorista cadastrado com sucesso!");
-      setForm({ nome: "", email: "", telefone: "", numeroCnh: "", senha: "", confirmarSenha: "" });
-      setTimeout(() => router.push("/lista_motoristas"), 1500);
+
+      const created = await createVehicle({
+        plate: form.plate,
+        capacity: Number(form.capacity),
+        driver_id: Number(form.driver_id),
+        route_id: form.route_id ? Number(form.route_id) : null,
+      });
+
+      console.log('[cadastro_onibus] createVehicle result', created);
+
+      if (!created) {
+        setErrorMessage("Erro ao cadastrar ônibus");
+        return;
+      }
+
+      setSuccessMessage("✓ Ônibus cadastrado com sucesso!");
+      setForm({ plate: "", capacity: "", driver_id: "", route_id: "" });
+      setTimeout(() => router.push("/lista_onibus"), 1500);
     } catch (err: any) {
-      setErrorMessage(err.message || "Erro ao cadastrar motorista");
+      // If backend returned structured validation errors, show them clearly
+      const resp = err?.response || err?.response?.data || null;
+      if (resp && resp.errors && typeof resp.errors === 'object') {
+        const details = Object.entries(resp.errors)
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+          .join(' | ');
+        setErrorMessage(details || err.message || 'Erro ao cadastrar ônibus');
+      } else if (err?.errors && typeof err.errors === 'object') {
+        const details = Object.entries(err.errors)
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+          .join(' | ');
+        setErrorMessage(details || err.message || 'Erro ao cadastrar ônibus');
+      } else {
+        setErrorMessage(err.message || "Erro ao cadastrar ônibus");
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading) {
+  const loading = vehicleLoading || driversLoading || routesLoading;
+
+  if (loading && !drivers.length && !routes.length) {
     return (
       <>
         <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -264,8 +293,6 @@ export default function CadastroMotoristaPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div className="layout">
-
-        {/* ── Sidebar ── */}
         <aside className="sidebar">
           <div className="sidebar-logo">
             <BusSideIcon size={28} />
@@ -279,9 +306,9 @@ export default function CadastroMotoristaPage() {
             <button className="nav-item" onClick={() => router.push("/dashboard")}><DashIconFilled /> Dashboard</button>
             <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}><FinanceIconFilled /> Financeiro</button>
             <span className="nav-label">Cadastros</span>
-            <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusFrontIcon /> Ônibus</button>
+            <button className="nav-item active" onClick={() => router.push("/lista_onibus")}><BusFrontIcon /> Ônibus</button>
             <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIconFilled /> Rotas</button>
-            <button className="nav-item active"><DriverIconFilled /> Motoristas</button>
+            <button className="nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIconFilled /> Motoristas</button>
             <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIconFilled /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
@@ -294,11 +321,10 @@ export default function CadastroMotoristaPage() {
         </aside>
 
         <div className="content">
-          {/* ── Topbar ── */}
           <header className="topbar">
             <div>
-              <div className="topbar-title">Cadastrar Motorista</div>
-              <div className="topbar-sub">Adicione um novo motorista ao sistema</div>
+              <div className="topbar-title">Cadastrar Ônibus</div>
+              <div className="topbar-sub">Adicione um novo veículo à frota</div>
             </div>
             <div className="topbar-right">
               <button className="icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
@@ -308,88 +334,61 @@ export default function CadastroMotoristaPage() {
             </div>
           </header>
 
-          {/* ── Card ── */}
           <div className="body">
-            <h2 className="page-title">Cadastre um novo motorista</h2>
+            <h2 className="page-title">Cadastre um novo ônibus</h2>
             <div className="card">
-              {errorMessage   && <div className="alert alert-error">{errorMessage}</div>}
+              {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
               {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
               <form onSubmit={handleSubmit}>
                 <div className="field full">
-                  <label className="label">Nome</label>
+                  <label className="label">Placa</label>
                   <input
                     type="text"
-                    name="nome"
+                    name="plate"
                     className="input"
-                    placeholder="Ex: José Bonifácio Sombra"
-                    value={form.nome}
+                    placeholder="Ex: ABC-1234"
+                    value={form.plate}
                     onChange={handleChange}
                   />
                 </div>
 
                 <div className="row">
                   <div className="field">
-                    <label className="label">Email</label>
+                    <label className="label">Capacidade</label>
                     <input
-                      type="email"
-                      name="email"
+                      type="number"
+                      name="capacity"
                       className="input"
-                      placeholder="Ex: jose@gmail.com"
-                      value={form.email}
+                      placeholder="Ex: 42"
+                      value={form.capacity}
                       onChange={handleChange}
+                      min={1}
                     />
                   </div>
                   <div className="field">
-                    <label className="label">Telefone</label>
-                    <input
-                      ref={telefoneRef}
-                      type="tel"
-                      name="telefone"
-                      className="input"
-                      placeholder="Ex: (88) 94002-8922"
-                    />
+                    <label className="label">Motorista</label>
+                    <select name="driver_id" className="input" value={form.driver_id} onChange={handleChange}>
+                      <option value="">Selecione</option>
+                      {drivers.map((driver) => (
+                        <option key={driver.id} value={driver.id}>{driver.name}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
                 <div className="field full">
-                  <label className="label">Número da CNH</label>
-                  <input
-                    ref={cnhRef}
-                    type="text"
-                    name="numeroCnh"
-                    className="input"
-                    placeholder="Ex: 07234567889"
-                  />
+                  <label className="label">Rota vinculada</label>
+                  <select name="route_id" className="input" value={form.route_id} onChange={handleChange}>
+                    <option value="">Nenhuma</option>
+                    {routes.map((route) => (
+                      <option key={route.id} value={route.id}>{route.name}</option>
+                    ))}
+                  </select>
                 </div>
 
-                <div className="row">
-                  <div className="field">
-                    <label className="label">Senha (para login no app)</label>
-                    <input
-                      type="password"
-                      name="senha"
-                      className="input"
-                      placeholder="Mínimo 8 caracteres"
-                      value={form.senha}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="field">
-                    <label className="label">Confirmar Senha</label>
-                    <input
-                      type="password"
-                      name="confirmarSenha"
-                      className="input"
-                      placeholder="Digite a senha novamente"
-                      value={form.confirmarSenha}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <button type="submit" className="btn" disabled={loading}>
-                  {loading ? "Cadastrando..." : "Cadastrar"}
+                <button type="submit" className="btn" disabled={submitting}>
+                  {submitting ? "Cadastrando..." : "Cadastrar"}
                 </button>
               </form>
             </div>

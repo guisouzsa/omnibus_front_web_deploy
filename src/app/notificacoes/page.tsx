@@ -205,16 +205,16 @@ const FILTER_LABELS: Record<FilterType, string> = {
 };
 
 const TYPE_TITLES: Record<NotificationTypeEnum, string> = {
-  route_started:      "Ônibus iniciou a rota",
-  route_finished:     "Rota finalizada",
-  route_delayed:      "Atraso na rota",
-  vehicle_changed:    "Troca de veículo",
-  route_maintenance:  "Mau funcionamento do veículo",
+  route_started:      "Motorista iniciou a rota",
+  route_finished:     "Motorista finalizou a rota",
+  route_delayed:      "Atraso registrado na rota",
+  vehicle_changed:    "Veículo da rota alterado",
+  route_maintenance:  "Ocorrência de manutenção na rota",
   checkpoint_reached: "Ponto de referência alcançado",
-  driver_changed:     "Motorista alterado",
-  no_transport:       "Sem transporte",
-  expense_added:      "Despesa adicionada",
-  route_assigned:     "Rota atribuída",
+  driver_changed:     "Motorista da rota alterado",
+  no_transport:       "Rota sem transporte disponível",
+  expense_added:      "Despesa lançada na rota",
+  route_assigned:     "Rota atribuída ao motorista",
 };
 
 const TYPE_ICONS: Record<NotificationTypeEnum, React.ReactElement> = {

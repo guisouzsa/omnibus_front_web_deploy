@@ -79,7 +79,15 @@ export function useVehicles() {
       }
       
       setError(fullErrorMessage);
-      return false;
+      // Preserve original error object and attach the full message so callers
+      // can access `err.response` (validation errors) as well as the message.
+      if (err && typeof err === 'object') {
+        try {
+          err.message = fullErrorMessage;
+        } catch {}
+        throw err;
+      }
+      throw new Error(fullErrorMessage);
     } finally {
       setLoading(false);
     }

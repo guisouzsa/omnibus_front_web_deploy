@@ -217,10 +217,15 @@ export default function ListaRotasPage() {
   const [search, setSearch] = useState("");
 
   const filtered = (routes || []).filter(
-    (r) =>
-      r.name.toLowerCase().includes(search.toLowerCase()) ||
-      r.start_point.toLowerCase().includes(search.toLowerCase()) ||
-      r.end_point.toLowerCase().includes(search.toLowerCase())
+    (r) => {
+      const startPointText = typeof r.start_point === 'object' ? r.start_point?.name || '' : r.start_point;
+      const endPointText = typeof r.end_point === 'object' ? r.end_point?.name || '' : r.end_point;
+      return (
+        r.name.toLowerCase().includes(search.toLowerCase()) ||
+        startPointText.toLowerCase().includes(search.toLowerCase()) ||
+        endPointText.toLowerCase().includes(search.toLowerCase())
+      );
+    }
   );
 
   const handleDelete = async (id: number) => {
@@ -331,8 +336,12 @@ export default function ListaRotasPage() {
                     filtered.reverse().map((r) => (
                       <tr key={r.id}>
                         <td className="td-name">{r.name}</td>
-                        <td className="td-muted">{r.start_point}</td>
-                        <td className="td-muted">{r.end_point}</td>
+                        <td className="td-muted">
+                          {typeof r.start_point === 'object' ? r.start_point?.name : r.start_point}
+                        </td>
+                        <td className="td-muted">
+                          {typeof r.end_point === 'object' ? r.end_point?.name : r.end_point}
+                        </td>
                         <td className="td-muted">{r.departure_time}</td>
                         <td>
                           <div className="td-ops">

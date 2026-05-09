@@ -48,20 +48,26 @@ export interface School {
 export interface Route {
   id: number;
   user_id: number;
+  driver_id?: number | null;
   school_id?: number | null;
   name: string;
-  start_point: string;
+  start_point: string | { name: string; lat?: number; lng?: number; cep?: string; reference?: string };
   start_point_cep?: string | null;
   start_point_reference?: string | null;
   start_point_lat?: number | null;
   start_point_lng?: number | null;
-  end_point: string;
+  end_point: string | { name: string; lat?: number; lng?: number };
   end_point_lat?: number | null;
   end_point_lng?: number | null;
   departure_time: string;
+  distance?: number | null;
+  distance_km?: number | null;
+  status?: 'assigned' | 'unassigned';
   created_at: string;
   updated_at: string;
   school?: School;
+  driver?: Driver;
+  vehicle?: Vehicle;
 }
 
 export interface GeocodeAddressOption {
@@ -73,7 +79,12 @@ export interface GeocodeAddressOption {
 export interface RouteDetailsResponse {
   data: Route;
   suggested_duration_minutes: number | null;
-  map_points: {
+  map?: {
+    start_point?: { lat: number | null; lng: number | null; name: string; cep?: string; reference?: string };
+    end_point?: { lat: number | null; lng: number | null; name: string };
+    distance_km?: number;
+  };
+  map_points?: {
     start: { lat: number | null; lng: number | null; label: string };
     end: { lat: number | null; lng: number | null; label: string };
   };
@@ -174,7 +185,7 @@ export interface CreateVehicleRequest {
   driver_id: number;
   plate: string;
   capacity: number;
-  mainRoute: string;
+  mainRoute?: string;
   route_id?: number | null;
 }
 

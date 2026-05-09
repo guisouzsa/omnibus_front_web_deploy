@@ -178,13 +178,15 @@ function EditRotaPage() {
         await fetchSchools({ per_page: 100 });
         const routeResponse = await getRoute(Number(routeId));
         const route = routeResponse.data;
+        const startPointStr = typeof route.start_point === 'object' ? route.start_point?.name : route.start_point;
+        const endPointStr = typeof route.end_point === 'object' ? route.end_point?.name : route.end_point;
         setForm({
           name:                  route.name,
           start_point_cep:       route.start_point_cep || "",
           start_point_reference: route.start_point_reference || "",
-          start_point:           route.start_point,
+          start_point:           startPointStr || "",
           departure_time:        route.departure_time,
-          end_point:             route.end_point,
+          end_point:             endPointStr || "",
           school_id:             route.school_id ? String(route.school_id) : "",
         });
       } catch {
