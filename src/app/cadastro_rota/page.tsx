@@ -91,8 +91,7 @@ const css = `
 
   /* ── Loading ── */
   .loading-screen {
-    position: fixed; inset: 0;
-    background: #01233F;
+    position: fixed; inset: 0; background: #01233F;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     gap: 16px; z-index: 9999;
@@ -196,12 +195,11 @@ export default function CadastroRotaPage() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     setErrorMessage("");
   };
 
   const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Só números, máx 8 dígitos, formata como 00000-000
     const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
     const masked = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
     setForm(prev => ({ ...prev, start_point_cep: masked }));
@@ -256,18 +254,33 @@ export default function CadastroRotaPage() {
           </div>
           <nav className="sidebar-nav">
             <span className="nav-label">Principal</span>
-            <button className="nav-item" onClick={() => router.push("/dashboard")}><DashIconFilled /> Dashboard</button>
-            <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}><FinanceIconFilled /> Financeiro</button>
+            <button className="nav-item" onClick={() => router.push("/dashboard")}>
+              <DashIconFilled /> Dashboard
+            </button>
+            <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}>
+              <FinanceIconFilled /> Financeiro
+            </button>
             <span className="nav-label">Cadastros</span>
-            <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusFrontIcon /> Ônibus</button>
-            <button className="nav-item active"><RouteIconFilled /> Rotas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIconFilled /> Motoristas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIconFilled /> Escolas</button>
+            <button className="nav-item" onClick={() => router.push("/lista_onibus")}>
+              <BusFrontIcon /> Ônibus
+            </button>
+            <button className="nav-item active">
+              <RouteIconFilled /> Rotas
+            </button>
+            <button className="nav-item" onClick={() => router.push("/lista_motoristas")}>
+              <DriverIconFilled /> Motoristas
+            </button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}>
+              <SchoolIconFilled /> Escolas
+            </button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/perfil")}>
               <div className="avatar">A</div>
-              <div><div className="user-name">Admin</div><div className="user-role">Gestor</div></div>
+              <div>
+                <div className="user-name">Admin</div>
+                <div className="user-role">Gestor</div>
+              </div>
             </button>
             <SidebarLogoutButton />
           </div>
@@ -282,7 +295,8 @@ export default function CadastroRotaPage() {
             </div>
             <div className="topbar-right">
               <button className="icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <BellIconFilled /><span className="notif-dot" />
+                <BellIconFilled />
+                <span className="notif-dot" />
               </button>
               <div className="topbar-avatar" onClick={() => router.push("/perfil")} title="Perfil">A</div>
             </div>
@@ -323,9 +337,10 @@ export default function CadastroRotaPage() {
                     />
                   </div>
                   <div className="field" style={{ justifyContent: "flex-end" }}>
+                    <label className="label" style={{ opacity: 0 }}>.</label>
                     <button
                       type="button"
-                      className={`btn btn-secondary`}
+                      className="btn btn-secondary"
                       style={{ marginTop: 0 }}
                       onClick={handleCep}
                       disabled={loadingCep}
@@ -377,6 +392,7 @@ export default function CadastroRotaPage() {
                 <button type="submit" className="btn" disabled={loading}>
                   {loading ? "Cadastrando..." : "Cadastrar Rota"}
                 </button>
+
               </form>
             </div>
           </div>
