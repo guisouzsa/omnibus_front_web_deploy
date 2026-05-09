@@ -37,81 +37,54 @@ const css = `
 
   .p-loading-card {
     display: flex; flex-direction: column;
-    align-items: center; gap: 28px;
-  }
-
-  .p-loading-orbit {
-    position: relative;
-    width: 88px; height: 88px;
-  }
-
-  .p-loading-ring {
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    border: 1.5px solid rgba(241,187,19,0.25);
-    animation: orbit-spin 3s linear infinite;
-  }
-
-  .p-loading-ring-dot {
-    position: absolute;
-    top: -4px; left: 50%;
-    transform: translateX(-50%);
-    width: 8px; height: 8px;
-    background: #f1bb13;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #f1bb13;
-  }
-
-  @keyframes orbit-spin { to { transform: rotate(360deg); } }
-
-  .p-loading-center {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
+    align-items: center; gap: 24px;
   }
 
   .p-loading-icon {
-    width: 52px; height: 52px;
+    width: 72px; height: 72px;
     background: #f1bb13;
-    border-radius: 15px;
+    border-radius: 20px;
     display: flex; align-items: center; justify-content: center;
-    animation: icon-glow 2s ease-in-out infinite;
+    animation: icon-pulse 2s ease-in-out infinite;
   }
 
-  @keyframes icon-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(241,187,19,0.5); }
-    50% { box-shadow: 0 0 0 16px rgba(241,187,19,0); }
+  @keyframes icon-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(241,187,19,0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(241,187,19,0); }
   }
 
-  .p-loading-texts { text-align: center; }
+  .p-loading-texts {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+  }
 
   .p-loading-title {
-    font-size: 30px; font-weight: 800;
+    font-size: 28px; font-weight: 800;
     color: #ffffff; letter-spacing: -0.5px;
-    margin-bottom: 4px;
   }
 
   .p-loading-subtitle {
-    font-size: 11px; font-weight: 600;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 4px; text-transform: uppercase;
+    font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.5); letter-spacing: 3px;
+    text-transform: uppercase;
   }
 
   .p-loading-dots {
-    display: flex; gap: 5px;
-    justify-content: center; margin-top: 10px;
+    display: flex; gap: 6px; align-items: center;
+    margin-top: 8px;
   }
 
   .p-loading-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: #f1bb13;
-    animation: dot-anim 1.4s ease-in-out infinite;
+    width: 6px; height: 6px;
+    border-radius: 50%; background: #f1bb13;
+    animation: dot-bounce 1.4s ease-in-out infinite;
   }
   .p-loading-dot:nth-child(2) { animation-delay: 0.2s; }
   .p-loading-dot:nth-child(3) { animation-delay: 0.4s; }
 
-  @keyframes dot-anim {
-    0%, 80%, 100% { opacity: 0.3; transform: scale(0.7); }
-    40% { opacity: 1; transform: scale(1); }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
   }
 
   /* ── LAYOUT ── */
@@ -216,30 +189,15 @@ function LoadingScreen() {
   return (
     <div className="p-loading-screen">
       <div className="p-loading-card">
-        {/* Anel orbital com ponto girando */}
-        <div className="p-loading-orbit">
-          <div className="p-loading-ring">
-            <div className="p-loading-ring-dot" />
-          </div>
-          <div className="p-loading-center">
-            <div className="p-loading-icon">
-              {/* Ônibus estilizado e tecnológico */}
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="6" width="24" height="14" rx="3" fill="#01233F"/>
-                <rect x="2" y="11" width="24" height="2" fill="#f1bb13"/>
-                <rect x="5" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
-                <rect x="11" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
-                <rect x="17" y="8" width="4" height="3" rx="0.8" fill="#f1bb13" opacity="0.9"/>
-                <circle cx="8" cy="23" r="2.5" fill="#01233F"/>
-                <circle cx="8" cy="23" r="1.2" fill="#f1bb13"/>
-                <circle cx="20" cy="23" r="2.5" fill="#01233F"/>
-                <circle cx="20" cy="23" r="1.2" fill="#f1bb13"/>
-                <path d="M5 20h18" stroke="#f1bb13" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-            </div>
-          </div>
+        <div className="p-loading-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="14" rx="2"/>
+            <path d="M2 9h20"/>
+            <circle cx="7" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+            <circle cx="17" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+            <path d="M5 18h14"/>
+          </svg>
         </div>
-
         <div className="p-loading-texts">
           <div className="p-loading-title">Carregando</div>
           <div className="p-loading-subtitle">Omnibus</div>
@@ -348,76 +306,54 @@ export default function PerfilPage() {
               <div className="p-logo-sub">Gestão Escolar</div>
             </div>
             <div className="p-logo-icon">
-              {/* Ícone do ônibus preenchido */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="4" width="20" height="14" rx="2" fill="#01233F"/>
-                <path d="M2 9h20" stroke="#f1bb13" strokeWidth="1.5"/>
-                <circle cx="7" cy="20" r="2" fill="#01233F"/>
-                <circle cx="17" cy="20" r="2" fill="#01233F"/>
-                <path d="M5 18h14" stroke="#01233F" strokeWidth="1.5"/>
-                <rect x="4" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
-                <rect x="10" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
-                <rect x="16" y="5.5" width="4" height="2.5" rx="0.5" fill="#f1bb13" opacity="0.8"/>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/>
+                <circle cx="7" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+                <circle cx="17" cy="20" r="2" fill="#01233F" stroke="#01233F"/>
+                <path d="M5 18h14"/>
               </svg>
             </div>
           </div>
           <nav className="p-sidebar-nav">
             <span className="p-nav-label">Principal</span>
-
-            {/* Dashboard — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/dashboard")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
-                <rect x="3" y="3" width="7" height="7" rx="1"/>
-                <rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/>
-                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
               </svg>
               Dashboard
             </button>
-
-            {/* Financeiro — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/visualizar_gastos")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.2" strokeLinecap="round">
-                <line x1="12" y1="1" x2="12" y2="23"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
               Financeiro
             </button>
-
             <span className="p-nav-label">Cadastros</span>
-
-            {/* Ônibus — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_onibus")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="4" width="20" height="14" rx="2" fill="rgba(255,255,255,0.55)"/>
-                <path d="M2 9h20" stroke="#01233F" strokeWidth="1.2" opacity="0.6"/>
-                <circle cx="7" cy="20" r="2" fill="rgba(255,255,255,0.55)"/>
-                <circle cx="17" cy="20" r="2" fill="rgba(255,255,255,0.55)"/>
-                <path d="M5 18h14" stroke="rgba(255,255,255,0.55)" strokeWidth="1.2"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/>
+                <circle cx="7" cy="20" r="2"/><circle cx="17" cy="20" r="2"/><path d="M5 18h14"/>
               </svg>
               Ônibus
             </button>
-
-            {/* Rotas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_rotas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
               </svg>
               Rotas
             </button>
-
-            {/* Motoristas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_motoristas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="7" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
               </svg>
               Motoristas
             </button>
-
-            {/* Escolas — preenchido */}
             <button className="p-nav-item" onClick={() => router.push("/lista_escolas")}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="rgba(255,255,255,0.55)" stroke="none">
-                <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"/>
               </svg>
               Escolas
             </button>
@@ -442,8 +378,9 @@ export default function PerfilPage() {
             </div>
             <div className="p-nav-right">
               <button className="p-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="#01233F" stroke="none">
-                  <path d="M12 2a6 6 0 0 0-6 6c0 7-3 9-3 9h18s-3-2-3-9a6 6 0 0 0-6-6zm0 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
                 <span className="p-notif-dot" />
               </button>
