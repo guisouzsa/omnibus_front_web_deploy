@@ -26,7 +26,6 @@ const css = `
 
   body { font-family: 'DM Sans', sans-serif; }
 
-  /* ── LOADING ── */
   .p-loading-screen {
     position: fixed; inset: 0;
     background: #01233F;
@@ -34,7 +33,6 @@ const css = `
     align-items: center; justify-content: center;
     gap: 16px; z-index: 9999;
   }
-
   .p-loading-spinner {
     width: 40px; height: 40px;
     border-radius: 50%;
@@ -42,9 +40,7 @@ const css = `
     border-top-color: #f1bb13;
     animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
-
   .p-loading-label {
     font-size: 14px; font-weight: 600;
     color: rgba(255,255,255,0.75);
@@ -52,10 +48,8 @@ const css = `
     text-transform: uppercase;
   }
 
-  /* ── LAYOUT ── */
   .p-page { min-height: 100vh; background: var(--bg); font-family: 'DM Sans', sans-serif; display: flex; }
 
-  /* ── SIDEBAR ── */
   .p-sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .p-sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
   .p-logo-texts { display: flex; flex-direction: column; }
@@ -73,25 +67,21 @@ const css = `
   .p-user-name { font-size: 13px; font-weight: 600; color: #fff; }
   .p-user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* ── CONTENT ── */
   .p-content-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* ── TOPBAR ── */
   .p-navbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
   .p-topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
   .p-topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .p-nav-right { display: flex; align-items: center; gap: 8px; }
   .p-icon-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: background 0.15s; position: relative; }
   .p-icon-btn:hover { background: var(--bg); }
-  .p-notif-dot { position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 2px solid #fff; }
+  .p-notif-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--red); border-radius: 50%; border: 2px solid #fff; }
   .p-topbar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer; border: 2px solid transparent; overflow: hidden; transition: border-color 0.15s; flex-shrink: 0; }
   .p-topbar-avatar:hover { border-color: var(--yellow); }
   .p-topbar-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* ── MAIN ── */
   .p-main { flex: 1; padding: 40px; display: flex; align-items: center; justify-content: center; }
 
-  /* ── CARD ── */
   .p-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 24px rgba(1,35,63,0.07); max-width: 900px; width: 100%; overflow: hidden; }
   .p-card-banner { background: var(--navy); height: 120px; position: relative; }
   .p-banner-pattern { position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 50%, rgba(241,187,19,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(241,187,19,0.05) 0%, transparent 40%); }
@@ -149,7 +139,36 @@ const getPhotoUrl = (photoPath: string | null): string | null => {
   return `${apiBaseUrl}${pathWithSlash}?t=${Date.now()}`;
 };
 
-function BusIcon({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
+// Ônibus de lado (vista lateral) — filled
+function BusSideIcon({ size = 22, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill={color} xmlns="http://www.w3.org/2000/svg">
+      {/* Corpo principal */}
+      <rect x="2" y="9" width="26" height="13" rx="2.5"/>
+      {/* Frente arredondada */}
+      <path d="M28 11.5V19a1.5 1.5 0 0 0 1.5-1.5v-4A1.5 1.5 0 0 0 28 11.5z"/>
+      {/* Janelas */}
+      <rect x="5" y="11.5" width="5" height="4" rx="1" fill="white" opacity="0.85"/>
+      <rect x="12" y="11.5" width="5" height="4" rx="1" fill="white" opacity="0.85"/>
+      <rect x="19" y="11.5" width="4" height="4" rx="1" fill="white" opacity="0.85"/>
+      {/* Porta */}
+      <rect x="5" y="16.5" width="4" height="3.5" rx="0.75" fill="white" opacity="0.4"/>
+      {/* Roda traseira */}
+      <circle cx="8" cy="23.5" r="3" fill="white" opacity="0.15"/>
+      <circle cx="8" cy="23.5" r="3" stroke={color} strokeWidth="1.5" fill="none" opacity="0.9"/>
+      <circle cx="8" cy="23.5" r="1.2" fill={color}/>
+      {/* Roda dianteira */}
+      <circle cx="23" cy="23.5" r="3" fill="white" opacity="0.15"/>
+      <circle cx="23" cy="23.5" r="3" stroke={color} strokeWidth="1.5" fill="none" opacity="0.9"/>
+      <circle cx="23" cy="23.5" r="1.2" fill={color}/>
+      {/* Linha de base do ônibus */}
+      <rect x="2" y="21" width="26" height="1" rx="0.5" opacity="0.3"/>
+    </svg>
+  );
+}
+
+// Ônibus frontal para o menu — filled (igual antes)
+function BusFrontIcon({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
       <path d="M4 6.5A3.5 3.5 0 0 1 7.5 3h9A3.5 3.5 0 0 1 20 6.5V15a2 2 0 0 1-1 1.732V18a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-.5H8V18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-1.268A2 2 0 0 1 4 15V6.5zM7.5 5A1.5 1.5 0 0 0 6 6.5V9h12V6.5A1.5 1.5 0 0 0 16.5 5h-9zM6 11v2h12v-2H6zm1.5 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
@@ -255,8 +274,8 @@ export default function PerfilPage() {
 
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
-            {/* Ícone à esquerda, sem fundo, igual sidebar mas um pouco maior */}
-            <BusIcon size={22} color="rgba(255,255,255,0.9)" />
+            {/* Ônibus de lado, filled, branco, levemente maior que os do menu */}
+            <BusSideIcon size={26} color="rgba(255,255,255,0.92)" />
             <div className="p-logo-texts">
               <div className="p-logo-text">Omnibus</div>
               <div className="p-logo-sub">Gestão Escolar</div>
@@ -281,7 +300,7 @@ export default function PerfilPage() {
             </button>
             <span className="p-nav-label">Cadastros</span>
             <button className="p-nav-item" onClick={() => router.push("/lista_onibus")}>
-              <BusIcon size={17} color="currentColor" />
+              <BusFrontIcon size={17} color="currentColor" />
               Ônibus
             </button>
             <button className="p-nav-item" onClick={() => router.push("/lista_rotas")}>
@@ -324,10 +343,11 @@ export default function PerfilPage() {
               <div className="p-topbar-sub">Informações da instituição</div>
             </div>
             <div className="p-nav-right">
+              {/* Notificação — filled, não redondo */}
               <button className="p-icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
-                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2a6 6 0 0 0-6 6c0 3.53-.88 5.7-1.76 7.04C3.46 16.43 3 17 3 17h18s-.46-.57-1.24-1.96C18.88 13.7 18 11.53 18 8a6 6 0 0 0-6-6z"/>
+                  <path d="M10.27 21a2 2 0 0 0 3.46 0H10.27z"/>
                 </svg>
                 <span className="p-notif-dot" />
               </button>
