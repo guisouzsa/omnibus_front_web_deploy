@@ -88,6 +88,28 @@ const css = `
   body { font-family: 'DM Sans', sans-serif; font-weight: 400; }
   .layout { display: flex; min-height: 100vh; background: var(--bg); }
 
+  /* ── Loading ── */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: #01233F;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 9999;
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2.5px solid rgba(241,187,19,0.15);
+    border-top-color: #f1bb13;
+    animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+  }
+
   .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
   .logo-texts { display: flex; flex-direction: column; }
@@ -213,11 +235,16 @@ export default function EditRotaPage() {
     }
   };
 
+  // ── Loading screen padrão ──────────────────────────────────────────────────
   if (loadingData) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif" }}>
-        Carregando dados da rota...
-      </div>
+      <>
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+        <div className="loading-screen">
+          <div className="loading-spinner" />
+          <span className="loading-label">Carregando</span>
+        </div>
+      </>
     );
   }
 

@@ -76,7 +76,6 @@ function BellIconFilled({ size = 19, color = "currentColor" }: { size?: number; 
   );
 }
 
-// ─── CSS — sidebar/topbar idênticos ao padrão; card de edição intocado ────────
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,6 +86,28 @@ const css = `
   }
   body { font-family: 'DM Sans', sans-serif; font-weight: 400; }
   .layout { display: flex; min-height: 100vh; background: var(--bg); }
+
+  /* ── Loading ── */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: #01233F;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 9999;
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2.5px solid rgba(241,187,19,0.15);
+    border-top-color: #f1bb13;
+    animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+  }
 
   .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
@@ -108,7 +129,7 @@ const css = `
   .content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
   .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--navy); }
   .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .topbar-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: background 0.15s; position: relative; }
@@ -191,11 +212,16 @@ export default function EditarMotoristaPage() {
     }
   };
 
+  // ── Loading screen padrão ──────────────────────────────────────────────────
   if (loadingData) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif" }}>
-        Carregando dados do motorista...
-      </div>
+      <>
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+        <div className="loading-screen">
+          <div className="loading-spinner" />
+          <span className="loading-label">Carregando</span>
+        </div>
+      </>
     );
   }
 

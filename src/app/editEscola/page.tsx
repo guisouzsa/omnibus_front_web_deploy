@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSchools } from "@/hooks/useSchools";
 import { useRoutes } from "@/hooks/useRoutes";
+import { useSchools } from "@/hooks/useSchools";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -77,7 +77,6 @@ function BellIconFilled({ size = 19, color = "currentColor" }: { size?: number; 
   );
 }
 
-// ─── CSS — sidebar/topbar idênticos ao padrão; card de edição intocado ────────
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -88,6 +87,28 @@ const css = `
   }
   body { font-family: 'DM Sans', sans-serif; font-weight: 400; }
   .layout { display: flex; min-height: 100vh; background: var(--bg); }
+
+  /* ── Loading ── */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: #01233F;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; z-index: 9999;
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 2.5px solid rgba(241,187,19,0.15);
+    border-top-color: #f1bb13;
+    animation: spin 0.8s cubic-bezier(0.4,0,0.2,1) infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+  }
 
   .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
   .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
@@ -109,7 +130,7 @@ const css = `
   .content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 
   .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .topbar-title { font-size: 18px; font-weight: 700; color: var(--navy); }
   .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .topbar-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn { width: 38px; height: 38px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--navy); transition: background 0.15s; position: relative; }
@@ -129,10 +150,7 @@ const css = `
   .input { width: 100%; height: 52px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 16px; font-size: 14px; font-weight: 400; color: var(--navy); background: #f7f8fa; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
   .input::placeholder { color: #b0bac6; font-size: 13px; font-weight: 400; }
   .input:focus { border-color: var(--yellow); background: #fff; box-shadow: 0 0 0 3px rgba(241,187,19,0.12); }
-  .cep-row { display: grid; grid-template-columns: 1fr 120px; gap: 10px; }
-  .btn-cep { height: 52px; border: none; border-radius: 8px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.15s; }
-  .btn-cep:hover { opacity: 0.85; }
-  .btn-cep:disabled { opacity: 0.4; cursor: not-allowed; }
+  select.input { padding-right: 30px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2301233F' d='M6 9L1 4h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; appearance: none; cursor: pointer; }
   .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: 500; }
   .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
   .alert-error   { background: #fde8e8; color: #7f1d1d; border: 1px solid #fca5a5; }
@@ -147,78 +165,86 @@ const css = `
     .body { padding: 32px 20px; }
     .card { padding: 32px 24px; }
     .row { grid-template-columns: 1fr; }
-    .cep-row { grid-template-columns: 1fr 100px; }
   }
 `;
 
-function EditarEscolaContent() {
+export default function EditRotaPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const schoolId = searchParams.get("id");
+  const routeId = searchParams.get("id");
 
-  const { getSchool, updateSchool, loading } = useSchools(false);
-  const { getAddressesByCep } = useRoutes(false);
+  const { getRoute, updateRoute, loading } = useRoutes(false);
+  const { schools, fetchSchools } = useSchools(false);
 
-  const [form, setForm] = useState({ name: "", cep: "", address: "", reference_point: "" });
-  const [loadingData,   setLoadingData]   = useState(true);
+  const [form, setForm] = useState({
+    name: "", start_point_cep: "", start_point_reference: "",
+    start_point: "", departure_time: "", end_point: "", school_id: "",
+  });
   const [submitError,   setSubmitError]   = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [searchingCep,  setSearchingCep]  = useState(false);
+  const [loadingData,   setLoadingData]   = useState(true);
 
   useEffect(() => {
-    if (!schoolId) { router.push("/lista_escolas"); return; }
-    const loadSchool = async () => {
-      const response = await getSchool(parseInt(schoolId));
-      const school = (response as any)?.data || response;
-      if (school) {
-        setForm({ name: school.name, cep: school.cep, address: school.address, reference_point: school.reference_point || "" });
-      } else {
-        setSubmitError("Escola não encontrada");
+    if (!routeId) { router.push("/lista_rotas"); return; }
+    const load = async () => {
+      try {
+        await fetchSchools({ per_page: 100 });
+        const routeResponse = await getRoute(Number(routeId));
+        const route = routeResponse.data;
+        setForm({
+          name:                  route.name,
+          start_point_cep:       route.start_point_cep || "",
+          start_point_reference: route.start_point_reference || "",
+          start_point:           route.start_point,
+          departure_time:        route.departure_time,
+          end_point:             route.end_point,
+          school_id:             route.school_id ? String(route.school_id) : "",
+        });
+      } catch {
+        setSubmitError("Não foi possível carregar a rota.");
+      } finally {
+        setLoadingData(false);
       }
-      setLoadingData(false);
     };
-    loadSchool();
-  }, [schoolId]);
+    load();
+  }, [routeId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setSubmitError(null);
-    setSubmitSuccess(false);
-  };
-
-  const handleSearchCep = async () => {
-    setSearchingCep(true);
-    setSubmitError(null);
-    try {
-      const options = await getAddressesByCep(form.cep);
-      if (!options.length) { setSubmitError("Não encontramos endereços para esse CEP."); return; }
-      setForm((prev) => ({ ...prev, address: options[0].address }));
-    } catch (err: any) {
-      setSubmitError(err?.message || "Erro ao consultar CEP");
-    } finally {
-      setSearchingCep(false);
-    }
+    setSubmitError(null); setSubmitSuccess(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(false);
-    if (!schoolId) return;
+    if (!routeId) return;
+    setSubmitError(null); setSubmitSuccess(false);
     try {
-      await updateSchool(parseInt(schoolId), form);
+      const selectedSchool = schools.find((school) => school.id === Number(form.school_id));
+      const payload = {
+        ...form,
+        school_id:     form.school_id ? Number(form.school_id) : null,
+        end_point:     selectedSchool?.address || form.end_point,
+        end_point_lat: selectedSchool?.lat || undefined,
+        end_point_lng: selectedSchool?.lng || undefined,
+      };
+      await updateRoute(Number(routeId), payload);
       setSubmitSuccess(true);
-      setTimeout(() => router.push("/lista_escolas"), 2000);
+      setTimeout(() => router.push("/lista_rotas"), 2000);
     } catch (err: any) {
-      setSubmitError(err?.message || "Erro ao atualizar escola");
+      setSubmitError(err?.response?.message || err?.message || "Erro ao atualizar rota");
     }
   };
 
+  // ── Loading screen padrão ──────────────────────────────────────────────────
   if (loadingData) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif" }}>
-        Carregando dados da escola...
-      </div>
+      <>
+        <style dangerouslySetInnerHTML={{ __html: css }} />
+        <div className="loading-screen">
+          <div className="loading-spinner" />
+          <span className="loading-label">Carregando</span>
+        </div>
+      </>
     );
   }
 
@@ -240,9 +266,9 @@ function EditarEscolaContent() {
             <button className="nav-item" onClick={() => router.push("/visualizar_gastos")}><FinanceIconFilled /> Financeiro</button>
             <span className="nav-label">Cadastros</span>
             <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusFrontIcon /> Ônibus</button>
-            <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIconFilled /> Rotas</button>
+            <button className="nav-item active"><RouteIconFilled /> Rotas</button>
             <button className="nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIconFilled /> Motoristas</button>
-            <button className="nav-item active"><SchoolIconFilled /> Escolas</button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIconFilled /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/perfil")}>
@@ -256,8 +282,8 @@ function EditarEscolaContent() {
         <div className="content">
           <header className="topbar">
             <div>
-              <div className="topbar-title">Editar Escola</div>
-              <div className="topbar-sub">Atualize os dados da escola</div>
+              <div className="topbar-title">Editar Rota</div>
+              <div className="topbar-sub">Atualize os dados da rota</div>
             </div>
             <div className="topbar-right">
               <button className="icon-btn" onClick={() => router.push("/notificacoes")} title="Notificações">
@@ -268,37 +294,52 @@ function EditarEscolaContent() {
           </header>
 
           <div className="body">
-            <h2 className="page-title">Editar Escola</h2>
+            <h2 className="page-title">Editar Rota</h2>
             <div className="card">
-              {submitSuccess && <div className="alert alert-success">✓ Escola atualizada com sucesso! Redirecionando...</div>}
+              {submitSuccess && <div className="alert alert-success">✓ Rota atualizada com sucesso! Redirecionando...</div>}
               {submitError   && <div className="alert alert-error">{submitError}</div>}
 
               <form onSubmit={handleSubmit}>
-                <div className="field">
-                  <label className="label">Nome da Escola</label>
-                  <input type="text" name="name" className="input" placeholder="Ex: Escola Municipal João Silva" value={form.name} onChange={handleChange} required />
-                </div>
                 <div className="row">
                   <div className="field">
-                    <label className="label">CEP</label>
-                    <div className="cep-row">
-                      <input type="text" name="cep" className="input" placeholder="Ex: 58000000" value={form.cep} onChange={handleChange} required />
-                      <button type="button" className="btn-cep" onClick={handleSearchCep} disabled={searchingCep || !form.cep}>
-                        {searchingCep ? "..." : "Buscar"}
-                      </button>
-                    </div>
+                    <label className="label">Nome da Rota</label>
+                    <input type="text" name="name" className="input" placeholder="Ex: Ingá" value={form.name} onChange={handleChange} required />
                   </div>
                   <div className="field">
-                    <label className="label">Ponto de Referência</label>
-                    <input type="text" name="reference_point" className="input" placeholder="Ex: Próximo à praça central" value={form.reference_point} onChange={handleChange} />
+                    <label className="label">CEP da Saída</label>
+                    <input type="text" name="start_point_cep" className="input" placeholder="Ex: 58000000" value={form.start_point_cep} onChange={handleChange} />
                   </div>
                 </div>
-                <div className="field">
-                  <label className="label">Endereço</label>
-                  <input type="text" name="address" className="input" placeholder="Preenchido automaticamente pelo CEP" value={form.address} onChange={handleChange} required />
+
+                <div className="row">
+                  <div className="field">
+                    <label className="label">Ponto de Partida</label>
+                    <input type="text" name="start_point" className="input" placeholder="Ex: Rua Principal, 123" value={form.start_point} onChange={handleChange} required />
+                  </div>
+                  <div className="field">
+                    <label className="label">Referência da Saída</label>
+                    <input type="text" name="start_point_reference" className="input" placeholder="Ex: Próximo ao mercado X" value={form.start_point_reference} onChange={handleChange} />
+                  </div>
                 </div>
+
+                <div className="row">
+                  <div className="field">
+                    <label className="label">Horário de Saída</label>
+                    <input type="time" name="departure_time" className="input" value={form.departure_time} onChange={handleChange} required />
+                  </div>
+                  <div className="field">
+                    <label className="label">Parada Final (Escola)</label>
+                    <select name="school_id" className="input" value={form.school_id} onChange={handleChange}>
+                      <option value="">Sem escola vinculada</option>
+                      {schools.map((school) => (
+                        <option key={school.id} value={String(school.id)}>{school.name} - {school.address}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
                 <button type="submit" className="btn" disabled={loading}>
-                  {loading ? "Atualizando..." : "Atualizar Escola"}
+                  {loading ? "Salvando..." : "Salvar Alterações"}
                 </button>
               </form>
             </div>
@@ -306,13 +347,5 @@ function EditarEscolaContent() {
         </div>
       </div>
     </>
-  );
-}
-
-export default function EditarEscolaPage() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif" }}>Carregando...</div>}>
-      <EditarEscolaContent />
-    </Suspense>
   );
 }
