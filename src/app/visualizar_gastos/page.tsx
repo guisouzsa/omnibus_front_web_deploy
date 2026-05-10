@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useExpenses, useSpendingLimits } from "@/hooks";
 import { maskCurrency, unmaskCurrency } from "@/utils/mask";
 import SidebarLogoutButton from "@/components/SidebarLogoutButton";
-import SchoolIcon from "@/components/SchoolIcon";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 function BusSideIcon({ size = 28 }: { size?: number }) {
@@ -66,6 +65,14 @@ function BellIconFilled({ size = 19, color = "currentColor" }: { size?: number; 
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2a6 6 0 0 0-6 6c0 3.53-.88 5.7-1.76 7.04C3.46 16.43 3 17 3 17h18s-.46-.57-1.24-1.96C18.88 13.7 18 11.53 18 8a6 6 0 0 0-6-6z"/>
       <path d="M10.27 21a2 2 0 0 0 3.46 0H10.27z"/>
+    </svg>
+  );
+}
+function SchoolIconFilled({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+      <path d="M5 13.18V17c0 2.21 3.13 4 7 4s7-1.79 7-4v-3.82l-7 3.82-7-3.82z"/>
     </svg>
   );
 }
@@ -450,7 +457,7 @@ export default function VisualizarGastosPage() {
             <button className="nav-item" onClick={() => router.push("/lista_onibus")}><BusFrontIcon /> Ônibus</button>
             <button className="nav-item" onClick={() => router.push("/lista_rotas")}><RouteIconFilled /> Rotas</button>
             <button className="nav-item" onClick={() => router.push("/lista_motoristas")}><DriverIconFilled /> Motoristas</button>
-            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIcon size={17} /> Escolas</button>
+            <button className="nav-item" onClick={() => router.push("/lista_escolas")}><SchoolIconFilled /> Escolas</button>
           </nav>
           <div className="sidebar-footer">
             <button className="user-row" onClick={() => router.push("/perfil")}>
