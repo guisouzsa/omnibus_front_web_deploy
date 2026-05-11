@@ -211,13 +211,7 @@ export default function NotificacoesPage() {
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <div className="logo-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01233F" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/><path d="M8 4V2"/><path d="M16 4V2"/>
-              <circle cx="7" cy="20" r="2" fill="#01233F" stroke="#01233F"/><circle cx="17" cy="20" r="2" fill="#01233F" stroke="#01233F"/><path d="M5 18h14"/>
-            </svg>
-          </div>
-          <div><div className="logo-text">Omnibus</div><div className="logo-sub">Gestão Escolar</div></div>
+          <img src="/banneromnibus.png" alt="Omnibus" className="logo-image" />
         </div>
         <nav className="sidebar-nav">
           <span className="nav-label">Principal</span>
@@ -366,7 +360,8 @@ export default function NotificacoesPage() {
         .page { min-height: 100vh; background: #f0f2f5; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; display: flex; }
 
         .sidebar { width: 220px; background: #01233F; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-        .sidebar-logo { padding: 24px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .sidebar-logo { padding: 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; }
+        .logo-image { width: 188px; max-width: 100%; height: auto; display: block; }
         .logo-icon { width: 34px; height: 34px; background: #f1bb13; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
         .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }

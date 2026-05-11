@@ -51,7 +51,8 @@ const css = `
   .p-page { min-height: 100vh; background: var(--bg); font-family: 'DM Sans', sans-serif; display: flex; }
 
   .p-sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .p-sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .p-sidebar-logo { padding: 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; }
+  .p-logo-image { width: 188px; max-width: 100%; height: auto; display: block; }
   .p-logo-texts { display: flex; flex-direction: column; }
   .p-logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .p-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
@@ -274,12 +275,7 @@ export default function PerfilPage() {
 
         <aside className="p-sidebar">
           <div className="p-sidebar-logo">
-            {/* Ônibus de lado, filled, branco, levemente maior que os do menu */}
-            <BusSideIcon size={26} color="rgba(255,255,255,0.92)" />
-            <div className="p-logo-texts">
-              <div className="p-logo-text">Omnibus</div>
-              <div className="p-logo-sub">Gestão Escolar</div>
-            </div>
+            <img src="/banneromnibus.png" alt="Omnibus" className="p-logo-image" />
           </div>
           <nav className="p-sidebar-nav">
             <span className="p-nav-label">Principal</span>

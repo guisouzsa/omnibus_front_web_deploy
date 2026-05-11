@@ -26,20 +26,6 @@ const defaultChartData = [
 ];
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
-function BusSideIcon({ size = 28 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 44 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="38" height="20" rx="3" stroke="white" strokeWidth="1.8"/>
-      <rect x="3"  y="4" width="7" height="7" rx="1" stroke="white" strokeWidth="1.5"/>
-      <rect x="13" y="4" width="7" height="7" rx="1" stroke="white" strokeWidth="1.5"/>
-      <rect x="23" y="4" width="7" height="7" rx="1" stroke="white" strokeWidth="1.5"/>
-      <rect x="38" y="5" width="3" height="10" rx="1.5" stroke="white" strokeWidth="1.5"/>
-      <circle cx="8"  cy="24" r="4" stroke="white" strokeWidth="1.8"/>
-      <circle cx="30" cy="24" r="4" stroke="white" strokeWidth="1.8"/>
-      <line x1="0" y1="20" x2="38" y2="20" stroke="white" strokeWidth="1.2" strokeOpacity="0.4"/>
-    </svg>
-  );
-}
 function BusFrontIcon({ size = 17, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
@@ -208,7 +194,8 @@ const css = `
 
   /* ── Sidebar ── */
   .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-  .sidebar-logo { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .sidebar-logo { padding: 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; }
+  .logo-image { width: 188px; max-width: 100%; height: auto; display: block; }
   .logo-texts { display: flex; flex-direction: column; }
   .logo-text { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
   .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-weight: 400; margin-top: 1px; }
@@ -467,11 +454,7 @@ export default function DashboardPage() {
         {/* ── Sidebar ── */}
         <aside className="sidebar">
           <div className="sidebar-logo">
-            <BusSideIcon size={28} />
-            <div className="logo-texts">
-              <div className="logo-text">Omnibus</div>
-              <div className="logo-sub">Gestão Escolar</div>
-            </div>
+            <img src="/banneromnibus.png" alt="Omnibus" className="logo-image" />
           </div>
           <nav className="sidebar-nav">
             <span className="nav-label">Principal</span>
