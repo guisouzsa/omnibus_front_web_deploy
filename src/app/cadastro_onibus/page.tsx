@@ -222,6 +222,16 @@ export default function CadastroOnibusPage() {
     setErrorMessage("");
   };
 
+  const handlePlateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const masked = e.target.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 7);
+
+    setForm((prev) => ({ ...prev, plate: masked }));
+    setErrorMessage("");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -232,12 +242,24 @@ export default function CadastroOnibusPage() {
       return;
     }
 
+    if (form.plate.length !== 7) {
+      setErrorMessage("A placa deve ter exatamente 7 caracteres (ex: ABC1D23)");
+      return;
+    }
+
+    const selectedRoute = routes.find((route) => route.id === Number(form.route_id));
+    if (!selectedRoute) {
+      setErrorMessage("Selecione a rota vinculada.");
+      return;
+    }
+
     try {
       setSubmitting(true);
       console.log('[cadastro_onibus] Submetendo vehicle payload', {
         plate: form.plate,
         capacity: Number(form.capacity),
         driver_id: Number(form.driver_id),
+        mainRoute: selectedRoute.name,
         route_id: form.route_id ? Number(form.route_id) : null,
       });
 
@@ -245,6 +267,7 @@ export default function CadastroOnibusPage() {
         plate: form.plate,
         capacity: Number(form.capacity),
         driver_id: Number(form.driver_id),
+        mainRoute: selectedRoute.name,
         route_id: form.route_id ? Number(form.route_id) : null,
       });
 
@@ -351,9 +374,10 @@ export default function CadastroOnibusPage() {
                     type="text"
                     name="plate"
                     className="input"
-                    placeholder="Ex: ABC-1234"
+                    placeholder="Ex: ABC1D23"
                     value={form.plate}
-                    onChange={handleChange}
+                    onChange={handlePlateChange}
+                    maxLength={7}
                   />
                 </div>
 
@@ -383,8 +407,8 @@ export default function CadastroOnibusPage() {
 
                 <div className="field full">
                   <label className="label">Rota vinculada</label>
-                  <select name="route_id" className="input" value={form.route_id} onChange={handleChange}>
-                    <option value="">Nenhuma</option>
+                  <select name="route_id" className="input" value={form.route_id} onChange={handleChange} required>
+                    <option value="">Selecione</option>
                     {routes.map((route) => (
                       <option key={route.id} value={route.id}>{route.name}</option>
                     ))}
